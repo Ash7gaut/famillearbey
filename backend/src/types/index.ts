@@ -45,10 +45,16 @@ export interface Photo {
   created_at: string;
 }
 
+export interface SpouseBranch {
+  spouse: FamilyMember;
+  children: TreeNode[];
+}
+
 export interface TreeNode {
   member: FamilyMember;
   parents: TreeNode[];
   spouses: FamilyMember[];
+  spouseBranches: SpouseBranch[];
   children: TreeNode[];
 }
 

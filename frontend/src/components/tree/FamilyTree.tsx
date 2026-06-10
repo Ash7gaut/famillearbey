@@ -7,6 +7,32 @@ interface FamilyTreeProps {
   tree: TreeNode[];
 }
 
+function PersonColumn({
+  member,
+  exclusiveChildren,
+  onSelect,
+}: {
+  member: FamilyMember;
+  exclusiveChildren: TreeNode[];
+  onSelect: (member: FamilyMember) => void;
+}) {
+  return (
+    <div className="flex flex-col items-center">
+      <MemberCard member={member} onClick={() => onSelect(member)} />
+      {exclusiveChildren.length > 0 && (
+        <>
+          <Connector />
+          <div className="flex items-start justify-center gap-6 sm:gap-8">
+            {exclusiveChildren.map((child) => (
+              <TreeNodeView key={child.member.id} node={child} onSelect={onSelect} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function SpouseGroup({
   node,
   onSelect,
@@ -14,23 +40,19 @@ function SpouseGroup({
   node: TreeNode;
   onSelect: (member: FamilyMember) => void;
 }) {
-  const seen = new Set<string>();
-  const allMembers = [node.member, ...node.spouses].filter((m) => {
-    if (seen.has(m.id)) return false;
-    seen.add(m.id);
-    return true;
-  });
+  const spouseBranches =
+    node.spouseBranches ??
+    node.spouses.map((spouse) => ({ spouse, children: [] as TreeNode[] }));
 
   return (
-    <div className="flex items-end justify-center gap-3">
-      {allMembers.map((member, i) => (
-        <div key={member.id} className="flex items-end gap-3">
-          {i > 0 && (
-            <span className="mb-8 text-arbey-300 text-lg" aria-hidden>
-              ♥
-            </span>
-          )}
-          <MemberCard member={member} onClick={() => onSelect(member)} />
+    <div className="flex items-start justify-center gap-3">
+      <PersonColumn member={node.member} exclusiveChildren={[]} onSelect={onSelect} />
+      {spouseBranches.map(({ spouse, children }) => (
+        <div key={spouse.id} className="flex items-start gap-3">
+          <span className="mt-8 text-arbey-300 text-lg" aria-hidden>
+            ♥
+          </span>
+          <PersonColumn member={spouse} exclusiveChildren={children} onSelect={onSelect} />
         </div>
       ))}
     </div>

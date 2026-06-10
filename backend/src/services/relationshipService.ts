@@ -1,6 +1,6 @@
 import { supabase } from '../config/supabase.js';
 import { AppError } from '../middleware/errorHandler.js';
-import type { FamilyMember, Relationship, TreeNode } from '../types/index.js';
+import type { FamilyMember, Relationship, SpouseBranch, TreeNode } from '../types/index.js';
 import { familyMemberService } from './familyMemberService.js';
 
 export const relationshipService = {
@@ -59,11 +59,23 @@ export const relationshipService = {
       const member = memberMap.get(memberId);
       if (!member) return null;
 
+      const spouses = getSpouses(memberId, memberMap, relationships);
+      const memberChildIds = new Set(getChildIds(memberId, relationships));
+
+      const spouseBranches: SpouseBranch[] = spouses.map((spouse) => ({
+        spouse,
+        children: getChildIds(spouse.id, relationships)
+          .filter((id) => !memberChildIds.has(id))
+          .map((id) => buildNode(id, visited))
+          .filter((n): n is TreeNode => n !== null),
+      }));
+
       return {
         member,
         parents: [],
-        spouses: getSpouses(memberId, memberMap, relationships),
-        children: getChildIds(memberId, relationships)
+        spouses,
+        spouseBranches,
+        children: [...memberChildIds]
           .map((id) => buildNode(id, visited))
           .filter((n): n is TreeNode => n !== null),
       };
