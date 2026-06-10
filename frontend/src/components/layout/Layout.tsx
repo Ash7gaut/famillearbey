@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useAuthStore } from '../../stores/authStore';
 
 const navItems = [
   { to: '/', label: 'Accueil', icon: '🏠' },
@@ -8,6 +9,8 @@ const navItems = [
 ];
 
 export function Layout() {
+  const { member, session, logout } = useAuthStore();
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b border-arbey-100 bg-white/80 backdrop-blur-md">
@@ -22,7 +25,8 @@ export function Layout() {
             </div>
           </NavLink>
 
-          <nav className="hidden sm:flex items-center gap-1">
+          <div className="hidden sm:flex items-center gap-3">
+          <nav className="flex items-center gap-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -41,6 +45,24 @@ export function Layout() {
               </NavLink>
             ))}
           </nav>
+          {session && member ? (
+            <div className="flex items-center gap-2">
+              {member.is_admin && (
+                <Link to="/admin" className="text-xs font-medium text-arbey-600 hover:text-arbey-800">
+                  Admin
+                </Link>
+              )}
+              <span className="text-xs text-arbey-500">{member.first_name}</span>
+              <button type="button" onClick={() => logout()} className="text-xs text-arbey-500 hover:text-arbey-800">
+                Déconnexion
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="text-sm font-medium text-arbey-700 hover:text-arbey-900">
+              Connexion
+            </Link>
+          )}
+          </div>
         </div>
       </header>
 

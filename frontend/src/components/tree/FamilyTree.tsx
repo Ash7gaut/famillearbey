@@ -14,10 +14,15 @@ function SpouseGroup({
   node: TreeNode;
   onSelect: (member: FamilyMember) => void;
 }) {
-  const allMembers = [node.member, ...node.spouses];
+  const seen = new Set<string>();
+  const allMembers = [node.member, ...node.spouses].filter((m) => {
+    if (seen.has(m.id)) return false;
+    seen.add(m.id);
+    return true;
+  });
 
   return (
-    <div className="flex items-end gap-3">
+    <div className="flex items-end justify-center gap-3">
       {allMembers.map((member, i) => (
         <div key={member.id} className="flex items-end gap-3">
           {i > 0 && (
@@ -32,65 +37,66 @@ function SpouseGroup({
   );
 }
 
-function Generation({
-  nodes,
-  label,
+function Connector() {
+  return (
+    <div className="flex flex-col items-center py-2">
+      <div className="h-6 w-px bg-arbey-200" />
+      <div className="h-6 w-px bg-arbey-200" />
+    </div>
+  );
+}
+
+/** Rendu récursif : les enfants s'affichent directement sous leurs parents */
+function TreeNodeView({
+  node,
   onSelect,
 }: {
-  nodes: TreeNode[];
-  label?: string;
+  node: TreeNode;
   onSelect: (member: FamilyMember) => void;
 }) {
-  if (nodes.length === 0) return null;
-
   return (
-    <div className="flex flex-col items-center gap-4">
-      {label && (
-        <span className="text-xs font-medium uppercase tracking-wider text-arbey-400">
-          {label}
-        </span>
+    <div className="flex flex-col items-center">
+      <SpouseGroup node={node} onSelect={onSelect} />
+
+      {node.children.length > 0 && (
+        <>
+          <Connector />
+          <div className="flex items-start justify-center gap-6 sm:gap-8">
+            {node.children.map((child) => (
+              <TreeNodeView key={child.member.id} node={child} onSelect={onSelect} />
+            ))}
+          </div>
+        </>
       )}
-      <div className="flex flex-wrap justify-center gap-8">
-        {nodes.map((node) => (
-          <SpouseGroup key={node.member.id} node={node} onSelect={onSelect} />
-        ))}
+    </div>
+  );
+}
+
+function branchLabel(_root: TreeNode): string {
+  return 'Famille Arbey';
+}
+
+function TreeBranch({
+  root,
+  onSelect,
+}: {
+  root: TreeNode;
+  onSelect: (member: FamilyMember) => void;
+}) {
+  return (
+    <div className="overflow-x-auto pb-4">
+      <h2 className="mb-6 text-center font-display text-sm font-semibold text-arbey-700">
+        {branchLabel(root)}
+      </h2>
+      <div className="flex justify-center min-w-max mx-auto px-4">
+        <TreeNodeView node={root} onSelect={onSelect} />
       </div>
     </div>
   );
 }
 
-function Connector() {
-  return (
-    <div className="flex flex-col items-center py-2">
-      <div className="h-6 w-px bg-arbey-200" />
-      <div className="h-px w-24 bg-arbey-200" />
-      <div className="h-6 w-px bg-arbey-200" />
-    </div>
-  );
-}
-
-/** Aplatit l'arbre en générations pour l'affichage */
-function flattenGenerations(tree: TreeNode[]): TreeNode[][] {
-  const generations: TreeNode[][] = [];
-
-  function walk(nodes: TreeNode[], depth: number) {
-    if (nodes.length === 0) return;
-    if (!generations[depth]) generations[depth] = [];
-    generations[depth].push(...nodes);
-
-    const children = nodes.flatMap((n) => n.children);
-    walk(children, depth + 1);
-  }
-
-  walk(tree, 0);
-  return generations;
-}
-
-const generationLabels = ['Aînés', 'Parents', 'Enfants', 'Petits-enfants'];
-
 export function FamilyTree({ tree }: FamilyTreeProps) {
   const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(null);
-  const generations = flattenGenerations(tree);
 
   if (tree.length === 0) {
     return (
@@ -103,19 +109,10 @@ export function FamilyTree({ tree }: FamilyTreeProps) {
 
   return (
     <>
-      <div className="overflow-x-auto pb-4">
-        <div className="flex flex-col items-center min-w-max mx-auto gap-0">
-          {generations.map((gen, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <Generation
-                nodes={gen}
-                label={generationLabels[i] ?? `Génération ${i + 1}`}
-                onSelect={setSelectedMember}
-              />
-              {i < generations.length - 1 && <Connector />}
-            </div>
-          ))}
-        </div>
+      <div className="space-y-12">
+        {tree.map((root) => (
+          <TreeBranch key={root.member.id} root={root} onSelect={setSelectedMember} />
+        ))}
       </div>
 
       {selectedMember && (

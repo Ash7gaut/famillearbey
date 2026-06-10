@@ -4,6 +4,9 @@ import relationshipRoutes from './relationshipRoutes.js';
 import albumRoutes from './albumRoutes.js';
 import photoRoutes from './photoRoutes.js';
 import quizRoutes from './quizRoutes.js';
+import authRoutes from './authRoutes.js';
+import adminRoutes from './adminRoutes.js';
+import accessRequestRoutes from './accessRequestRoutes.js';
 
 const router = Router();
 
@@ -12,6 +15,9 @@ router.use('/relationships', relationshipRoutes);
 router.use('/albums', albumRoutes);
 router.use('/photos', photoRoutes);
 router.use('/quiz', quizRoutes);
+router.use('/auth', authRoutes);
+router.use('/admin', adminRoutes);
+router.use('/access-requests', accessRequestRoutes);
 
 router.get('/health', (_req, res) => {
   res.json({ data: { status: 'ok', app: 'FamilyHub – Famille Arbey' } });

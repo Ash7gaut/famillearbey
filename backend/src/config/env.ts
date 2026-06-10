@@ -16,4 +16,6 @@ export const env = {
   corsOrigin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
   supabaseUrl: requireEnv('SUPABASE_URL'),
   supabaseServiceKey: requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
+  adminSecret: process.env.ADMIN_SECRET ?? '',
+  appUrl: process.env.APP_URL ?? 'http://localhost:5173',
 };

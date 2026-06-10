@@ -1,6 +1,8 @@
 export interface FamilyMember {
   id: string;
   auth_user_id: string | null;
+  invite_email: string | null;
+  is_admin: boolean;
   first_name: string;
   last_name: string;
   photo_url: string | null;

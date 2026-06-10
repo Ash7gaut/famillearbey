@@ -1,5 +1,11 @@
 const API_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
 
+let getAccessToken: (() => string | null) | null = null;
+
+export function setAuthTokenGetter(fn: () => string | null) {
+  getAccessToken = fn;
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -7,9 +13,18 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private authHeaders(): Record<string, string> {
+    const token = getAccessToken?.();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
   private async request<T>(path: string, options?: RequestInit): Promise<T> {
     const res = await fetch(`${this.baseUrl}${path}`, {
-      headers: { 'Content-Type': 'application/json', ...options?.headers },
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.authHeaders(),
+        ...options?.headers,
+      },
       ...options,
     });
 
@@ -27,8 +42,11 @@ class ApiClient {
     return this.request<T>(path);
   }
 
-  post<T>(path: string, body: unknown) {
-    return this.request<T>(path, { method: 'POST', body: JSON.stringify(body) });
+  post<T>(path: string, body?: unknown) {
+    return this.request<T>(path, {
+      method: 'POST',
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
   }
 
   patch<T>(path: string, body: unknown) {
@@ -40,15 +58,17 @@ class ApiClient {
   }
 
   async upload<T>(path: string, file: File, fields?: Record<string, string>) {
-    const formData = new FormData();
-    formData.append('file', file);
-    if (fields) {
-      Object.entries(fields).forEach(([k, v]) => formData.append(k, v));
-    }
-
     const res = await fetch(`${this.baseUrl}${path}`, {
       method: 'POST',
-      body: formData,
+      headers: this.authHeaders(),
+      body: (() => {
+        const formData = new FormData();
+        formData.append('file', file);
+        if (fields) {
+          Object.entries(fields).forEach(([k, v]) => formData.append(k, v));
+        }
+        return formData;
+      })(),
     });
 
     if (!res.ok) {
