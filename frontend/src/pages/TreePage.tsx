@@ -18,7 +18,8 @@ export function TreePage() {
           Arbre généalogique
         </h1>
         <p className="mt-1 text-sm text-arbey-600">
-          La Famille Arbey, de génération en génération.
+          Choisis une branche pour une vue détaillée, ou affiche toutes les branches. Glisse et
+          zoome pour naviguer.
         </p>
       </div>
 

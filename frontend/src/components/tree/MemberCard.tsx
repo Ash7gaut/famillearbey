@@ -23,7 +23,7 @@ export function MemberCard({ member, onClick, size = 'md' }: MemberCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className={`group flex flex-col items-center gap-2 rounded-2xl border border-arbey-100 bg-white p-3 shadow-sm transition hover:border-arbey-300 hover:shadow-md ${
+      className={`tree-member-card group flex flex-col items-center gap-2 rounded-2xl border border-arbey-100 bg-white p-3 shadow-sm transition hover:border-arbey-400 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-arbey-400 ${
         isSmall ? 'w-28' : 'w-36'
       }`}
     >
