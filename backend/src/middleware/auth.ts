@@ -37,35 +37,43 @@ export async function optionalAuth(req: AuthRequest, _res: Response, next: NextF
 
 /** Exige un utilisateur connecté avec un profil famille lié */
 export async function requireAuth(req: AuthRequest, _res: Response, next: NextFunction) {
-  const token = extractToken(req);
-  if (!token) throw new AppError(401, 'Connexion requise', 'UNAUTHORIZED');
+  try {
+    const token = extractToken(req);
+    if (!token) throw new AppError(401, 'Connexion requise', 'UNAUTHORIZED');
 
-  const { data, error } = await supabase.auth.getUser(token);
-  if (error || !data.user) throw new AppError(401, 'Session invalide', 'UNAUTHORIZED');
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data.user) throw new AppError(401, 'Session invalide', 'UNAUTHORIZED');
 
-  req.authUserId = data.user.id;
-  req.authEmail = data.user.email ?? undefined;
+    req.authUserId = data.user.id;
+    req.authEmail = data.user.email ?? undefined;
 
-  const { data: member } = await supabase
-    .from('family_members')
-    .select('*')
-    .eq('auth_user_id', data.user.id)
-    .maybeSingle();
+    const { data: member } = await supabase
+      .from('family_members')
+      .select('*')
+      .eq('auth_user_id', data.user.id)
+      .maybeSingle();
 
-  if (!member) {
-    throw new AppError(403, 'Compte non lié à un membre de la famille', 'NOT_LINKED');
+    if (!member) {
+      throw new AppError(403, 'Compte non lié à un membre de la famille', 'NOT_LINKED');
+    }
+
+    req.member = member;
+    next();
+  } catch (err) {
+    next(err);
   }
-
-  req.member = member;
-  next();
 }
 
 /** Exige un admin famille */
 export function requireAdmin(req: AuthRequest, _res: Response, next: NextFunction) {
-  if (!req.member?.is_admin) {
-    throw new AppError(403, 'Accès administrateur requis', 'FORBIDDEN');
+  try {
+    if (!req.member?.is_admin) {
+      throw new AppError(403, 'Accès administrateur requis', 'FORBIDDEN');
+    }
+    next();
+  } catch (err) {
+    next(err);
   }
-  next();
 }
 
 function extractToken(req: Request): string | null {

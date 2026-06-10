@@ -38,3 +38,12 @@ export function asyncHandler(
     fn(req, res, next).catch(next);
   };
 }
+
+/** Enveloppe un middleware async pour éviter de faire crasher le process */
+export function asyncMiddleware(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<void>,
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}

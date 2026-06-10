@@ -27,11 +27,10 @@ const features = [
     soon: true,
   },
   {
-    to: '#',
+    to: '/secret-santa',
     icon: '🎁',
     title: 'Secret Santa',
-    description: 'Bientôt : le tirage au sort annuel de la Famille Arbey.',
-    soon: true,
+    description: 'Crée un tirage entre qui tu veux — famille ou invités externes.',
   },
   {
     to: '#',

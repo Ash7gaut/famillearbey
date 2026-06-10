@@ -45,19 +45,23 @@ export const useAuthStore = create<AuthState>((set, get) => {
         }
       }
 
-      sb.auth.onAuthStateChange(async (_event, session) => {
+      sb.auth.onAuthStateChange(async (event, session) => {
         set({ session });
         setAuthTokenGetter(() => session?.access_token ?? null);
 
-        if (session) {
-          try {
-            const member = await api.post<FamilyMember>('/auth/sync');
-            set({ member });
-          } catch {
-            set({ member: null });
-          }
-        } else {
+        if (!session) {
           set({ member: null });
+          return;
+        }
+
+        // init() charge déjà /auth/me — pas de double sync au refresh
+        if (event === 'INITIAL_SESSION') return;
+
+        try {
+          const member = await api.post<FamilyMember>('/auth/sync');
+          set({ member });
+        } catch {
+          // Erreur réseau ou serveur : ne pas déconnecter visuellement
         }
       });
     },

@@ -53,8 +53,8 @@ class ApiClient {
     return this.request<T>(path, { method: 'PATCH', body: JSON.stringify(body) });
   }
 
-  delete(path: string) {
-    return this.request<void>(path, { method: 'DELETE' });
+  delete<T = void>(path: string) {
+    return this.request<T>(path, { method: 'DELETE' });
   }
 
   async upload<T>(path: string, file: File, fields?: Record<string, string>) {

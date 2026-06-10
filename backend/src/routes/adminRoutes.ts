@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { adminController } from '../controllers/adminController.js';
-import { asyncHandler } from '../middleware/errorHandler.js';
+import { asyncHandler, asyncMiddleware } from '../middleware/errorHandler.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
-router.use(requireAuth, requireAdmin);
+router.use(asyncMiddleware(requireAuth), requireAdmin);
 
 router.get('/members/unlinked', asyncHandler(adminController.listUnlinked));
 router.post('/invite', asyncHandler(adminController.invite));

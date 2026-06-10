@@ -6,6 +6,7 @@ const navItems = [
   { to: '/tree', label: 'Arbre', icon: '🌳' },
   { to: '/albums', label: 'Albums', icon: '📸' },
   { to: '/quiz', label: 'Quiz', icon: '🧠' },
+  { to: '/secret-santa', label: 'Santa', icon: '🎁' },
 ];
 
 export function Layout() {

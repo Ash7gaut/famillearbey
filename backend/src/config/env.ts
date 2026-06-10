@@ -18,4 +18,6 @@ export const env = {
   supabaseServiceKey: requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
   adminSecret: process.env.ADMIN_SECRET ?? '',
   appUrl: process.env.APP_URL ?? 'http://localhost:5173',
+  resendApiKey: process.env.RESEND_API_KEY ?? '',
+  emailFrom: process.env.EMAIL_FROM ?? 'FamilyHub <onboarding@resend.dev>',
 };
