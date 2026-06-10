@@ -4,6 +4,7 @@ import { HomePage } from './pages/HomePage';
 import { TreePage } from './pages/TreePage';
 import { AlbumsPage } from './pages/AlbumsPage';
 import { AlbumDetailPage } from './pages/AlbumDetailPage';
+import { QuizPage } from './pages/QuizPage';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="tree" element={<TreePage />} />
           <Route path="albums" element={<AlbumsPage />} />
           <Route path="albums/:id" element={<AlbumDetailPage />} />
+          <Route path="quiz" element={<QuizPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

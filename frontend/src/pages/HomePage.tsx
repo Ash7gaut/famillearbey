@@ -14,6 +14,12 @@ const features = [
     description: 'Revivez Noël, les vacances et tous les moments partagés.',
   },
   {
+    to: '/quiz',
+    icon: '🧠',
+    title: 'Quiz familial',
+    description: 'Qui est né le 3 janvier ? Teste tes connaissances sur la famille !',
+  },
+  {
     to: '#',
     icon: '💬',
     title: 'Mur familial',
@@ -25,6 +31,20 @@ const features = [
     icon: '🎁',
     title: 'Secret Santa',
     description: 'Bientôt : le tirage au sort annuel de la Famille Arbey.',
+    soon: true,
+  },
+  {
+    to: '#',
+    icon: '📅',
+    title: 'Événements',
+    description: 'Bientôt : réunions, RSVP et calendrier familial.',
+    soon: true,
+  },
+  {
+    to: '#',
+    icon: '📚',
+    title: 'Mémoire familiale',
+    description: 'Bientôt : recettes, anecdotes et histoires transmises.',
     soon: true,
   },
 ];

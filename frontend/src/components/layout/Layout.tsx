@@ -4,6 +4,7 @@ const navItems = [
   { to: '/', label: 'Accueil', icon: '🏠' },
   { to: '/tree', label: 'Arbre', icon: '🌳' },
   { to: '/albums', label: 'Albums', icon: '📸' },
+  { to: '/quiz', label: 'Quiz', icon: '🧠' },
 ];
 
 export function Layout() {
