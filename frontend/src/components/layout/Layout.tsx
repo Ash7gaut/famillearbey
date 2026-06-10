@@ -1,5 +1,5 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
-import { useAuthStore } from '../../stores/authStore';
+import { NavLink, Outlet } from 'react-router-dom';
+import { UserMenu } from './UserMenu';
 
 const navItems = [
   { to: '/', label: 'Accueil', icon: '🏠' },
@@ -9,13 +9,11 @@ const navItems = [
 ];
 
 export function Layout() {
-  const { member, session, logout } = useAuthStore();
-
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b border-arbey-100 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <NavLink to="/" className="flex items-center gap-2">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
+          <NavLink to="/" className="flex shrink-0 items-center gap-2">
             <span className="text-2xl">🌳</span>
             <div>
               <p className="font-display text-lg font-semibold leading-tight text-arbey-900">
@@ -25,8 +23,7 @@ export function Layout() {
             </div>
           </NavLink>
 
-          <div className="hidden sm:flex items-center gap-3">
-          <nav className="flex items-center gap-1">
+          <nav className="hidden sm:flex flex-1 items-center justify-center gap-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -45,23 +42,9 @@ export function Layout() {
               </NavLink>
             ))}
           </nav>
-          {session && member ? (
-            <div className="flex items-center gap-2">
-              {member.is_admin && (
-                <Link to="/admin" className="text-xs font-medium text-arbey-600 hover:text-arbey-800">
-                  Admin
-                </Link>
-              )}
-              <span className="text-xs text-arbey-500">{member.first_name}</span>
-              <button type="button" onClick={() => logout()} className="text-xs text-arbey-500 hover:text-arbey-800">
-                Déconnexion
-              </button>
-            </div>
-          ) : (
-            <Link to="/login" className="text-sm font-medium text-arbey-700 hover:text-arbey-900">
-              Connexion
-            </Link>
-          )}
+
+          <div className="shrink-0">
+            <UserMenu />
           </div>
         </div>
       </header>

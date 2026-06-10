@@ -61,6 +61,20 @@ export function HomePage() {
           La plateforme privée de la Famille Arbey — souvenirs, arbre généalogique
           et moments partagés, au même endroit.
         </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/login"
+            className="inline-flex rounded-full bg-arbey-950 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-arbey-900"
+          >
+            Se connecter
+          </Link>
+          <Link
+            to="/demande-acces"
+            className="inline-flex rounded-full border border-arbey-200 bg-white px-5 py-2.5 text-sm font-medium text-arbey-700 transition hover:bg-arbey-50"
+          >
+            Demander l'accès
+          </Link>
+        </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2">
