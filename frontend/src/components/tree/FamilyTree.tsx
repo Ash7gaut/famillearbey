@@ -288,9 +288,7 @@ export function FamilyTree({ tree }: FamilyTreeProps) {
     [root],
   );
 
-  const [activeBranch, setActiveBranch] = useState<BranchFilter>(() =>
-    branches.length > 1 ? branches[0].member.id : 'all',
-  );
+  const [activeBranch, setActiveBranch] = useState<BranchFilter>('all');
 
   if (tree.length === 0) {
     return (

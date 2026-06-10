@@ -59,11 +59,18 @@ export function TreePanZoom({
         maxScale={2}
         centerOnInit
         limitToBounds={false}
+        smooth={false}
         panning={{
           velocityDisabled: true,
           excluded: ['tree-member-card', 'tree-control'],
         }}
-        wheel={{ step: 0.06 }}
+        wheel={{ step: 0.015 }}
+        zoomAnimation={{
+          disabled: false,
+          size: 0.2,
+          animationTime: 280,
+          animationType: 'easeOut',
+        }}
         doubleClick={{ disabled: true }}
       >
         <ZoomControls />
