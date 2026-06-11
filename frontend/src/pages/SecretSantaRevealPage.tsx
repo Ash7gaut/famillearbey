@@ -50,7 +50,10 @@ export function SecretSantaRevealPage() {
 
   if (locked) {
     return (
-      <div className="mx-auto max-w-md py-4">
+      <div className="mx-auto max-w-md space-y-6 py-4">
+        <Link to={`/secret-santa/${id}`} className="text-sm text-arbey-500 hover:text-arbey-700">
+          ← Retour
+        </Link>
         <LockedAssignment name={assignment.receiver_display_name} />
       </div>
     );
