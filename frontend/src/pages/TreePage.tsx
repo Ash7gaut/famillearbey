@@ -25,7 +25,7 @@ const VIEW_DESCRIPTIONS: Record<TreeViewMode, string> = {
 
 export function TreePage() {
   const { tree, loading, error, fetchTree } = useFamilyStore();
-  const [viewMode, setViewMode] = useState<TreeViewMode>('custom');
+  const [viewMode, setViewMode] = useState<TreeViewMode>('familytreejs');
 
   useEffect(() => {
     fetchTree();
@@ -47,6 +47,13 @@ export function TreePage() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
+            onClick={() => setViewMode('familytreejs')}
+            className={viewMode === 'familytreejs' ? 'btn-primary' : 'btn-secondary'}
+          >
+            Vue FamilyTree JS
+          </button>
+          <button
+            type="button"
             onClick={() => setViewMode('custom')}
             className={viewMode === 'custom' ? 'btn-primary' : 'btn-secondary'}
           >
@@ -58,13 +65,6 @@ export function TreePage() {
             className={viewMode === 'family-chart' ? 'btn-primary' : 'btn-secondary'}
           >
             Vue family-chart
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('familytreejs')}
-            className={viewMode === 'familytreejs' ? 'btn-primary' : 'btn-secondary'}
-          >
-            Vue FamilyTree JS
           </button>
         </div>
       )}

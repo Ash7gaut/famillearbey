@@ -420,7 +420,7 @@ function ParticipantRow({
               <button
                 type="button"
                 onClick={() => void handleCopy()}
-                className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition ${
+                className={`focus-ring inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition focus-visible:ring-inset focus-visible:ring-offset-0 ${
                   copied
                     ? 'bg-[#e8f0e4] text-[#3d5235]'
                     : 'text-[#4A3F35] hover:bg-[#F5F0E8]'
@@ -447,7 +447,7 @@ function ParticipantRow({
               <button
                 type="button"
                 onClick={onRemove}
-                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#9A4A42] transition hover:bg-red-50 hover:text-red-700"
+                className="focus-ring inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#9A4A42] transition hover:bg-red-50 hover:text-red-700 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-red-300/60"
                 title="Retirer ce participant"
               >
                 <UserMinus className="h-3.5 w-3.5" strokeWidth={2} />

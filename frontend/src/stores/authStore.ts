@@ -14,6 +14,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   syncMember: () => Promise<void>;
+  setMember: (member: FamilyMember | null) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => {
@@ -90,5 +91,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       const member = await api.post<FamilyMember>('/auth/sync');
       set({ member });
     },
+
+    setMember: (member) => set({ member }),
   };
 });

@@ -10,7 +10,7 @@ export function BackLink({ to, label = 'Retour' }: BackLinkProps) {
   return (
     <Link
       to={to}
-      className="mb-4 inline-flex items-center gap-0.5 text-sm font-medium text-[#7A6B5C] no-underline transition hover:gap-1 hover:text-[#2C2419]"
+      className="focus-ring mb-4 inline-flex items-center gap-0.5 rounded-lg px-1 py-0.5 text-sm font-medium text-[#7A6B5C] no-underline transition hover:gap-1 hover:text-[#2C2419]"
     >
       <ChevronLeft className="h-4 w-4 shrink-0" strokeWidth={2} />
       {label}

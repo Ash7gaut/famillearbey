@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, LogOut, Settings, UserRound } from 'lucide-react';
+import { ChevronDown, LogOut, Settings, User, UserRound } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 
 function getInitials(first: string, last: string) {
@@ -12,10 +12,13 @@ interface UserMenuProps {
 }
 
 const floatingTriggerGuest =
-  'inline-flex items-center gap-2 rounded-full bg-[#c66434] px-5 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.45)] ring-2 ring-white/80 transition hover:bg-[#a54f2d] active:scale-[0.98]';
+  'focus-ring inline-flex items-center gap-2 rounded-full bg-[#c66434] px-5 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.45)] ring-2 ring-white/80 transition hover:bg-[#a54f2d] active:scale-[0.98] focus-visible:ring-white/90 focus-visible:ring-offset-[#c66434]';
 
 const floatingTriggerUser =
-  'inline-flex items-center gap-2.5 rounded-full border-2 border-[#f2d8bd] bg-white py-1.5 pl-1.5 pr-4 text-base font-semibold text-[#2C2419] shadow-[0_4px_20px_-4px_rgba(44,36,25,0.15)] ring-1 ring-white transition hover:border-[#de9860] hover:shadow-[0_6px_24px_-4px_rgba(44,36,25,0.2)] active:scale-[0.98]';
+  'focus-ring inline-flex items-center gap-2.5 rounded-full border-2 border-[#f2d8bd] bg-white py-1.5 pl-1.5 pr-4 text-base font-semibold text-[#2C2419] shadow-[0_4px_20px_-4px_rgba(44,36,25,0.15)] ring-1 ring-white transition hover:border-[#de9860] hover:shadow-[0_6px_24px_-4px_rgba(44,36,25,0.2)] active:scale-[0.98]';
+
+const menuItemClass =
+  'focus-ring flex w-full items-center gap-2 rounded-lg px-4 py-2.5 text-left text-sm transition focus-visible:ring-inset focus-visible:ring-offset-0';
 
 export function UserMenu({ variant = 'header' }: UserMenuProps) {
   const { member, session, logout } = useAuthStore();
@@ -41,13 +44,13 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
     : 'right-0 top-full mt-2';
 
   const sidebarTriggerGuest =
-    'flex w-full items-center gap-2 rounded-xl bg-[#c66434] px-4 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.35)] transition hover:bg-[#a54f2d] active:scale-[0.98]';
+    'focus-ring flex w-full items-center gap-2 rounded-xl bg-[#c66434] px-4 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.35)] transition hover:bg-[#a54f2d] active:scale-[0.98] focus-visible:ring-white/90 focus-visible:ring-offset-[#c66434]';
 
   const triggerClassGuest = isFloating
     ? floatingTriggerGuest
     : isSidebar
       ? sidebarTriggerGuest
-      : 'inline-flex items-center gap-1.5 rounded-full bg-ink-800 px-3 py-1.5 text-sm font-medium text-cream-50 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.2)] transition hover:bg-ink-700';
+      : 'focus-ring inline-flex items-center gap-1.5 rounded-full bg-ink-800 px-3 py-1.5 text-sm font-medium text-cream-50 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.2)] transition hover:bg-ink-700 focus-visible:ring-offset-ink-800';
 
   if (!session || !member) {
     return (
@@ -75,7 +78,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
               to="/login"
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-ink-800 transition hover:bg-cream-200/60"
+              className={`${menuItemClass} font-medium text-ink-800 hover:bg-cream-200/60`}
             >
               Connexion
             </Link>
@@ -83,7 +86,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
               to="/demande-acces"
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-ink-600 transition hover:bg-cream-200/60"
+              className={`${menuItemClass} text-ink-600 hover:bg-cream-200/60`}
             >
               Demander l'accès
             </Link>
@@ -94,13 +97,13 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
   }
 
   const sidebarTriggerUser =
-    'flex w-full items-center gap-2.5 rounded-xl border-2 border-[#f2d8bd] bg-white px-2 py-2 text-base font-semibold text-[#2C2419] shadow-[0_4px_16px_-4px_rgba(44,36,25,0.12)] transition hover:border-[#de9860] active:scale-[0.98]';
+    'focus-ring flex w-full items-center gap-2.5 rounded-xl border-2 border-[#f2d8bd] bg-white px-2 py-2 text-base font-semibold text-[#2C2419] shadow-[0_4px_16px_-4px_rgba(44,36,25,0.12)] transition hover:border-[#de9860] active:scale-[0.98]';
 
   const triggerClassUser = isFloating
     ? floatingTriggerUser
     : isSidebar
       ? sidebarTriggerUser
-      : 'inline-flex items-center gap-2 rounded-full bg-ink-800 py-1 pl-1 pr-2.5 text-sm font-medium text-cream-50 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.2)] transition hover:bg-ink-700';
+      : 'focus-ring inline-flex items-center gap-2 rounded-full bg-ink-800 py-1 pl-1 pr-2.5 text-sm font-medium text-cream-50 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.2)] transition hover:bg-ink-700 focus-visible:ring-offset-ink-800';
 
   return (
     <div className="relative" ref={menuRef}>
@@ -144,12 +147,22 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
             <p className="text-xs text-ink-400">Membre de la famille</p>
           </div>
 
+          <Link
+            to="/profil"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
+          >
+            <User className="h-4 w-4" strokeWidth={1.75} />
+            Mon profil
+          </Link>
+
           {member.is_admin && (
             <Link
               to="/admin"
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-ink-700 transition hover:bg-cream-200/60"
+              className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
             >
               <Settings className="h-4 w-4" strokeWidth={1.75} />
               Administration
@@ -163,7 +176,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
               setOpen(false);
               logout();
             }}
-            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50"
+            className={`${menuItemClass} text-red-600 hover:bg-red-50`}
           >
             <LogOut className="h-4 w-4" strokeWidth={1.75} />
             Déconnexion

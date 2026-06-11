@@ -14,6 +14,7 @@ import { SecretSantaNewPage } from './pages/SecretSantaNewPage';
 import { SecretSantaDetailPage } from './pages/SecretSantaDetailPage';
 import { SecretSantaRevealPage } from './pages/SecretSantaRevealPage';
 import { SecretSantaGuestPage } from './pages/SecretSantaGuestPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { useAuthStore } from './stores/authStore';
 
 function AuthInit({ children }: { children: React.ReactNode }) {
@@ -38,6 +39,8 @@ export default function App() {
             <Route path="secret-santa/invite/:token" element={<SecretSantaGuestPage />} />
             <Route path="secret-santa/:id" element={<SecretSantaDetailPage />} />
             <Route path="secret-santa/:id/reveal" element={<SecretSantaRevealPage />} />
+            <Route path="profil" element={<ProfilePage />} />
+            <Route path="profil/:id" element={<ProfilePage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="demande-acces" element={<RequestAccessPage />} />
             <Route path="admin" element={<AdminPage />} />

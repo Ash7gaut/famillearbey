@@ -30,7 +30,7 @@ export function Layout() {
       {/* Sidebar desktop — fixe, toujours visible */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-cream-300/60 bg-cream-50/95 backdrop-blur-md lg:flex">
         <div className="flex h-full flex-col px-4 py-6">
-          <NavLink to="/" className="mb-8 block shrink-0 px-2">
+          <NavLink to="/" className="focus-ring mb-8 block shrink-0 rounded-xl px-2 py-1 focus-visible:ring-offset-[#FDFBF7]">
             <p className="font-display text-xl font-semibold leading-tight text-ink-800">
               Famille Arbey
             </p>
@@ -53,7 +53,7 @@ export function Layout() {
       <div className="flex min-h-screen flex-col lg:ml-60">
         <header className="sticky top-0 z-30 border-b border-cream-300/60 bg-cream-50/90 backdrop-blur-md lg:hidden">
           <div className="flex h-16 items-center justify-between gap-3 px-4">
-            <NavLink to="/" className="min-w-0">
+            <NavLink to="/" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
               <p className="truncate font-display text-lg font-semibold text-ink-800">Famille Arbey</p>
             </NavLink>
             <UserMenu variant="header" />
@@ -74,7 +74,7 @@ export function Layout() {
                   to={item.to}
                   end={item.to === '/'}
                   className={({ isActive }) =>
-                    `flex flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-[10px] font-medium transition ${
+                    `focus-ring flex flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-[10px] font-medium transition ${
                       isActive ? 'text-warm-700' : 'text-ink-400'
                     }`
                   }

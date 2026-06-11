@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
   body {
     @apply font-sans antialiased text-[#2C2419];
     background-color: #faf7f2;
@@ -18,12 +22,16 @@
 }
 
 @layer components {
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-[#c66434]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#faf7f2];
+  }
+
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-[#c66434] px-4 py-2.5 text-sm font-semibold text-white no-underline shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] transition hover:bg-[#a54f2d] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#d4a088] disabled:opacity-100;
+    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-xl bg-[#c66434] px-4 py-2.5 text-sm font-semibold text-white no-underline shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] transition hover:bg-[#a54f2d] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#d4a088] disabled:opacity-100 focus-visible:ring-white/90 focus-visible:ring-offset-[#c66434];
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-[#E0D5C4] bg-[#FDFBF7] px-4 py-2.5 text-sm font-medium text-[#4A3F35] no-underline transition hover:border-[#f2d8bd] hover:bg-[#fdf8f3] active:scale-[0.98];
+    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-[#E0D5C4] bg-[#FDFBF7] px-4 py-2.5 text-sm font-medium text-[#4A3F35] no-underline transition hover:border-[#f2d8bd] hover:bg-[#fdf8f3] active:scale-[0.98];
   }
 
   .card {
@@ -47,11 +55,11 @@
   }
 
   .nav-link {
-    @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#5C4F42] transition hover:bg-[#F5F0E8]/80 hover:text-[#2C2419];
+    @apply focus-ring flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#5C4F42] transition hover:bg-[#F5F0E8]/80 hover:text-[#2C2419] focus-visible:ring-offset-[#FDFBF7];
   }
 
   .nav-link-active {
-    @apply bg-[#fdf8f3] text-[#84412a] ring-1 ring-[#f2d8bd]/60;
+    @apply bg-[#fdf8f3] text-[#84412a] ring-1 ring-[#f2d8bd]/60 focus-visible:ring-[#c66434]/50;
   }
 
   .family-chart-preview.f3 {

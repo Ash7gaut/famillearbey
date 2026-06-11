@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { FamilyMember } from '../../types';
 
 interface MemberModalProps {
@@ -52,9 +53,18 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
           <p className="mt-4 text-sm leading-relaxed text-arbey-700">{member.bio}</p>
         )}
 
-        <button type="button" onClick={onClose} className="btn-secondary mt-6 w-full">
-          Fermer
-        </button>
+        <div className="mt-6 flex gap-2">
+          <Link
+            to={`/profil/${member.id}`}
+            onClick={onClose}
+            className="btn-primary flex-1"
+          >
+            Voir le profil
+          </Link>
+          <button type="button" onClick={onClose} className="btn-secondary flex-1">
+            Fermer
+          </button>
+        </div>
       </div>
     </div>
   );

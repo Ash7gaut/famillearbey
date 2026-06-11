@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, BrainCircuit, Calendar, Gift, Images, MessageCircle, BookOpen, TreePine } from 'lucide-react';
+import { useAuthReady } from '../hooks/useAuthReady';
 
 const mainFeatures: {
   to: string;
@@ -39,6 +40,8 @@ const otherFeatures: {
 ];
 
 export function HomePage() {
+  const { isAuthenticated, member } = useAuthReady();
+
   return (
     <div className="space-y-12">
       <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/80 px-6 py-10 shadow-warm sm:px-10 sm:py-12">
@@ -51,16 +54,20 @@ export function HomePage() {
             Famille Arbey
           </h1>
           <p className="mt-4 text-base leading-relaxed text-ink-500">
-            Notre coin à nous pour retrouver l&apos;arbre, les photos et les petits jeux entre cousins.
+            {isAuthenticated && member
+              ? `Content de te revoir, ${member.first_name} — retrouve l'arbre, les photos et les petits jeux entre cousins.`
+              : "Notre coin à nous pour retrouver l'arbre, les photos et les petits jeux entre cousins."}
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/login" className="btn-primary">
-              Se connecter
-            </Link>
-            <Link to="/demande-acces" className="btn-secondary">
-              Demander l&apos;accès
-            </Link>
-          </div>
+          {!isAuthenticated && (
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link to="/login" className="btn-primary">
+                Se connecter
+              </Link>
+              <Link to="/demande-acces" className="btn-secondary">
+                Demander l&apos;accès
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

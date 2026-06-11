@@ -8,6 +8,19 @@ export interface Relationship {
   created_at: string;
 }
 
+export interface MemberProfile {
+  member: FamilyMember;
+  parents: FamilyMember[];
+  children: FamilyMember[];
+  spouses: FamilyMember[];
+  siblings: FamilyMember[];
+}
+
+export interface UpdateOwnProfileInput {
+  bio?: string | null;
+  birth_date?: string | null;
+}
+
 export interface FamilyMember {
   id: string;
   auth_user_id: string | null;
