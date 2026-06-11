@@ -9,6 +9,7 @@ router.get('/invite/:token', asyncHandler(secretSantaController.getGuestInvite))
 router.post('/invite/:token/accept', asyncHandler(secretSantaController.guestAccept));
 router.post('/invite/:token/decline', asyncHandler(secretSantaController.guestDecline));
 router.get('/invite/:token/assignment', asyncHandler(secretSantaController.guestAssignment));
+router.post('/invite/:token/confirm-reveal', asyncHandler(secretSantaController.confirmGuestReveal));
 
 router.use(asyncMiddleware(requireAuth));
 
@@ -20,6 +21,7 @@ router.post('/:id/invite-email', asyncHandler(secretSantaController.inviteEmail)
 router.patch('/:id/respond', asyncHandler(secretSantaController.respond));
 router.post('/:id/draw', asyncHandler(secretSantaController.draw));
 router.get('/:id/my-assignment', asyncHandler(secretSantaController.myAssignment));
+router.post('/:id/confirm-reveal', asyncHandler(secretSantaController.confirmReveal));
 router.get(
   '/:id/participants/:participantId/invite-link',
   asyncHandler(secretSantaController.inviteLink),

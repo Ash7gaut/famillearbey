@@ -72,6 +72,14 @@ export const secretSantaController = {
     res.json({ data });
   },
 
+  async confirmReveal(req: AuthRequest, res: Response<ApiResponse<SecretSantaAssignment>>) {
+    const data = await secretSantaService.confirmReveal(
+      requireParam(req.params.id, 'id'),
+      req.member!,
+    );
+    res.json({ data });
+  },
+
   async inviteLink(req: AuthRequest, res: Response<ApiResponse<{ invite_link: string }>>) {
     const data = await secretSantaService.getInviteLinkForParticipant(
       requireParam(req.params.id, 'id'),
@@ -98,6 +106,13 @@ export const secretSantaController = {
 
   async guestAssignment(req: AuthRequest, res: Response<ApiResponse<SecretSantaAssignment>>) {
     const data = await secretSantaService.getGuestAssignment(
+      requireParam(req.params.token, 'token'),
+    );
+    res.json({ data });
+  },
+
+  async confirmGuestReveal(req: AuthRequest, res: Response<ApiResponse<SecretSantaAssignment>>) {
+    const data = await secretSantaService.confirmGuestReveal(
       requireParam(req.params.token, 'token'),
     );
     res.json({ data });

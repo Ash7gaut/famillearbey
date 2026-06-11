@@ -41,6 +41,7 @@ export interface SecretSantaGroupDetail {
 export interface SecretSantaAssignment {
   receiver_display_name: string;
   participant_names: string[];
+  revealed?: boolean;
 }
 
 export interface GuestInviteInfo {

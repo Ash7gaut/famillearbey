@@ -21,6 +21,7 @@ export interface SecretSantaParticipant {
   status: ParticipantStatus;
   is_creator: boolean;
   responded_at: string | null;
+  revealed_at: string | null;
   created_at: string;
 }
 
@@ -50,6 +51,7 @@ export interface SecretSantaParticipantView {
 export interface SecretSantaAssignment {
   receiver_display_name: string;
   participant_names: string[];
+  revealed: boolean;
 }
 
 export interface GuestInviteInfo {

@@ -443,10 +443,57 @@ export const secretSantaService = {
     const receiver = accepted.find((p) => p.id === pair.receiver_participant_id);
     if (!receiver) throw new AppError(500, 'Destinataire introuvable', 'INTERNAL_ERROR');
 
+    const giver = participants.find((p) => p.id === participantId);
+
     return {
       receiver_display_name: receiver.display_name,
       participant_names: accepted.map((p) => p.display_name),
+      revealed: Boolean(giver?.revealed_at),
     };
+  },
+
+  async confirmReveal(groupId: string, member: FamilyMember): Promise<SecretSantaAssignment> {
+    const { group, me } = await assertGroupAccess(groupId, member);
+    if (!me || me.status !== 'accepted') {
+      throw new AppError(403, 'Tu ne participes pas à ce tirage', 'FORBIDDEN');
+    }
+    if (group.status !== 'drawn') {
+      throw new AppError(400, 'Le tirage n\'a pas encore eu lieu', 'NOT_DRAWN');
+    }
+
+    if (!me.revealed_at) {
+      const { error } = await supabase
+        .from('secret_santa_participants')
+        .update({ revealed_at: new Date().toISOString() })
+        .eq('id', me.id);
+
+      if (error) throw new AppError(500, error.message, 'DB_ERROR');
+    }
+
+    return this.assignmentForParticipant(groupId, me.id);
+  },
+
+  async confirmGuestReveal(token: string): Promise<SecretSantaAssignment> {
+    const participant = await this.getParticipantByToken(token);
+    const group = await getGroupOrThrow(participant.group_id);
+
+    if (participant.status !== 'accepted') {
+      throw new AppError(403, 'Invitation non acceptée', 'FORBIDDEN');
+    }
+    if (group.status !== 'drawn') {
+      throw new AppError(400, 'Le tirage n\'a pas encore eu lieu', 'NOT_DRAWN');
+    }
+
+    if (!participant.revealed_at) {
+      const { error } = await supabase
+        .from('secret_santa_participants')
+        .update({ revealed_at: new Date().toISOString() })
+        .eq('id', participant.id);
+
+      if (error) throw new AppError(500, error.message, 'DB_ERROR');
+    }
+
+    return this.assignmentForParticipant(group.id, participant.id);
   },
 
   async getGuestInvite(token: string): Promise<GuestInviteInfo> {
