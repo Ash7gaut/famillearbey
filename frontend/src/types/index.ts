@@ -1,3 +1,13 @@
+export type RelationshipType = 'parent' | 'spouse' | 'sibling';
+
+export interface Relationship {
+  id: string;
+  member_id: string;
+  related_member_id: string;
+  relationship_type: RelationshipType;
+  created_at: string;
+}
+
 export interface FamilyMember {
   id: string;
   auth_user_id: string | null;

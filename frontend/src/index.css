@@ -20,4 +20,15 @@
   .card {
     @apply rounded-2xl border border-arbey-100 bg-white p-5 shadow-sm;
   }
+
+  .family-chart-preview.f3,
+  .family-treejs-preview {
+    width: 100%;
+    height: calc(100vh - 10rem);
+    min-height: 640px;
+  }
+
+  .family-chart-preview.f3 svg.main_svg {
+    display: block;
+  }
 }

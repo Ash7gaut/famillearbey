@@ -218,11 +218,11 @@ function BranchPanel({
         <h3 className="font-display text-sm font-semibold text-arbey-800">
           {getBranchTitle(node)}
         </h3>
-        <p className="mt-0.5 text-xs text-arbey-500">
-          {node.member.last_name}
-          {node.children.length > 0 &&
-            ` · ${node.children.length} enfant${node.children.length > 1 ? 's' : ''}`}
-        </p>
+        {node.children.length > 0 && (
+          <p className="mt-0.5 text-xs text-arbey-500">
+            {node.children.length} enfant{node.children.length > 1 ? 's' : ''}
+          </p>
+        )}
       </header>
       <div className="flex justify-center px-5 py-5">
         <TreeNodeView node={node} onSelect={onSelect} depth={0} compact={compact} />

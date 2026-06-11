@@ -24,7 +24,7 @@ export function MemberCard({ member, onClick, size = 'md' }: MemberCardProps) {
       type="button"
       onClick={onClick}
       className={`tree-member-card group flex flex-col items-center gap-2 rounded-2xl border border-arbey-100 bg-white p-3 shadow-sm transition hover:border-arbey-400 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-arbey-400 ${
-        isSmall ? 'w-28' : 'w-36'
+        isSmall ? 'w-24' : 'w-28'
       }`}
     >
       <div
@@ -47,10 +47,9 @@ export function MemberCard({ member, onClick, size = 'md' }: MemberCardProps) {
         <p className={`font-medium text-arbey-900 ${isSmall ? 'text-xs' : 'text-sm'}`}>
           {member.first_name}
         </p>
-        <p className={`text-arbey-500 ${isSmall ? 'text-[10px]' : 'text-xs'}`}>
-          {member.last_name}
-          {birthYear && ` · ${birthYear}`}
-        </p>
+        {birthYear && (
+          <p className={`text-arbey-500 ${isSmall ? 'text-[10px]' : 'text-xs'}`}>{birthYear}</p>
+        )}
       </div>
     </button>
   );
