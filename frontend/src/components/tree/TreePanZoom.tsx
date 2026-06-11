@@ -9,6 +9,10 @@ interface TreePanZoomProps {
   children: ReactNode;
   initialScale?: number;
   viewKey?: string;
+  heightClass?: string;
+  contentClass?: string;
+  panExcluded?: string[];
+  showHint?: boolean;
 }
 
 function ZoomControls() {
@@ -49,9 +53,15 @@ export function TreePanZoom({
   children,
   initialScale = 0.85,
   viewKey = 'default',
+  heightClass = 'h-[min(70vh,680px)]',
+  contentClass = '!w-max !p-8',
+  panExcluded = [],
+  showHint = true,
 }: TreePanZoomProps) {
   return (
-    <div className="relative h-[min(70vh,680px)] overflow-hidden rounded-b-2xl bg-arbey-50/80 bg-[radial-gradient(circle_at_1px_1px,#d2d8c8_1px,transparent_0)] bg-[length:24px_24px]">
+    <div
+      className={`relative overflow-hidden rounded-b-2xl bg-arbey-50/80 bg-[radial-gradient(circle_at_1px_1px,#d2d8c8_1px,transparent_0)] bg-[length:24px_24px] ${heightClass}`}
+    >
       <TransformWrapper
         key={viewKey}
         initialScale={initialScale}
@@ -62,7 +72,7 @@ export function TreePanZoom({
         smooth={false}
         panning={{
           velocityDisabled: true,
-          excluded: ['tree-member-card', 'tree-control'],
+          excluded: ['tree-member-card', 'tree-control', ...panExcluded],
         }}
         wheel={{ step: 0.015 }}
         zoomAnimation={{
@@ -74,14 +84,16 @@ export function TreePanZoom({
         doubleClick={{ disabled: true }}
       >
         <ZoomControls />
-        <TransformComponent wrapperClass="!h-full !w-full" contentClass="!w-max !p-8">
+        <TransformComponent wrapperClass="!h-full !w-full" contentClass={contentClass}>
           {children}
         </TransformComponent>
       </TransformWrapper>
 
-      <p className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-arbey-200/80 bg-white/90 px-3 py-1.5 text-xs text-arbey-500 backdrop-blur-sm">
-        Glisser pour naviguer · Molette pour zoomer
-      </p>
+      {showHint && (
+        <p className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-arbey-200/80 bg-white/90 px-3 py-1.5 text-xs text-arbey-500 backdrop-blur-sm">
+          Glisser pour naviguer · Molette pour zoomer
+        </p>
+      )}
     </div>
   );
 }

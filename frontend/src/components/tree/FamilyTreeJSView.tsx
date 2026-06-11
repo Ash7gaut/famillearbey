@@ -5,10 +5,25 @@ import type { FamilyMember, Relationship } from '../../types';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { buildFamilyTreeJSNodes } from './familyTreeJSUtils';
+import { registerArbeyFamilyTreeTemplates } from './familyTreeJSTheme';
 import { MemberModal } from './MemberModal';
+import { TreePanZoom } from './TreePanZoom';
 
 interface FamilyTreeJSViewProps {
   mainMemberId?: string;
+}
+
+function waitForElementSize(element: HTMLElement): Promise<void> {
+  return new Promise((resolve) => {
+    const check = () => {
+      if (element.clientWidth > 0 && element.clientHeight > 0) {
+        resolve();
+        return;
+      }
+      requestAnimationFrame(check);
+    };
+    check();
+  });
 }
 
 export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
@@ -19,10 +34,8 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(null);
-
   useEffect(() => {
     let cancelled = false;
-    let resizeObserver: ResizeObserver | null = null;
 
     async function loadChart() {
       setLoading(true);
@@ -36,6 +49,9 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
 
         if (cancelled || !containerRef.current) return;
 
+        await waitForElementSize(containerRef.current);
+        if (cancelled || !containerRef.current) return;
+
         membersRef.current = new Map(members.map((member) => [member.id, member]));
 
         const nodes = buildFamilyTreeJSNodes(members, relationships);
@@ -45,21 +61,30 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
           return;
         }
 
+        registerArbeyFamilyTreeTemplates();
+
         const hasMainMember =
           Boolean(mainMemberId) && nodes.some((node) => node.id === mainMemberId);
 
+        containerRef.current.innerHTML = '';
+
         const chart = new FamilyTree(containerRef.current, {
           mode: 'light',
-          template: 'tommy',
+          template: 'arbey',
           orientation: FamilyTree.orientation.top,
+          levelSeparation: 72,
+          siblingSeparation: 28,
+          partnerNodeSeparation: 24,
+          padding: 24,
+          enablePan: false,
+          enableTouch: false,
+          mouseScrool: FamilyTree.action.none,
           nodeMouseClick: FamilyTree.action.none,
           nodeMouseDbClick: FamilyTree.action.none,
           enableSearch: false,
           nodeMenu: {},
           nodeCircleMenu: {},
           nodeContextMenu: {},
-          toolbar: { zoom: true, fit: true },
-          mouseScrool: FamilyTree.action.zoom,
           nodeBinding: {
             field_0: 'name',
             field_1: 'birthYear',
@@ -78,21 +103,18 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
           if (member) setSelectedMember(member);
         });
 
+        chart.on('render', () => {
+          containerRef.current
+            ?.querySelectorAll('[data-n-id]')
+            .forEach((node) => node.classList.add('family-treejs-node'));
+        });
+
         chart.on('ready', () => {
           if (cancelled || !chartRef.current) return;
           requestAnimationFrame(() => {
-            if (cancelled || !chartRef.current) return;
-            chartRef.current.fit();
+            chartRef.current?.fit();
           });
         });
-
-        if (containerRef.current) {
-          resizeObserver = new ResizeObserver(() => {
-            if (cancelled || !chartRef.current) return;
-            chartRef.current.fit();
-          });
-          resizeObserver.observe(containerRef.current);
-        }
 
         setLoading(false);
       } catch (err) {
@@ -107,7 +129,6 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
 
     return () => {
       cancelled = true;
-      resizeObserver?.disconnect();
       chartRef.current?.destroy();
       chartRef.current = null;
     };
@@ -125,26 +146,28 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
         >
           FamilyTree JS 2
         </a>{' '}
-        (BALKAN). Arbre classique, pan/zoom intégré. Le genre est déduit automatiquement pour le
-        layout — licence commerciale si usage en production.
+        (BALKAN). Arbre classique. Le genre est déduit pour le layout — licence commerciale en
+        production.
       </p>
 
       <div className="card relative overflow-hidden p-0">
-        <div
-          id={chartId}
-          ref={containerRef}
-          className="family-treejs-preview"
-          style={{
-            backgroundColor: 'rgb(248, 250, 249)',
-          }}
-        />
+        <TreePanZoom
+          viewKey={`familytreejs-${mainMemberId ?? 'all'}`}
+          initialScale={1}
+          heightClass="h-[calc(100vh-10rem)] min-h-[640px]"
+          contentClass="!h-full !w-full !p-0"
+          panExcluded={['family-treejs-node']}
+        >
+          <div id={chartId} ref={containerRef} className="family-treejs-chart-host h-full w-full" />
+        </TreePanZoom>
+
         {loading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90">
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
             <LoadingSpinner />
           </div>
         )}
         {error && !loading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white p-6">
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white p-6">
             <ErrorMessage message={error} onRetry={() => window.location.reload()} />
           </div>
         )}
