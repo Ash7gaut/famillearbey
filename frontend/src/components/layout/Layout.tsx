@@ -1,12 +1,12 @@
-import { NavLink, Outlet } from 'react-router-dom';
-import { UserMenu } from './UserMenu';
+import { NavLink, Outlet } from "react-router-dom";
+import { UserMenu } from "./UserMenu";
 
 const navItems = [
-  { to: '/', label: 'Accueil', icon: '🏠' },
-  { to: '/tree', label: 'Arbre', icon: '🌳' },
-  { to: '/albums', label: 'Albums', icon: '📸' },
-  { to: '/quiz', label: 'Quiz', icon: '🧠' },
-  { to: '/secret-santa', label: 'Santa', icon: '🎁' },
+  { to: "/", label: "Accueil", icon: "🏠" },
+  { to: "/tree", label: "Arbre", icon: "🌳" },
+  { to: "/albums", label: "Albums", icon: "📸" },
+  { to: "/quiz", label: "Quiz", icon: "🧠" },
+  { to: "/secret-santa", label: "Santa", icon: "🎁" },
 ];
 
 export function Layout() {
@@ -29,12 +29,13 @@ export function Layout() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/'}
+                end={item.to === "/"}
+                // classname to uppercase
                 className={({ isActive }) =>
                   `rounded-xl px-4 py-2 text-sm font-medium transition ${
                     isActive
-                      ? 'bg-arbey-100 text-arbey-800'
-                      : 'text-arbey-600 hover:bg-arbey-50 hover:text-arbey-800'
+                      ? "bg-arbey-100 text-arbey-800"
+                      : "text-arbey-600 hover:bg-arbey-50 hover:text-arbey-800"
                   }`
                 }
               >
@@ -60,10 +61,10 @@ export function Layout() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === '/'}
+              end={item.to === "/"}
               className={({ isActive }) =>
                 `flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
-                  isActive ? 'text-arbey-800 font-medium' : 'text-arbey-500'
+                  isActive ? "text-arbey-800 font-medium" : "text-arbey-500"
                 }`
               }
             >
