@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAlbumStore } from '../stores/albumStore';
 import { AlbumCard } from '../components/albums/AlbumCard';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 
@@ -33,11 +34,12 @@ export function AlbumsPage() {
 
   return (
     <div className="space-y-6">
+      <BackLink to="/" label="Accueil" />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-arbey-900">Albums photos</h1>
-          <p className="mt-1 text-sm text-arbey-600">
-            Souvenirs de la Famille Arbey, album par album.
+          <h1 className="page-title">Albums photos</h1>
+          <p className="page-subtitle">
+            Souvenirs de la famille, album par album.
           </p>
         </div>
         <button type="button" onClick={() => setShowForm(!showForm)} className="btn-primary">

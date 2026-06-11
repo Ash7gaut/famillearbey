@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import type { SecretSantaGroupSummary } from '../types/secretSanta';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { useAuthReady } from '../hooks/useAuthReady';
@@ -55,9 +56,10 @@ export function SecretSantaPage() {
 
   return (
     <div className="space-y-6">
+      <BackLink to="/" label="Accueil" />
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-arbey-900">Secret Santa</h1>
+          <h1 className="page-title">Secret Santa</h1>
           <p className="mt-1 text-sm text-arbey-600">
             Crée un tirage entre qui tu veux — famille ou invités externes.
           </p>

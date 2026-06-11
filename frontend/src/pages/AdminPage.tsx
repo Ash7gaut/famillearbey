@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { api } from '../services/api';
 import type { FamilyMember } from '../types';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 
 interface AccessRequest {
@@ -80,9 +81,10 @@ export function AdminPage() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-8 max-w-2xl mx-auto">
+    <div className="mx-auto max-w-2xl space-y-8">
+      <BackLink to="/" label="Accueil" />
       <div>
-        <h1 className="font-display text-2xl font-bold text-arbey-900">Administration</h1>
+        <h1 className="page-title">Administration</h1>
         <p className="mt-1 text-sm text-arbey-600">Gérer les invitations et demandes d'accès</p>
       </div>
 

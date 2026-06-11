@@ -1,79 +1,92 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { UserMenu } from "./UserMenu";
+import { NavLink, Outlet } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
+import { Gift, Home, Images, TreePine, BrainCircuit } from 'lucide-react';
+import { UserMenu } from './UserMenu';
 
-const navItems = [
-  { to: "/", label: "Accueil", icon: "🏠" },
-  { to: "/tree", label: "Arbre", icon: "🌳" },
-  { to: "/albums", label: "Albums", icon: "📸" },
-  { to: "/quiz", label: "Quiz", icon: "🧠" },
-  { to: "/secret-santa", label: "Santa", icon: "🎁" },
+const navItems: { to: string; label: string; icon: LucideIcon }[] = [
+  { to: '/', label: 'Accueil', icon: Home },
+  { to: '/tree', label: 'Arbre', icon: TreePine },
+  { to: '/albums', label: 'Albums', icon: Images },
+  { to: '/quiz', label: 'Quiz', icon: BrainCircuit },
+  { to: '/secret-santa', label: 'Santa', icon: Gift },
 ];
+
+function NavItem({ to, label, icon: Icon, end }: { to: string; label: string; icon: LucideIcon; end?: boolean }) {
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+    >
+      <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
+      <span>{label}</span>
+    </NavLink>
+  );
+}
 
 export function Layout() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-50 border-b border-arbey-100 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
-          <NavLink to="/" className="flex shrink-0 items-center gap-2">
-            <span className="text-2xl">🌳</span>
-            <div>
-              <p className="font-display text-lg font-semibold leading-tight text-arbey-900">
-                FamilyHub
-              </p>
-              <p className="text-xs text-arbey-500">Famille Arbey</p>
-            </div>
+    <div className="min-h-screen">
+      {/* Sidebar desktop — fixe, toujours visible */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-cream-300/60 bg-cream-50/95 backdrop-blur-md lg:flex">
+        <div className="flex h-full flex-col px-4 py-6">
+          <NavLink to="/" className="mb-8 block shrink-0 px-2">
+            <p className="font-display text-xl font-semibold leading-tight text-ink-800">
+              Famille Arbey
+            </p>
+            <p className="mt-0.5 text-xs text-ink-400">Notre coin à nous</p>
           </NavLink>
 
-          <nav className="hidden sm:flex flex-1 items-center justify-center gap-1">
+          <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
             {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.to === "/"}
-                // classname to uppercase
-                className={({ isActive }) =>
-                  `rounded-xl px-4 py-2 text-sm font-medium transition ${
-                    isActive
-                      ? "bg-arbey-100 text-arbey-800"
-                      : "text-arbey-600 hover:bg-arbey-50 hover:text-arbey-800"
-                  }`
-                }
-              >
-                <span className="mr-1.5">{item.icon}</span>
-                {item.label}
-              </NavLink>
+              <NavItem key={item.to} {...item} end={item.to === '/'} />
             ))}
           </nav>
 
-          <div className="shrink-0">
-            <UserMenu />
+          <div className="mt-4 shrink-0 border-t border-cream-300/60 pt-4">
+            <UserMenu variant="sidebar" />
           </div>
         </div>
-      </header>
+      </aside>
 
-      <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-8">
-        <Outlet />
-      </main>
-
-      <nav className="sticky bottom-0 border-t border-arbey-100 bg-white/90 backdrop-blur-md sm:hidden">
-        <div className="flex justify-around py-2">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === "/"}
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
-                  isActive ? "text-arbey-800 font-medium" : "text-arbey-500"
-                }`
-              }
-            >
-              <span className="text-xl">{item.icon}</span>
-              {item.label}
+      {/* Contenu principal — décalé pour la sidebar sur desktop */}
+      <div className="flex min-h-screen flex-col lg:ml-60">
+        <header className="sticky top-0 z-30 border-b border-cream-300/60 bg-cream-50/90 backdrop-blur-md lg:hidden">
+          <div className="flex h-16 items-center justify-between gap-3 px-4">
+            <NavLink to="/" className="min-w-0">
+              <p className="truncate font-display text-lg font-semibold text-ink-800">Famille Arbey</p>
             </NavLink>
-          ))}
-        </div>
-      </nav>
+            <UserMenu variant="header" />
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pt-4 sm:px-6 sm:py-8 lg:py-10 lg:pt-10">
+          <Outlet />
+        </main>
+
+        <nav className="sticky bottom-0 z-30 border-t border-cream-300/60 bg-cream-50/95 backdrop-blur-md lg:hidden">
+          <div className="flex justify-around px-1 py-1.5">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/'}
+                  className={({ isActive }) =>
+                    `flex flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-[10px] font-medium transition ${
+                      isActive ? 'text-warm-700' : 'text-ink-400'
+                    }`
+                  }
+                >
+                  <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  {item.label}
+                </NavLink>
+              );
+            })}
+          </div>
+        </nav>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { useFamilyStore } from '../stores/familyStore';
 import { FamilyTree } from '../components/tree/FamilyTree';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 
@@ -34,8 +35,9 @@ export function TreePage() {
 
   return (
     <div className="space-y-6">
+      <BackLink to="/" label="Accueil" />
       <div>
-        <h1 className="font-display text-2xl font-bold text-arbey-900">
+        <h1 className="page-title">
           Arbre généalogique
         </h1>
         <p className="mt-1 text-sm text-arbey-600">{VIEW_DESCRIPTIONS[viewMode]}</p>

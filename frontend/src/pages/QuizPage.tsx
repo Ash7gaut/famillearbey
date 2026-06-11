@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useQuizStore } from '../stores/quizStore';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 
@@ -33,10 +34,11 @@ export function QuizPage() {
   const accuracy = total > 0 ? Math.round((score / total) * 100) : 0;
 
   return (
-    <div className="space-y-6 max-w-lg mx-auto">
+    <div className="mx-auto max-w-lg space-y-6">
+      <BackLink to="/" label="Accueil" />
       <div className="text-center">
         <p className="text-4xl mb-2">🧠</p>
-        <h1 className="font-display text-2xl font-bold text-arbey-900">Quiz Famille Arbey</h1>
+        <h1 className="page-title">Quiz familial</h1>
         <p className="mt-1 text-sm text-arbey-600">
           Teste tes connaissances sur la famille !
         </p>

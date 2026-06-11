@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Images } from 'lucide-react';
 import type { Album } from '../../types';
 
 interface AlbumCardProps {
@@ -16,28 +17,27 @@ function formatDate(date: string | null) {
 
 export function AlbumCard({ album }: AlbumCardProps) {
   return (
-    <Link
-      to={`/albums/${album.id}`}
-      className="group overflow-hidden rounded-2xl border border-arbey-100 bg-white shadow-sm transition hover:border-arbey-200 hover:shadow-md"
-    >
-      <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-arbey-50 to-warm-50">
+    <Link to={`/albums/${album.id}`} className="card-photo group block">
+      <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-cream-200 to-warm-100">
         {album.cover_url ? (
           <img
             src={album.cover_url}
             alt={album.title}
-            className="h-full w-full object-cover transition group-hover:scale-105"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-5xl">📸</div>
+          <div className="flex h-full items-center justify-center text-ink-300">
+            <Images className="h-12 w-12" strokeWidth={1.25} />
+          </div>
         )}
       </div>
-      <div className="p-4">
-        <h3 className="font-display font-semibold text-arbey-900">{album.title}</h3>
+      <div className="border-t border-cream-300/50 bg-cream-50 px-4 py-3.5">
+        <h3 className="font-display font-semibold text-ink-800">{album.title}</h3>
         {album.event_date && (
-          <p className="mt-1 text-xs text-arbey-500">{formatDate(album.event_date)}</p>
+          <p className="mt-1 text-xs text-ink-400">{formatDate(album.event_date)}</p>
         )}
         {album.description && (
-          <p className="mt-2 line-clamp-2 text-sm text-arbey-600">{album.description}</p>
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-500">{album.description}</p>
         )}
       </div>
     </Link>

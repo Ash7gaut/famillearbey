@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
+import { BackLink } from '../components/ui/BackLink';
 import type { SecretSantaGroupDetail } from '../types/secretSanta';
 
 export function SecretSantaNewPage() {
@@ -30,10 +31,8 @@ export function SecretSantaNewPage() {
   return (
     <div className="mx-auto max-w-md space-y-6">
       <div>
-        <Link to="/secret-santa" className="text-sm text-arbey-500 hover:text-arbey-700">
-          ← Retour
-        </Link>
-        <h1 className="mt-2 font-display text-2xl font-bold text-arbey-900">
+        <BackLink to="/secret-santa" label="Secret Santa" />
+        <h1 className="page-title">
           Nouveau Secret Santa
         </h1>
         <p className="mt-1 text-sm text-arbey-600">

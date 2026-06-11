@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { api } from '../services/api';
 import type { GuestInviteInfo, SecretSantaAssignment } from '../types/secretSanta';
 import { AssignmentReveal } from '../components/secretSanta/AssignmentReveal';
 import { LockedAssignment } from '../components/secretSanta/LockedAssignment';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { guestRevealStorageKey, isRevealStored } from '../lib/secretSantaRevealStorage';
@@ -72,18 +73,15 @@ export function SecretSantaGuestPage() {
   if (locked && assignment) {
     return (
       <div className="mx-auto max-w-md space-y-6 py-4">
+        <BackLink to="/" label="Accueil" />
         <LockedAssignment name={assignment.receiver_display_name} />
-        <p className="text-center text-xs text-arbey-400">
-          <Link to="/" className="hover:text-arbey-600">
-            FamilyHub — Famille Arbey
-          </Link>
-        </p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-md space-y-6">
+      <BackLink to="/" label="Accueil" />
       <div className="text-center">
         <p className="mb-2 text-4xl" aria-hidden>
           🎁
@@ -131,12 +129,6 @@ export function SecretSantaGuestPage() {
           }}
         />
       )}
-
-      <p className="text-center text-xs text-arbey-400">
-        <Link to="/" className="hover:text-arbey-600">
-          FamilyHub — Famille Arbey
-        </Link>
-      </p>
     </div>
   );
 }

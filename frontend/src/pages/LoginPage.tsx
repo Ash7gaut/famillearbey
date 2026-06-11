@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { BackLink } from '../components/ui/BackLink';
 import { useAuthStore } from '../stores/authStore';
 
 export function LoginPage() {
@@ -21,18 +22,17 @@ export function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-sm space-y-6 py-8">
-      <div className="text-center">
-        <p className="text-4xl mb-2">🌳</p>
-        <h1 className="font-display text-2xl font-bold text-arbey-900">Connexion</h1>
-        <p className="mt-1 text-sm text-arbey-600">
-          Accès réservé aux membres de la Famille Arbey
-        </p>
+    <div className="mx-auto max-w-sm space-y-8 py-4">
+      <BackLink to="/" label="Accueil" />
+      <div>
+        <p className="text-sm font-medium uppercase tracking-widest text-warm-600">Espace privé</p>
+        <h1 className="page-title mt-2">Connexion</h1>
+        <p className="page-subtitle">Réservé aux membres de la Famille Arbey.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="card space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-arbey-700 mb-1">
+          <label htmlFor="email" className="mb-1 block text-sm font-medium text-ink-700">
             Email
           </label>
           <input
@@ -41,11 +41,11 @@ export function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
+            className="input-field"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-arbey-700 mb-1">
+          <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink-700">
             Mot de passe
           </label>
           <input
@@ -54,7 +54,7 @@ export function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
+            className="input-field"
           />
         </div>
 
@@ -65,10 +65,10 @@ export function LoginPage() {
         </button>
       </form>
 
-      <p className="text-center text-sm text-arbey-600">
+      <p className="text-center text-sm text-ink-500">
         Pas encore de compte ?{' '}
-        <Link to="/demande-acces" className="font-medium text-arbey-800 hover:underline">
-          Demander l'accès
+        <Link to="/demande-acces" className="font-medium text-warm-700 hover:underline">
+          Demander l&apos;accès
         </Link>
       </p>
     </div>

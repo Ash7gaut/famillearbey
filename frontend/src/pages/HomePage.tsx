@@ -1,117 +1,140 @@
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
+import { ArrowRight, BrainCircuit, Calendar, Gift, Images, MessageCircle, BookOpen, TreePine } from 'lucide-react';
 
-const features = [
+const mainFeatures: {
+  to: string;
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  accent: string;
+}[] = [
   {
     to: '/tree',
-    icon: '🌳',
+    icon: TreePine,
     title: 'Arbre généalogique',
-    description: 'Explorez les liens de la Famille Arbey à travers les générations.',
+    description: 'Retrouve les liens entre les générations de la famille.',
+    accent: 'from-arbey-100 to-arbey-50',
   },
   {
     to: '/albums',
-    icon: '📸',
+    icon: Images,
     title: 'Albums photos',
-    description: 'Revivez Noël, les vacances et tous les moments partagés.',
+    description: 'Noël, vacances, repas de famille — tous les souvenirs au même endroit.',
+    accent: 'from-warm-100 to-cream-100',
   },
-  {
-    to: '/quiz',
-    icon: '🧠',
-    title: 'Quiz familial',
-    description: 'Qui est né le 3 janvier ? Teste tes connaissances sur la famille !',
-  },
-  {
-    to: '#',
-    icon: '💬',
-    title: 'Mur familial',
-    description: 'Bientôt : partagez nouvelles et photos avec toute la famille.',
-    soon: true,
-  },
-  {
-    to: '/secret-santa',
-    icon: '🎁',
-    title: 'Secret Santa',
-    description: 'Crée un tirage entre qui tu veux — famille ou invités externes.',
-  },
-  {
-    to: '#',
-    icon: '📅',
-    title: 'Événements',
-    description: 'Bientôt : réunions, RSVP et calendrier familial.',
-    soon: true,
-  },
-  {
-    to: '#',
-    icon: '📚',
-    title: 'Mémoire familiale',
-    description: 'Bientôt : recettes, anecdotes et histoires transmises.',
-    soon: true,
-  },
+];
+
+const otherFeatures: {
+  to: string;
+  icon: LucideIcon;
+  title: string;
+  soon?: boolean;
+}[] = [
+  { to: '/quiz', icon: BrainCircuit, title: 'Quiz familial' },
+  { to: '/secret-santa', icon: Gift, title: 'Secret Santa' },
+  { to: '#', icon: MessageCircle, title: 'Mur familial', soon: true },
+  { to: '#', icon: Calendar, title: 'Événements', soon: true },
+  { to: '#', icon: BookOpen, title: 'Mémoire familiale', soon: true },
 ];
 
 export function HomePage() {
   return (
-    <div className="space-y-10">
-      <section className="text-center py-8">
-        <p className="text-5xl mb-4">🌳</p>
-        <h1 className="font-display text-3xl sm:text-4xl font-bold text-arbey-900">
-          Bienvenue dans FamilyHub
-        </h1>
-        <p className="mt-3 text-arbey-600 max-w-lg mx-auto">
-          La plateforme privée de la Famille Arbey — souvenirs, arbre généalogique
-          et moments partagés, au même endroit.
-        </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/login"
-            className="inline-flex rounded-full bg-arbey-950 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-arbey-900"
-          >
-            Se connecter
-          </Link>
-          <Link
-            to="/demande-acces"
-            className="inline-flex rounded-full border border-arbey-200 bg-white px-5 py-2.5 text-sm font-medium text-arbey-700 transition hover:bg-arbey-50"
-          >
-            Demander l'accès
-          </Link>
+    <div className="space-y-12">
+      <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/80 px-6 py-10 shadow-warm sm:px-10 sm:py-12">
+        <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-warm-200/30 blur-2xl" aria-hidden />
+        <div className="absolute -bottom-10 -left-6 h-32 w-32 rounded-full bg-arbey-200/25 blur-2xl" aria-hidden />
+
+        <div className="relative max-w-xl">
+          <p className="text-sm font-medium uppercase tracking-widest text-warm-600">Bienvenue</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-ink-800 sm:text-4xl">
+            Famille Arbey
+          </h1>
+          <p className="mt-4 text-base leading-relaxed text-ink-500">
+            Notre coin à nous pour retrouver l&apos;arbre, les photos et les petits jeux entre cousins.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link to="/login" className="btn-primary">
+              Se connecter
+            </Link>
+            <Link to="/demande-acces" className="btn-secondary">
+              Demander l&apos;accès
+            </Link>
+          </div>
         </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2">
-        {features.map((feature) => (
-          <div key={feature.title} className="relative">
-            {feature.soon ? (
-              <div className="card opacity-60 cursor-not-allowed">
-                <FeatureContent {...feature} />
-                <span className="absolute top-4 right-4 rounded-full bg-warm-100 px-2.5 py-0.5 text-xs font-medium text-warm-700">
-                  Bientôt
+        {mainFeatures.map((feature) => {
+          const Icon = feature.icon;
+          return (
+            <Link
+              key={feature.title}
+              to={feature.to}
+              className="group relative overflow-hidden rounded-2xl border border-cream-300/60 bg-cream-50 p-6 shadow-warm transition hover:border-warm-200 hover:shadow-warm-md"
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${feature.accent} opacity-60 transition group-hover:opacity-80`}
+                aria-hidden
+              />
+              <div className="relative">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/80 text-warm-700 shadow-sm">
+                  <Icon className="h-5 w-5" strokeWidth={1.75} />
+                </div>
+                <h2 className="mt-4 font-display text-xl font-semibold text-ink-800">{feature.title}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-500">{feature.description}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-warm-700">
+                  Ouvrir
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                 </span>
               </div>
-            ) : (
-              <Link to={feature.to} className="card block transition hover:border-arbey-200 hover:shadow-md">
-                <FeatureContent {...feature} />
-              </Link>
-            )}
-          </div>
-        ))}
+            </Link>
+          );
+        })}
+      </section>
+
+      <section>
+        <h2 className="font-display text-lg font-semibold text-ink-700">Autour de la famille</h2>
+        <ul className="mt-4 divide-y divide-cream-300/60 rounded-2xl border border-cream-300/60 bg-cream-50/80">
+          {otherFeatures.map((feature) => {
+            const Icon = feature.icon;
+            const content = (
+              <>
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cream-200/80 text-ink-600">
+                  <Icon className="h-4 w-4" strokeWidth={1.75} />
+                </div>
+                <span className="flex-1 font-medium text-ink-700">{feature.title}</span>
+                {feature.soon ? (
+                  <span className="rounded-full bg-warm-100 px-2.5 py-0.5 text-xs font-medium text-warm-700">
+                    Bientôt
+                  </span>
+                ) : (
+                  <ArrowRight className="h-4 w-4 text-ink-400" />
+                )}
+              </>
+            );
+
+            if (feature.soon) {
+              return (
+                <li key={feature.title} className="flex items-center gap-3 px-4 py-3.5 opacity-60">
+                  {content}
+                </li>
+              );
+            }
+
+            return (
+              <li key={feature.title}>
+                <Link
+                  to={feature.to}
+                  className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-cream-200/40"
+                >
+                  {content}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </section>
     </div>
-  );
-}
-
-function FeatureContent({
-  icon,
-  title,
-  description,
-}: {
-  icon: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <>
-      <span className="text-3xl">{icon}</span>
-      <h2 className="mt-3 font-display text-lg font-semibold text-arbey-900">{title}</h2>
-      <p className="mt-1.5 text-sm text-arbey-600">{description}</p>
-    </>
   );
 }

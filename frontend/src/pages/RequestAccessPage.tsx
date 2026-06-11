@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { MailCheck } from 'lucide-react';
+import { BackLink } from '../components/ui/BackLink';
 import { api } from '../services/api';
 
 export function RequestAccessPage() {
@@ -32,63 +34,57 @@ export function RequestAccessPage() {
 
   if (success) {
     return (
-      <div className="mx-auto max-w-sm text-center py-12 space-y-4">
-        <p className="text-4xl">📬</p>
-        <h1 className="font-display text-xl font-semibold text-arbey-900">Demande envoyée !</h1>
-        <p className="text-sm text-arbey-600">
-          Un administrateur de la famille va examiner ta demande et t'envoyer une invitation par email.
+      <div className="mx-auto max-w-sm space-y-4 py-12 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-warm-100 text-warm-700">
+          <MailCheck className="h-7 w-7" strokeWidth={1.75} />
+        </div>
+        <h1 className="font-display text-xl font-semibold text-ink-800">Demande envoyée</h1>
+        <p className="text-sm leading-relaxed text-ink-500">
+          Un administrateur va examiner ta demande et t&apos;envoyer une invitation par email.
         </p>
-        <Link to="/login" className="btn-secondary inline-flex">Retour connexion</Link>
+        <Link to="/login" className="btn-secondary inline-flex">
+          Retour connexion
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-sm space-y-6 py-8">
-      <div className="text-center">
-        <p className="text-4xl mb-2">✉️</p>
-        <h1 className="font-display text-2xl font-bold text-arbey-900">Demander l'accès</h1>
-        <p className="mt-1 text-sm text-arbey-600">
-          Les comptes sont créés sur invitation uniquement.
-        </p>
+    <div className="mx-auto max-w-sm space-y-8 py-4">
+      <BackLink to="/" label="Accueil" />
+      <div>
+        <p className="text-sm font-medium uppercase tracking-widest text-warm-600">Invitation</p>
+        <h1 className="page-title mt-2">Demander l&apos;accès</h1>
+        <p className="page-subtitle">Les comptes sont créés sur invitation uniquement.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="card space-y-4">
         <div>
-          <label className="block text-sm font-medium text-arbey-700 mb-1">Prénom</label>
-          <input
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
-          />
+          <label className="mb-1 block text-sm font-medium text-ink-700">Prénom</label>
+          <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="input-field" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-arbey-700 mb-1">Nom</label>
-          <input
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
-          />
+          <label className="mb-1 block text-sm font-medium text-ink-700">Nom</label>
+          <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="input-field" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-arbey-700 mb-1">Email</label>
+          <label className="mb-1 block text-sm font-medium text-ink-700">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
+            className="input-field"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-arbey-700 mb-1">Message (optionnel)</label>
+          <label className="mb-1 block text-sm font-medium text-ink-700">Message (optionnel)</label>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             placeholder="Je suis le fils de..."
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm resize-none focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
+            className="input-field resize-none"
           />
         </div>
 
@@ -99,8 +95,11 @@ export function RequestAccessPage() {
         </button>
       </form>
 
-      <p className="text-center text-sm text-arbey-600">
-        Déjà invité ? <Link to="/login" className="font-medium text-arbey-800 hover:underline">Se connecter</Link>
+      <p className="text-center text-sm text-ink-500">
+        Déjà invité ?{' '}
+        <Link to="/login" className="font-medium text-warm-700 hover:underline">
+          Se connecter
+        </Link>
       </p>
     </div>
   );

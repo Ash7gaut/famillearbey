@@ -39,8 +39,8 @@ export function AssignmentReveal({ assignment, storageKey, onConfirmReveal }: As
     return (
       <div className="flex flex-col items-center gap-6 text-center">
         <div>
-          <h1 className="font-display text-2xl font-bold text-arbey-900">Ta roulette</h1>
-          <p className="mt-2 text-sm text-arbey-600">
+          <h1 className="page-title">Ta roulette</h1>
+          <p className="page-subtitle">
             Prêt ? La roue ne tourne qu&apos;une seule fois.
           </p>
         </div>

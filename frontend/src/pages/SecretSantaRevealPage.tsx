@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import type { SecretSantaAssignment } from '../types/secretSanta';
 import { AssignmentReveal } from '../components/secretSanta/AssignmentReveal';
 import { LockedAssignment } from '../components/secretSanta/LockedAssignment';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { useAuthReady } from '../hooks/useAuthReady';
@@ -36,7 +37,8 @@ export function SecretSantaRevealPage() {
   if (!isAuthenticated) {
     return (
       <div className="card mx-auto max-w-md py-12 text-center">
-        <p className="text-sm text-arbey-600">Connecte-toi pour voir ton tirage.</p>
+        <BackLink to="/secret-santa" label="Secret Santa" />
+        <p className="text-sm text-ink-500">Connecte-toi pour voir ton tirage.</p>
         <Link to="/login" className="btn-primary mt-4 inline-flex">
           Se connecter
         </Link>
@@ -48,31 +50,22 @@ export function SecretSantaRevealPage() {
 
   const locked = assignment.revealed === true || isRevealStored(storageKey);
 
-  if (locked) {
-    return (
-      <div className="mx-auto max-w-md space-y-6 py-4">
-        <Link to={`/secret-santa/${id}`} className="text-sm text-arbey-500 hover:text-arbey-700">
-          ← Retour
-        </Link>
-        <LockedAssignment name={assignment.receiver_display_name} />
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-md space-y-6">
-      <Link to={`/secret-santa/${id}`} className="text-sm text-arbey-500 hover:text-arbey-700">
-        ← Retour
-      </Link>
+      <BackLink to={`/secret-santa/${id}`} label="Secret Santa" />
 
-      <AssignmentReveal
-        assignment={assignment}
-        storageKey={storageKey}
-        onConfirmReveal={async () => {
-          const updated = await api.post<SecretSantaAssignment>(`/secret-santa/${id}/confirm-reveal`);
-          setAssignment(updated);
-        }}
-      />
+      {locked ? (
+        <LockedAssignment name={assignment.receiver_display_name} />
+      ) : (
+        <AssignmentReveal
+          assignment={assignment}
+          storageKey={storageKey}
+          onConfirmReveal={async () => {
+            const updated = await api.post<SecretSantaAssignment>(`/secret-santa/${id}/confirm-reveal`);
+            setAssignment(updated);
+          }}
+        />
+      )}
     </div>
   );
 }

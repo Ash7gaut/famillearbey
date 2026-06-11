@@ -1,9 +1,24 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
+        cream: {
+          50: '#FDFBF7',
+          100: '#FAF7F2',
+          200: '#F5F0E8',
+          300: '#EDE6DA',
+          400: '#E0D5C4',
+        },
+        ink: {
+          400: '#9A8B7A',
+          500: '#7A6B5C',
+          600: '#5C4F42',
+          700: '#4A3F35',
+          800: '#2C2419',
+          900: '#1F1A14',
+        },
         arbey: {
           50: '#f6f7f4',
           100: '#e8ebe3',
@@ -31,8 +46,12 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['DM Sans', 'system-ui', 'sans-serif'],
+        sans: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+        display: ['Fraunces', 'Georgia', 'serif'],
+      },
+      boxShadow: {
+        warm: '0 4px 20px -4px rgba(44, 36, 25, 0.08)',
+        'warm-md': '0 8px 30px -6px rgba(44, 36, 25, 0.12)',
       },
     },
   },

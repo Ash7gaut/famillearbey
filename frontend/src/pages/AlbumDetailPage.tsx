@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAlbumStore } from '../stores/albumStore';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 
@@ -31,10 +32,8 @@ export function AlbumDetailPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <Link to="/albums" className="text-sm text-arbey-500 hover:text-arbey-700">
-            ← Retour aux albums
-          </Link>
-          <h1 className="mt-2 font-display text-2xl font-bold text-arbey-900">
+          <BackLink to="/albums" label="Albums" />
+          <h1 className="page-title">
             {currentAlbum?.title}
           </h1>
           {currentAlbum?.description && (

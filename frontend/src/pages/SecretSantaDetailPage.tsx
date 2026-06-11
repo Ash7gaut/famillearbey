@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Check, Copy, UserMinus } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
 import type { FamilyMember } from '../types';
@@ -8,6 +9,7 @@ import type {
   SecretSantaGroupDetail,
   SecretSantaParticipantView,
 } from '../types/secretSanta';
+import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { useAuthReady } from '../hooks/useAuthReady';
@@ -124,7 +126,6 @@ export function SecretSantaDetailPage() {
       `/secret-santa/${id}/participants/${participantId}/invite-link`,
     );
     await navigator.clipboard.writeText(invite_link);
-    alert('Lien copié !');
   }
 
   async function respond(status: 'accepted' | 'declined') {
@@ -192,10 +193,8 @@ export function SecretSantaDetailPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <Link to="/secret-santa" className="text-sm text-arbey-500 hover:text-arbey-700">
-          ← Mes Secret Santa
-        </Link>
-        <h1 className="mt-2 font-display text-2xl font-bold text-arbey-900">{group.title}</h1>
+        <BackLink to="/secret-santa" label="Secret Santa" />
+        <h1 className="page-title">{group.title}</h1>
         {group.budget && <p className="text-sm text-arbey-600">Budget : {group.budget}</p>}
       </div>
 
@@ -355,6 +354,10 @@ export function SecretSantaDetailPage() {
   );
 }
 
+function participantInitial(name: string) {
+  return name.trim().charAt(0).toUpperCase() || '?';
+}
+
 function ParticipantRow({
   participant,
   isCreator,
@@ -365,39 +368,96 @@ function ParticipantRow({
   participant: SecretSantaParticipantView;
   isCreator: boolean;
   canManage: boolean;
-  onCopyLink: () => void;
+  onCopyLink: () => Promise<void>;
   onRemove: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+  const showCopyLink =
+    participant.is_external && isCreator && participant.status === 'invited';
+  const showRemove = canManage && !participant.is_creator;
+  const hasActions = showCopyLink || showRemove;
+
+  async function handleCopy() {
+    await onCopyLink();
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  }
+
   return (
-    <li className="flex items-center justify-between gap-2 rounded-xl border border-arbey-100 px-3 py-2">
-      <div>
-        <p className="text-sm font-medium text-arbey-900">
-          {participant.display_name}
-          {participant.is_creator && (
-            <span className="ml-1 text-xs text-arbey-500">(créateur)</span>
+    <li className="flex flex-wrap items-center gap-3 rounded-xl border border-[#EDE6DA] bg-white/60 px-3 py-2.5 sm:flex-nowrap">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F5F0E8] text-sm font-semibold text-[#5C4F42]"
+          aria-hidden
+        >
+          {participantInitial(participant.display_name)}
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-[#2C2419]">
+            {participant.display_name}
+          </p>
+          {(participant.is_creator || participant.is_external) && (
+            <div className="mt-0.5 flex flex-wrap gap-1">
+              {participant.is_creator && (
+                <span className="rounded-md bg-[#f9ede0] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#a54f2d]">
+                  Créateur
+                </span>
+              )}
+              {participant.is_external && (
+                <span className="rounded-md bg-[#F5F0E8] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#7A6B5C]">
+                  Invité externe
+                </span>
+              )}
+            </div>
           )}
-          {participant.is_external && (
-            <span className="ml-1 text-xs text-arbey-500">(invité externe)</span>
-          )}
-        </p>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        {participant.is_external && isCreator && participant.status === 'invited' && (
-          <button type="button" onClick={onCopyLink} className="text-xs text-arbey-600 underline">
-            Copier lien
-          </button>
-        )}
-        {canManage && !participant.is_creator && (
-          <button
-            type="button"
-            onClick={onRemove}
-            className="text-xs text-red-600 underline hover:text-red-800"
-          >
-            Retirer
-          </button>
+
+      <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
+        {hasActions && (
+          <div className="flex items-center rounded-lg border border-[#E0D5C4] bg-[#FDFBF7] p-0.5 shadow-sm">
+            {showCopyLink && (
+              <button
+                type="button"
+                onClick={() => void handleCopy()}
+                className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition ${
+                  copied
+                    ? 'bg-[#e8f0e4] text-[#3d5235]'
+                    : 'text-[#4A3F35] hover:bg-[#F5F0E8]'
+                }`}
+                title="Copier le lien d'invitation"
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    Copié
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5" strokeWidth={2} />
+                    Copier lien
+                  </>
+                )}
+              </button>
+            )}
+            {showCopyLink && showRemove && (
+              <span className="mx-0.5 h-5 w-px bg-[#E0D5C4]" aria-hidden />
+            )}
+            {showRemove && (
+              <button
+                type="button"
+                onClick={onRemove}
+                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#9A4A42] transition hover:bg-red-50 hover:text-red-700"
+                title="Retirer ce participant"
+              >
+                <UserMinus className="h-3.5 w-3.5" strokeWidth={2} />
+                Retirer
+              </button>
+            )}
+          </div>
         )}
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[participant.status]}`}
+          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${statusBadge[participant.status]}`}
         >
           {statusLabel[participant.status]}
         </span>
