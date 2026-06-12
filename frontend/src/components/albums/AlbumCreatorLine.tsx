@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
-import type { AlbumCreator } from '../../types';
 import { memberFullName } from '../profile/memberUtils';
 
+type CreatorPerson = {
+  id: string;
+  first_name: string;
+  last_name: string;
+};
+
 interface AlbumCreatorLineProps {
-  creator: AlbumCreator | null | undefined;
+  creator: CreatorPerson | null | undefined;
   className?: string;
   linkToProfile?: boolean;
 }

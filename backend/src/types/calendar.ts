@@ -5,6 +5,12 @@ export interface CalendarBirthday {
   day: number;
 }
 
+export interface CalendarEventCreator {
+  id: string;
+  first_name: string;
+  last_name: string;
+}
+
 export interface CalendarEvent {
   id: string;
   title: string;
@@ -13,6 +19,7 @@ export interface CalendarEvent {
   start_date: string;
   end_date: string | null;
   created_by: string | null;
+  creator?: CalendarEventCreator | null;
   days: number[];
   can_manage?: boolean;
 }

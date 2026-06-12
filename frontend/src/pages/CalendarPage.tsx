@@ -23,6 +23,7 @@ import {
   isSameDay,
   shiftMonth,
 } from '../lib/calendarUtils';
+import { AlbumCreatorLine } from '../components/albums/AlbumCreatorLine';
 import { memberFullName } from '../components/profile/memberUtils';
 import type { CalendarMonth } from '../types/calendar';
 
@@ -513,6 +514,7 @@ export function CalendarPage() {
                       <p className="mt-1 text-sm text-ink-500">
                         {formatEventDateRange(event.start_date, event.end_date)}
                       </p>
+                      <AlbumCreatorLine creator={event.creator} className="mt-1" />
                       {event.location && (
                         <p className="mt-1 flex items-center gap-1.5 text-sm text-ink-500">
                           <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
