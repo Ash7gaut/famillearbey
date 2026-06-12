@@ -53,8 +53,8 @@ function DrawParticipantItem({
   const avatarMember = avatarPersonFromDisplayName(participant.display_name, participant.photo_url);
 
   const content = (
-    <div className="flex items-start gap-3 rounded-xl border border-cream-300/70 bg-white/70 px-3 py-3">
-      <MemberAvatar member={avatarMember} size="lg" />
+    <div className="flex items-start gap-3 rounded-xl border border-cream-300/70 bg-white/80 px-3 py-3">
+      <MemberAvatar member={avatarMember} size="lg" initialsTone="warm" />
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-ink-800">
           {nameParts.length >= 2
@@ -65,6 +65,9 @@ function DrawParticipantItem({
             : participant.display_name}
         </p>
         <div className="mt-1 flex flex-wrap gap-1">
+          <span className="rounded-md bg-arbey-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-arbey-700">
+            Confirmé
+          </span>
           {participant.is_creator && (
             <span className="rounded-md bg-warm-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warm-700">
               Créateur

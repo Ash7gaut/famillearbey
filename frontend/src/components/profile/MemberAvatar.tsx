@@ -3,12 +3,23 @@ import { getInitials } from './memberUtils';
 
 export type AvatarPerson = Pick<FamilyMember, 'first_name' | 'last_name' | 'photo_url'>;
 
+type InitialsTone = 'cream' | 'warm' | 'arbey' | 'muted';
+
 interface MemberAvatarProps {
   member: AvatarPerson;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'hero';
   shape?: 'circle' | 'rounded';
+  /** Couleur du cercle quand il n'y a pas de photo. */
+  initialsTone?: InitialsTone;
   className?: string;
 }
+
+const initialsToneClasses: Record<InitialsTone, string> = {
+  cream: 'bg-cream-200 text-ink-600',
+  warm: 'bg-warm-200 text-warm-800 ring-2 ring-warm-100',
+  arbey: 'bg-arbey-200 text-arbey-800 ring-2 ring-arbey-100',
+  muted: 'bg-ink-100 text-ink-500 ring-2 ring-cream-200',
+};
 
 const sizeClasses = {
   xs: 'h-7 w-7 text-xs',
@@ -29,11 +40,16 @@ export function MemberAvatar({
   member,
   size = 'sm',
   shape = 'circle',
+  initialsTone = 'cream',
   className = '',
 }: MemberAvatarProps) {
+  const hasPhoto = Boolean(member.photo_url);
+
   return (
     <span
-      className={`flex shrink-0 items-center justify-center overflow-hidden bg-cream-200 font-semibold text-ink-600 ${shapeClasses[shape]} ${sizeClasses[size]} ${className}`}
+      className={`flex shrink-0 items-center justify-center overflow-hidden font-semibold ${shapeClasses[shape]} ${sizeClasses[size]} ${
+        hasPhoto ? 'bg-cream-200 text-ink-600' : initialsToneClasses[initialsTone]
+      } ${className}`}
     >
       {member.photo_url ? (
         <img

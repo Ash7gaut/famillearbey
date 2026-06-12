@@ -9,12 +9,9 @@ import type {
   SecretSantaGroupDetail,
   SecretSantaParticipantView,
 } from '../types/secretSanta';
+import { SecretSantaDrawRoster } from '../components/secretSanta/SecretSantaDrawRoster';
 import { MemberAvatar } from '../components/profile/MemberAvatar';
-import {
-  avatarPersonFromDisplayName,
-  memberFullName,
-  sanitizeMemberBio,
-} from '../components/profile/memberUtils';
+import { avatarPersonFromDisplayName } from '../components/profile/memberUtils';
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
@@ -248,36 +245,12 @@ export function SecretSantaDetailPage() {
       )}
 
       {group.status === 'drawn' ? (
-        <div className="card">
-          <h2 className="font-display font-semibold text-arbey-900">Participants au tirage</h2>
-          <p className="mt-1 text-sm text-arbey-600">
-            {drawnParticipants.length} personne{drawnParticipants.length > 1 ? 's' : ''} dans la
-            roue
-            {group.drawn_at &&
-              ` · tirage le ${new Date(group.drawn_at).toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })}`}
-          </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {drawnParticipants.map((participant) => (
-              <ParticipantDrawCard
-                key={participant.id}
-                participant={participant}
-                member={
-                  participant.member_id ? memberById.get(participant.member_id) ?? null : null
-                }
-              />
-            ))}
-          </div>
-          {absentParticipants.length > 0 && (
-            <p className="mt-4 text-xs text-arbey-500">
-              {absentParticipants.map((participant) => participant.display_name).join(', ')}{' '}
-              {absentParticipants.length > 1 ? 'n’ont pas' : 'n’a pas'} participé au tirage.
-            </p>
-          )}
-        </div>
+        <SecretSantaDrawRoster
+          accepted={drawnParticipants}
+          absent={absentParticipants}
+          memberById={memberById}
+          drawnAt={group.drawn_at}
+        />
       ) : (
         <div className="card">
           <h2 className="font-display font-semibold text-arbey-900">Participants</h2>
@@ -398,57 +371,6 @@ export function SecretSantaDetailPage() {
   );
 }
 
-function ParticipantDrawCard({
-  participant,
-  member,
-}: {
-  participant: SecretSantaParticipantView;
-  member: FamilyMember | null;
-}) {
-  const bio = member ? sanitizeMemberBio(member.bio) : null;
-  const avatarMember = member ?? avatarPersonFromDisplayName(participant.display_name, participant.photo_url);
-
-  const content = (
-    <>
-      <MemberAvatar member={avatarMember} size="xl" />
-      <div className="min-w-0 flex-1">
-        <p className="font-display text-base font-semibold text-ink-800">
-          {member ? memberFullName(member) : participant.display_name}
-        </p>
-        <div className="mt-1 flex flex-wrap gap-1">
-          {participant.is_creator && (
-            <span className="rounded-md bg-warm-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warm-700">
-              Créateur
-            </span>
-          )}
-          {participant.is_external && (
-            <span className="rounded-md bg-cream-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-600">
-              Invité externe
-            </span>
-          )}
-        </div>
-        {bio && <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-ink-500">{bio}</p>}
-        {member && (
-          <p className="mt-2 text-xs font-medium text-warm-700">Voir le profil →</p>
-        )}
-      </div>
-    </>
-  );
-
-  const className =
-    'flex items-start gap-3 rounded-2xl border border-cream-300/70 bg-white/70 p-4 transition hover:border-warm-200 hover:bg-warm-50/40';
-
-  if (member) {
-    return (
-      <Link to={`/profil/${member.id}`} className={`focus-ring ${className}`}>
-        {content}
-      </Link>
-    );
-  }
-
-  return <div className={className}>{content}</div>;
-}
-
 function ParticipantRow({
   participant,
   isCreator,
@@ -480,6 +402,7 @@ function ParticipantRow({
         <MemberAvatar
           member={avatarPersonFromDisplayName(participant.display_name, participant.photo_url)}
           size="md"
+          initialsTone={participant.status === 'accepted' ? 'warm' : 'muted'}
         />
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-[#2C2419]">
