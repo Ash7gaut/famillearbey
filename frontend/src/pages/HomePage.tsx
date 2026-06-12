@@ -37,7 +37,7 @@ const otherFeatures: {
   { to: '/quiz', icon: BrainCircuit, title: 'Quiz familial' },
   { to: '/secret-santa', icon: Gift, title: 'Secret Santa' },
   { to: '#', icon: MessageCircle, title: 'Mur familial', soon: true },
-  { to: '#', icon: Calendar, title: 'Événements', soon: true },
+  { to: '/calendrier', icon: Calendar, title: 'Calendrier familial' },
   { to: '#', icon: BookOpen, title: 'Mémoire familiale', soon: true },
 ];
 

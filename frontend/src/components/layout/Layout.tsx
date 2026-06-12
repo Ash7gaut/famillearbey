@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
-import { Gift, Home, Images, TreePine, BrainCircuit, Users } from 'lucide-react';
+import { Calendar, Gift, Home, Images, TreePine, BrainCircuit, Users } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 
 const navItems: { to: string; label: string; icon: LucideIcon }[] = [
@@ -8,6 +8,7 @@ const navItems: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/tree', label: 'Arbre', icon: TreePine },
   { to: '/famille', label: 'Famille', icon: Users },
   { to: '/albums', label: 'Albums', icon: Images },
+  { to: '/calendrier', label: 'Calendrier', icon: Calendar },
   { to: '/quiz', label: 'Quiz', icon: BrainCircuit },
   { to: '/secret-santa', label: 'Santa', icon: Gift },
 ];

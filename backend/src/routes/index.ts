@@ -8,6 +8,8 @@ import authRoutes from './authRoutes.js';
 import adminRoutes from './adminRoutes.js';
 import accessRequestRoutes from './accessRequestRoutes.js';
 import secretSantaRoutes from './secretSantaRoutes.js';
+import calendarRoutes from './calendarRoutes.js';
+import eventRoutes from './eventRoutes.js';
 
 const router = Router();
 
@@ -20,6 +22,8 @@ router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
 router.use('/access-requests', accessRequestRoutes);
 router.use('/secret-santa', secretSantaRoutes);
+router.use('/calendar', calendarRoutes);
+router.use('/events', eventRoutes);
 
 router.get('/health', (_req, res) => {
   res.json({ data: { status: 'ok', app: 'FamilyHub – Famille Arbey' } });
