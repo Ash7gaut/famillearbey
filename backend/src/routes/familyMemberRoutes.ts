@@ -19,6 +19,7 @@ const upload = multer({
 const router = Router();
 
 router.get('/', asyncHandler(familyMemberController.getAll));
+router.get('/directory', asyncHandler(familyMemberController.getDirectory));
 router.patch('/me', requireAuth, asyncHandler(familyMemberController.updateMe));
 router.post(
   '/me/photo',

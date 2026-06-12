@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { sanitizeMemberBio } from '../profile/memberUtils';
 import type { FamilyMember } from '../../types';
 
 interface MemberModalProps {
@@ -16,6 +17,8 @@ function formatDate(date: string | null) {
 }
 
 export function MemberModal({ member, onClose }: MemberModalProps) {
+  const bio = sanitizeMemberBio(member.bio);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-arbey-950/40 p-4"
@@ -49,8 +52,8 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
           </div>
         </div>
 
-        {member.bio && (
-          <p className="mt-4 text-sm leading-relaxed text-arbey-700">{member.bio}</p>
+        {bio && (
+          <p className="mt-4 text-sm leading-relaxed text-arbey-700">{bio}</p>
         )}
 
         <div className="mt-6 flex gap-2">

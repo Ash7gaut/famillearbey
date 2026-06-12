@@ -17,7 +17,7 @@ type TreeViewMode = 'custom' | 'family-chart' | 'familytreejs';
 
 const VIEW_DESCRIPTIONS: Record<TreeViewMode, string> = {
   custom:
-    'Choisis une branche pour une vue détaillée, ou affiche toutes les branches. Glisse et zoome pour naviguer.',
+    'Vue détaillée de l\'arbre — filtre par personne si besoin. Glisse et zoome pour naviguer.',
   'family-chart': 'Vue alternative avec family-chart : arbre classique pour comparer le rendu.',
   familytreejs:
     'Vue alternative avec FamilyTree JS 2 (BALKAN) : arbre classique pour comparer le rendu.',
@@ -57,7 +57,7 @@ export function TreePage() {
             onClick={() => setViewMode('custom')}
             className={viewMode === 'custom' ? 'btn-primary' : 'btn-secondary'}
           >
-            Vue Famille Arbey
+            Vue détaillée
           </button>
           <button
             type="button"

@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../config/supabase.js';
 import { AppError } from '../middleware/errorHandler.js';
 import type { FamilyMember, MemberProfile, Relationship, UpdateOwnProfileInput } from '../types/index.js';
+import { sanitizeMember, sanitizeMemberBio, sanitizeMembers } from '../utils/memberBio.js';
 
 const PROFILE_PHOTO_BUCKET = 'albums';
 
@@ -13,7 +14,7 @@ export const familyMemberService = {
       .order('birth_date', { ascending: true });
 
     if (error) throw new AppError(500, error.message, 'DB_ERROR');
-    return data ?? [];
+    return sanitizeMembers(data ?? []);
   },
 
   async getById(id: string): Promise<FamilyMember> {
@@ -24,7 +25,7 @@ export const familyMemberService = {
       .single();
 
     if (error || !data) throw new AppError(404, 'Membre introuvable', 'NOT_FOUND');
-    return data;
+    return sanitizeMember(data);
   },
 
   async create(input: Partial<FamilyMember>): Promise<FamilyMember> {
@@ -35,14 +36,14 @@ export const familyMemberService = {
         last_name: input.last_name ?? 'Arbey',
         photo_url: input.photo_url,
         birth_date: input.birth_date,
-        bio: input.bio,
+        bio: sanitizeMemberBio(input.bio),
         is_alive: input.is_alive ?? true,
       })
       .select()
       .single();
 
     if (error) throw new AppError(400, error.message, 'DB_ERROR');
-    return data;
+    return sanitizeMember(data);
   },
 
   async update(id: string, input: Partial<FamilyMember>): Promise<FamilyMember> {
@@ -53,7 +54,7 @@ export const familyMemberService = {
         last_name: input.last_name,
         photo_url: input.photo_url,
         birth_date: input.birth_date,
-        bio: input.bio,
+        bio: sanitizeMemberBio(input.bio),
         is_alive: input.is_alive,
       })
       .eq('id', id)
@@ -61,32 +62,42 @@ export const familyMemberService = {
       .single();
 
     if (error || !data) throw new AppError(404, 'Membre introuvable', 'NOT_FOUND');
-    return data;
+    return sanitizeMember(data);
   },
 
   async getProfile(id: string): Promise<MemberProfile> {
-    const [member, members, relationships] = await Promise.all([
-      this.getById(id),
-      this.getAll(),
-      getAllRelationships(),
-    ]);
+    const context = await this.getDirectoryContext();
+    const member = context.memberMap.get(id);
+    if (!member) throw new AppError(404, 'Membre introuvable', 'NOT_FOUND');
+    return buildMemberProfile(member, context);
+  },
 
+  async listDirectory(): Promise<MemberProfile[]> {
+    const context = await this.getDirectoryContext();
+    return context.members
+      .map((member) => buildMemberProfile(member, context))
+      .sort((a, b) => {
+        const lastName = a.member.last_name.localeCompare(b.member.last_name, 'fr', {
+          sensitivity: 'base',
+        });
+        if (lastName !== 0) return lastName;
+        return a.member.first_name.localeCompare(b.member.first_name, 'fr', {
+          sensitivity: 'base',
+        });
+      });
+  },
+
+  async getDirectoryContext() {
+    const [members, relationships] = await Promise.all([this.getAll(), getAllRelationships()]);
     const memberMap = new Map(members.map((m) => [m.id, m]));
-
-    return {
-      member,
-      parents: getRelatedMembers(id, relationships, memberMap, 'parents'),
-      children: getRelatedMembers(id, relationships, memberMap, 'children'),
-      spouses: getRelatedMembers(id, relationships, memberMap, 'spouses'),
-      siblings: getRelatedMembers(id, relationships, memberMap, 'siblings'),
-    };
+    return { members, relationships, memberMap };
   },
 
   async updateOwnProfile(memberId: string, input: UpdateOwnProfileInput): Promise<FamilyMember> {
     const payload: Record<string, string | null | undefined> = {};
 
     if (input.bio !== undefined) {
-      payload.bio = input.bio?.trim() ? input.bio.trim() : null;
+      payload.bio = sanitizeMemberBio(input.bio?.trim() ? input.bio.trim() : null);
     }
 
     if (input.birth_date !== undefined) {
@@ -105,7 +116,7 @@ export const familyMemberService = {
       .single();
 
     if (error || !data) throw new AppError(404, 'Membre introuvable', 'NOT_FOUND');
-    return data;
+    return sanitizeMember(data);
   },
 
   async uploadProfilePhoto(memberId: string, file: Express.Multer.File): Promise<FamilyMember> {
@@ -134,6 +145,24 @@ export const familyMemberService = {
     return this.update(memberId, { photo_url: urlData.publicUrl });
   },
 };
+
+function buildMemberProfile(
+  member: FamilyMember,
+  context: {
+    relationships: Relationship[];
+    memberMap: Map<string, FamilyMember>;
+  },
+): MemberProfile {
+  const cleanMember = sanitizeMember(member);
+
+  return {
+    member: cleanMember,
+    parents: getRelatedMembers(member.id, context.relationships, context.memberMap, 'parents'),
+    children: getRelatedMembers(member.id, context.relationships, context.memberMap, 'children'),
+    spouses: getRelatedMembers(member.id, context.relationships, context.memberMap, 'spouses'),
+    siblings: getRelatedMembers(member.id, context.relationships, context.memberMap, 'siblings'),
+  };
+}
 
 async function getAllRelationships(): Promise<Relationship[]> {
   const { data, error } = await supabase.from('relationships').select('*');

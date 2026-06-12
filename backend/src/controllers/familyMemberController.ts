@@ -26,6 +26,11 @@ export const familyMemberController = {
     res.json({ data });
   },
 
+  async getDirectory(_req: Request, res: Response<ApiResponse<MemberProfile[]>>) {
+    const data = await familyMemberService.listDirectory();
+    res.json({ data });
+  },
+
   async getProfile(req: Request, res: Response<ApiResponse<MemberProfile>>) {
     const data = await familyMemberService.getProfile(requireParam(req.params.id, 'id'));
     res.json({ data });

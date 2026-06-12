@@ -12,10 +12,10 @@ interface BranchSelectorProps {
 export function BranchSelector({ branches, active, onChange }: BranchSelectorProps) {
   return (
     <div className="border-b border-arbey-100 bg-white px-4 py-3 sm:px-6">
-      <p className="mb-2 text-xs font-medium text-arbey-500">Choisir une branche</p>
+      <p className="mb-2 text-xs font-medium text-arbey-500">Filtrer la vue</p>
       <div className="flex gap-2 overflow-x-auto pb-1">
         <FilterChip
-          label="Toutes les branches"
+          label="Tout voir"
           active={active === 'all'}
           onClick={() => onChange('all')}
         />

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
+import { GuestLayout } from './components/layout/GuestLayout';
 import { HomePage } from './pages/HomePage';
 import { TreePage } from './pages/TreePage';
 import { AlbumsPage } from './pages/AlbumsPage';
@@ -14,7 +15,9 @@ import { SecretSantaNewPage } from './pages/SecretSantaNewPage';
 import { SecretSantaDetailPage } from './pages/SecretSantaDetailPage';
 import { SecretSantaRevealPage } from './pages/SecretSantaRevealPage';
 import { SecretSantaGuestPage } from './pages/SecretSantaGuestPage';
+import { GuestHubPage } from './pages/GuestHubPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { FamilyDirectoryPage } from './pages/FamilyDirectoryPage';
 import { useAuthStore } from './stores/authStore';
 
 function AuthInit({ children }: { children: React.ReactNode }) {
@@ -28,6 +31,11 @@ export default function App() {
     <BrowserRouter>
       <AuthInit>
         <Routes>
+          <Route element={<GuestLayout />}>
+            <Route path="mes-invitations" element={<GuestHubPage />} />
+            <Route path="secret-santa/invite/:token" element={<SecretSantaGuestPage />} />
+          </Route>
+
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="tree" element={<TreePage />} />
@@ -36,9 +44,9 @@ export default function App() {
             <Route path="quiz" element={<QuizPage />} />
             <Route path="secret-santa" element={<SecretSantaPage />} />
             <Route path="secret-santa/new" element={<SecretSantaNewPage />} />
-            <Route path="secret-santa/invite/:token" element={<SecretSantaGuestPage />} />
             <Route path="secret-santa/:id" element={<SecretSantaDetailPage />} />
             <Route path="secret-santa/:id/reveal" element={<SecretSantaRevealPage />} />
+            <Route path="famille" element={<FamilyDirectoryPage />} />
             <Route path="profil" element={<ProfilePage />} />
             <Route path="profil/:id" element={<ProfilePage />} />
             <Route path="login" element={<LoginPage />} />

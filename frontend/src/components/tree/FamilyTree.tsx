@@ -175,8 +175,6 @@ function AncestorsSection({
   branchCount: number;
   onSelect: (member: FamilyMember) => void;
 }) {
-  const rootTitle = getBranchTitle(root).replace('Branche ', '');
-
   return (
     <div className="flex flex-col items-center border-b border-arbey-100 bg-gradient-to-b from-arbey-50/80 to-white px-6 py-5">
       <GenerationLabel>Aïeuls</GenerationLabel>
@@ -186,11 +184,6 @@ function AncestorsSection({
       {branchCount > 1 && (
         <div className="mt-4 flex flex-col items-center">
           <VerticalLine height="h-4" />
-          <p className="mt-2 text-center text-xs text-arbey-500">
-            Descendance de <span className="font-medium text-arbey-700">{rootTitle}</span>
-            {' · '}
-            {branchCount} branches
-          </p>
         </div>
       )}
     </div>

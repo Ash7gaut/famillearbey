@@ -14,6 +14,8 @@ import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { useAuthReady } from '../hooks/useAuthReady';
 import { useAuthStore } from '../stores/authStore';
+import { RelationGroup } from '../components/profile/RelationGroup';
+import { getInitials, sanitizeMemberBio } from '../components/profile/memberUtils';
 import { api } from '../services/api';
 import type { FamilyMember, MemberProfile } from '../types';
 
@@ -36,49 +38,6 @@ function getAge(birthDate: string | null) {
     age -= 1;
   }
   return age;
-}
-
-function getInitials(member: FamilyMember) {
-  return `${member.first_name[0] ?? ''}${member.last_name[0] ?? ''}`.toUpperCase();
-}
-
-function RelationGroup({
-  label,
-  members,
-}: {
-  label: string;
-  members: FamilyMember[];
-}) {
-  if (members.length === 0) return null;
-
-  return (
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">{label}</p>
-      <ul className="mt-2 flex flex-wrap gap-2">
-        {members.map((person) => (
-          <li key={person.id}>
-            <Link
-              to={`/profil/${person.id}`}
-              className="focus-ring inline-flex items-center gap-2 rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
-            >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-cream-200 text-[10px] font-semibold text-ink-600">
-                {person.photo_url ? (
-                  <img
-                    src={person.photo_url}
-                    alt=""
-                    className="h-full w-full rounded-full object-cover"
-                  />
-                ) : (
-                  getInitials(person)
-                )}
-              </span>
-              {person.first_name} {person.last_name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 export function ProfilePage() {
@@ -107,7 +66,7 @@ export function ProfilePage() {
     try {
       const data = await api.get<MemberProfile>(`/members/${profileId}/profile`);
       setProfile(data);
-      setBio(data.member.bio ?? '');
+      setBio(sanitizeMemberBio(data.member.bio) ?? '');
       setBirthDate(data.member.birth_date ?? '');
     } catch (err) {
       setError((err as Error).message);
@@ -173,7 +132,7 @@ export function ProfilePage() {
 
   function cancelEdit() {
     if (!profile) return;
-    setBio(profile.member.bio ?? '');
+    setBio(sanitizeMemberBio(profile.member.bio) ?? '');
     setBirthDate(profile.member.birth_date ?? '');
     setEditing(false);
   }
@@ -184,6 +143,7 @@ export function ProfilePage() {
   }
 
   const { member } = profile;
+  const displayBio = sanitizeMemberBio(member.bio);
   const age = getAge(member.birth_date);
   const hasRelations =
     profile.parents.length > 0 ||
@@ -357,9 +317,9 @@ export function ProfilePage() {
                   </button>
                 </div>
               </div>
-            ) : member.bio ? (
+            ) : displayBio ? (
               <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-ink-600">
-                {member.bio}
+                {displayBio}
               </p>
             ) : (
               <p className="mt-4 text-sm italic text-ink-400">
@@ -398,6 +358,15 @@ export function ProfilePage() {
                 >
                   <TreePine className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
                   Voir l&apos;arbre généalogique
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/famille"
+                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-white px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
+                >
+                  <Users className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
+                  Voir toute la famille
                 </Link>
               </li>
               <li>

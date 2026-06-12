@@ -19,5 +19,5 @@ export const env = {
   adminSecret: process.env.ADMIN_SECRET ?? '',
   appUrl: process.env.APP_URL ?? 'http://localhost:5173',
   resendApiKey: process.env.RESEND_API_KEY ?? '',
-  emailFrom: process.env.EMAIL_FROM ?? 'FamilyHub <onboarding@resend.dev>',
+  emailFrom: process.env.EMAIL_FROM ?? 'Famille Arbey <onboarding@resend.dev>',
 };

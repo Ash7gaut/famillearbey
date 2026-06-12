@@ -29,7 +29,7 @@ function layout(content: string): string {
   <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:16px;padding:32px;border:1px solid #e8ebe3;">
     <p style="margin:0 0 8px;font-size:24px;">🎁</p>
     ${content}
-    <p style="margin:24px 0 0;font-size:12px;color:#768866;">FamilyHub — Famille Arbey</p>
+    <p style="margin:24px 0 0;font-size:12px;color:#768866;">Famille Arbey</p>
   </div>
 </body>
 </html>`;
@@ -80,7 +80,7 @@ export const emailService = {
       </p>
       ${budgetLine(params.budget)}
       <p style="margin:0 0 20px;color:#495643;">
-        Connecte-toi sur FamilyHub pour accepter ou décliner l'invitation.
+        Connecte-toi sur Famille Arbey pour accepter ou décliner l'invitation.
       </p>
       <a href="${link}" style="display:inline-block;background:#495643;color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-weight:600;">
         Voir l'invitation
@@ -111,11 +111,19 @@ export const emailService = {
       </p>
       ${budgetLine(params.budget)}
       <p style="margin:0 0 20px;color:#495643;">
-        Clique sur le bouton ci-dessous pour participer — pas besoin de compte FamilyHub.
+        Clique sur le bouton ci-dessous pour participer — pas besoin de compte.
+        Garde ce lien pour revenir après le tirage.
       </p>
       <a href="${params.inviteLink}" style="display:inline-block;background:#495643;color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-weight:600;">
-        Accepter l'invitation
+        Ouvrir mon invitation
       </a>
+      <p style="margin:16px 0 0;font-size:13px;color:#495643;">
+        Tu pourras aussi retrouver tes invitations sur
+        <a href="${env.appUrl}/mes-invitations" style="color:#495643;font-weight:600;">
+          Mes invitations
+        </a>
+        (sur le même appareil).
+      </p>
       <p style="margin:20px 0 0;font-size:12px;color:#768866;word-break:break-all;">
         Lien direct : ${escapeHtml(params.inviteLink)}
       </p>

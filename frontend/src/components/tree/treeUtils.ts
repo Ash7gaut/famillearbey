@@ -10,11 +10,7 @@ export function sortTreeNodes(nodes: TreeNode[]): TreeNode[] {
 }
 
 export function getBranchTitle(node: TreeNode): string {
-  const spouse = node.spouseBranches?.[0]?.spouse ?? node.spouses[0];
-  if (spouse) {
-    return `Branche ${node.member.first_name} & ${spouse.first_name}`;
-  }
-  return `Branche ${node.member.first_name}`;
+  return getBranchShortTitle(node);
 }
 
 export function getBranchShortTitle(node: TreeNode): string {
