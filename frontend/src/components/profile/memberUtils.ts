@@ -27,7 +27,7 @@ export function avatarPersonFromDisplayName(
   return { first_name, last_name, photo_url: photoUrl ?? null };
 }
 
-export function memberFullName(member: FamilyMember) {
+export function memberFullName(member: Pick<FamilyMember, 'first_name' | 'last_name'>) {
   return `${member.first_name} ${member.last_name}`;
 }
 

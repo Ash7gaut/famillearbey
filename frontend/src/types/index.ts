@@ -52,6 +52,13 @@ export interface TreeNode {
 
 export type AlbumVisibility = 'family' | 'close_family';
 
+export interface AlbumCreator {
+  id: string;
+  first_name: string;
+  last_name: string;
+  photo_url: string | null;
+}
+
 export interface Album {
   id: string;
   title: string;
@@ -62,6 +69,7 @@ export interface Album {
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  creator?: AlbumCreator | null;
   can_manage?: boolean;
 }
 

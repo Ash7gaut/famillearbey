@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Images } from 'lucide-react';
 import type { Album } from '../../types';
+import { AlbumCreatorLine } from './AlbumCreatorLine';
 import { AlbumVisibilityBadge } from './AlbumVisibilityBadge';
 
 interface AlbumCardProps {
@@ -39,6 +40,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
       </div>
       <div className="border-t border-cream-300/50 bg-cream-50 px-4 py-3.5">
         <h3 className="font-display font-semibold text-ink-800">{album.title}</h3>
+        <AlbumCreatorLine creator={album.creator} className="mt-1" />
         {album.event_date && (
           <p className="mt-1 text-xs text-ink-400">{formatDate(album.event_date)}</p>
         )}

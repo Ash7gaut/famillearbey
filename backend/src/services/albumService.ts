@@ -1,6 +1,6 @@
 import { supabase } from '../config/supabase.js';
 import { AppError } from '../middleware/errorHandler.js';
-import type { Album, AlbumVisibility, FamilyMember } from '../types/index.js';
+import type { Album, AlbumCreator, AlbumVisibility, FamilyMember } from '../types/index.js';
 import {
   assertAlbumAccess,
   canManageAlbum,
@@ -8,6 +8,30 @@ import {
 } from './albumAccessService.js';
 
 const PHOTO_BUCKET = 'albums';
+
+async function enrichAlbumsWithCreators(albums: Album[]): Promise<Album[]> {
+  const creatorIds = [
+    ...new Set(albums.map((album) => album.created_by).filter((id): id is string => !!id)),
+  ];
+
+  if (creatorIds.length === 0) {
+    return albums.map((album) => ({ ...album, creator: null }));
+  }
+
+  const { data: members, error } = await supabase
+    .from('family_members')
+    .select('id, first_name, last_name, photo_url')
+    .in('id', creatorIds);
+
+  if (error) throw new AppError(500, error.message, 'DB_ERROR');
+
+  const memberMap = new Map((members as AlbumCreator[] | null)?.map((member) => [member.id, member]));
+
+  return albums.map((album) => ({
+    ...album,
+    creator: album.created_by ? memberMap.get(album.created_by) ?? null : null,
+  }));
+}
 
 export const albumService = {
   async getAll(viewerMemberId?: string | null): Promise<Album[]> {
@@ -17,7 +41,8 @@ export const albumService = {
       .order('event_date', { ascending: false, nullsFirst: false });
 
     if (error) throw new AppError(500, error.message, 'DB_ERROR');
-    return filterAlbumsForViewer(data ?? [], viewerMemberId);
+    const visible = await filterAlbumsForViewer(data ?? [], viewerMemberId);
+    return enrichAlbumsWithCreators(visible);
   },
 
   async getById(id: string, viewerMemberId?: string | null): Promise<Album> {
@@ -29,7 +54,8 @@ export const albumService = {
 
     if (error || !data) throw new AppError(404, 'Album introuvable', 'NOT_FOUND');
     await assertAlbumAccess(data, viewerMemberId);
-    return data;
+    const [album] = await enrichAlbumsWithCreators([data]);
+    return album;
   },
 
   async create(input: {
@@ -52,7 +78,8 @@ export const albumService = {
       .single();
 
     if (error) throw new AppError(400, error.message, 'DB_ERROR');
-    return data;
+    const [album] = await enrichAlbumsWithCreators([data]);
+    return album;
   },
 
   async update(id: string, input: Partial<Album>): Promise<Album> {
@@ -70,7 +97,8 @@ export const albumService = {
       .single();
 
     if (error || !data) throw new AppError(404, 'Album introuvable', 'NOT_FOUND');
-    return data;
+    const [album] = await enrichAlbumsWithCreators([data]);
+    return album;
   },
 
   async delete(id: string, member: FamilyMember): Promise<void> {

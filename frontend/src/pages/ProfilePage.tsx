@@ -197,6 +197,7 @@ export function ProfilePage() {
           src={member.photo_url}
           alt={`Photo de ${member.first_name} ${member.last_name}`}
           onClose={() => setPhotoLightboxOpen(false)}
+          size="compact"
         />
       )}
 

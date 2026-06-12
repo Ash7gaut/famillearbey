@@ -1,7 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAlbumStore } from '../stores/albumStore';
 import { AlbumCard } from '../components/albums/AlbumCard';
+import {
+  AlbumFilters,
+  filterAlbums,
+  type AlbumCreatorFilter,
+  type AlbumVisibilityFilter,
+} from '../components/albums/AlbumFilters';
 import { AlbumVisibilityOption } from '../components/albums/AlbumVisibilityBadge';
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
@@ -11,8 +17,10 @@ import type { AlbumVisibility } from '../types';
 
 export function AlbumsPage() {
   const { albums, loading, error, fetchAlbums, createAlbum } = useAlbumStore();
-  const { isAuthenticated } = useAuthReady();
+  const { isAuthenticated, member } = useAuthReady();
   const [showForm, setShowForm] = useState(false);
+  const [visibilityFilter, setVisibilityFilter] = useState<AlbumVisibilityFilter>('all');
+  const [creatorFilter, setCreatorFilter] = useState<AlbumCreatorFilter>('all');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState<AlbumVisibility>('family');
@@ -21,6 +29,11 @@ export function AlbumsPage() {
   useEffect(() => {
     fetchAlbums();
   }, [fetchAlbums]);
+
+  const filteredAlbums = useMemo(
+    () => filterAlbums(albums, visibilityFilter, creatorFilter, member?.id),
+    [albums, visibilityFilter, creatorFilter, member?.id],
+  );
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,18 +129,49 @@ export function AlbumsPage() {
       {loading && <LoadingSpinner />}
       {error && <ErrorMessage message={error} onRetry={fetchAlbums} />}
 
+      {!loading && !error && albums.length > 0 && (
+        <AlbumFilters
+          albums={albums}
+          visibilityFilter={visibilityFilter}
+          creatorFilter={creatorFilter}
+          currentMemberId={member?.id}
+          onVisibilityChange={setVisibilityFilter}
+          onCreatorChange={setCreatorFilter}
+        />
+      )}
+
       {!loading && !error && (
         albums.length === 0 ? (
           <div className="card py-12 text-center">
             <p className="mb-3 text-4xl">📸</p>
             <p className="text-arbey-600">Aucun album pour l'instant. Créez le premier !</p>
           </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {albums.map((album) => (
-              <AlbumCard key={album.id} album={album} />
-            ))}
+        ) : filteredAlbums.length === 0 ? (
+          <div className="card py-12 text-center">
+            <p className="text-arbey-600">Aucun album ne correspond à ces filtres.</p>
+            <button
+              type="button"
+              onClick={() => {
+                setVisibilityFilter('all');
+                setCreatorFilter('all');
+              }}
+              className="btn-secondary mt-4"
+            >
+              Réinitialiser les filtres
+            </button>
           </div>
+        ) : (
+          <>
+            <p className="text-sm text-ink-500">
+              {filteredAlbums.length} album{filteredAlbums.length > 1 ? 's' : ''}
+              {filteredAlbums.length !== albums.length && ` sur ${albums.length}`}
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredAlbums.map((album) => (
+                <AlbumCard key={album.id} album={album} />
+              ))}
+            </div>
+          </>
         )
       )}
     </div>
