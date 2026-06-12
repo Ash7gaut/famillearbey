@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
@@ -13,6 +13,7 @@ interface PhotoLightboxProps {
   onPrevious?: () => void;
   onNext?: () => void;
   positionLabel?: string;
+  sidePanel?: ReactNode;
 }
 
 export function PhotoLightbox({
@@ -25,6 +26,7 @@ export function PhotoLightbox({
   onPrevious,
   onNext,
   positionLabel,
+  sidePanel,
 }: PhotoLightboxProps) {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -46,7 +48,7 @@ export function PhotoLightbox({
   const imageClassName =
     size === 'compact'
       ? 'relative z-10 max-h-[55vh] max-w-[min(88vw,22rem)] rounded-2xl object-contain shadow-[0_16px_48px_-12px_rgba(0,0,0,0.45)] sm:max-w-sm'
-      : 'relative z-10 max-h-[90vh] max-w-[min(95vw,1200px)] w-auto h-auto rounded-lg object-contain shadow-[0_16px_48px_-12px_rgba(0,0,0,0.45)]';
+      : 'relative z-10 max-h-[min(90vh,720px)] max-w-full w-auto h-auto rounded-lg object-contain shadow-[0_16px_48px_-12px_rgba(0,0,0,0.45)]';
 
   const navButtonClassName =
     'focus-ring absolute top-1/2 z-20 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-2 border-cream-200 bg-cream-50 text-ink-800 shadow-[0_4px_24px_rgba(0,0,0,0.28)] transition hover:border-warm-300 hover:bg-white hover:text-warm-800 sm:h-14 sm:w-14';
@@ -76,40 +78,40 @@ export function PhotoLightbox({
         </p>
       )}
 
-      {hasPrevious && onPrevious && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onPrevious();
-          }}
-          className={`${navButtonClassName} left-4 sm:left-8`}
-          aria-label="Photo précédente"
-        >
-          <ChevronLeft className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.5} />
-        </button>
-      )}
-
-      {hasNext && onNext && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onNext();
-          }}
-          className={`${navButtonClassName} right-4 sm:right-8`}
-          aria-label="Photo suivante"
-        >
-          <ChevronRight className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.5} />
-        </button>
-      )}
-
-      <img
-        src={src}
-        alt={alt}
-        className={imageClassName}
+      <div
+        className={`relative z-10 flex max-h-[92vh] w-full flex-col overflow-hidden rounded-2xl bg-cream-50 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.45)] sm:max-w-6xl ${
+          sidePanel ? 'sm:flex-row' : 'items-center justify-center'
+        }`}
         onClick={(e) => e.stopPropagation()}
-      />
+      >
+        <div className={`relative flex min-h-0 flex-1 items-center justify-center bg-ink-900/90 p-4 sm:p-6 ${sidePanel ? 'min-h-[50vh]' : ''}`}>
+          {hasPrevious && onPrevious && (
+            <button
+              type="button"
+              onClick={onPrevious}
+              className={`${navButtonClassName} left-2 sm:left-4`}
+              aria-label="Photo précédente"
+            >
+              <ChevronLeft className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.5} />
+            </button>
+          )}
+
+          {hasNext && onNext && (
+            <button
+              type="button"
+              onClick={onNext}
+              className={`${navButtonClassName} right-2 sm:right-4`}
+              aria-label="Photo suivante"
+            >
+              <ChevronRight className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.5} />
+            </button>
+          )}
+
+          <img src={src} alt={alt} className={imageClassName} />
+        </div>
+
+        {sidePanel}
+      </div>
     </div>,
     document.body,
   );

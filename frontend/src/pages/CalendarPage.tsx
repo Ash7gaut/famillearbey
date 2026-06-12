@@ -43,6 +43,7 @@ export function CalendarPage() {
   const [month, setMonth] = useState(today.month);
   const [data, setData] = useState<CalendarMonth | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedIso, setSelectedIso] = useState(today.iso);
   const [showForm, setShowForm] = useState(false);
@@ -55,8 +56,8 @@ export function CalendarPage() {
   const [endDate, setEndDate] = useState('');
 
   const loadMonth = useCallback(async () => {
-    setLoading(true);
     setError(null);
+    setRefreshing(true);
     try {
       const monthData = await api.get<CalendarMonth>(`/calendar/${year}/${month}`);
       setData(monthData);
@@ -64,6 +65,7 @@ export function CalendarPage() {
       setError((err as Error).message);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }, [year, month]);
 
@@ -314,15 +316,19 @@ export function CalendarPage() {
           </button>
         </div>
 
-        {loading && (
+        {error && <div className="p-4"><ErrorMessage message={error} onRetry={loadMonth} /></div>}
+
+        {loading && !data ? (
           <div className="py-12">
             <LoadingSpinner />
           </div>
-        )}
-        {error && <div className="p-4"><ErrorMessage message={error} onRetry={loadMonth} /></div>}
-
-        {!loading && !error && (
-          <>
+        ) : !error && data ? (
+          <div className={`relative transition-opacity ${refreshing ? 'pointer-events-none opacity-60' : ''}`}>
+            {refreshing && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center">
+                <LoadingSpinner />
+              </div>
+            )}
             <div className="grid grid-cols-7 border-b border-cream-300/70 bg-cream-100/60">
               {WEEKDAY_LABELS.map((label) => (
                 <div
@@ -429,11 +435,11 @@ export function CalendarPage() {
                 );
               })}
             </div>
-          </>
-        )}
+          </div>
+        ) : null}
       </div>
 
-      {!loading && !error && (
+      {data && !error && (
         <div className="card">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <h2 className="font-display text-lg font-semibold text-ink-800">

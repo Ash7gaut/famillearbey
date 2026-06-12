@@ -1,3 +1,5 @@
+import type { PhotoLatestComment } from './comment';
+
 export type RelationshipType = 'parent' | 'spouse' | 'sibling';
 
 export interface Relationship {
@@ -86,6 +88,7 @@ export interface Photo {
   caption: string | null;
   created_at: string;
   can_delete?: boolean;
+  latest_comment?: PhotoLatestComment | null;
 }
 
 export interface ApiResponse<T> {
