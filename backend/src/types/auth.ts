@@ -12,6 +12,7 @@ export interface AccessRequest {
   last_name: string;
   email: string;
   message: string | null;
+  auth_user_id: string | null;
   status: 'pending' | 'approved' | 'rejected';
   reviewed_by: string | null;
   created_at: string;

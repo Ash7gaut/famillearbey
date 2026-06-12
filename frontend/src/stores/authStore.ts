@@ -77,7 +77,12 @@ export const useAuthStore = create<AuthState>((set, get) => {
         const member = await api.post<FamilyMember>('/auth/sync');
         set({ member, loading: false });
       } catch (err) {
-        set({ error: (err as Error).message, loading: false });
+        const raw = (err as Error).message;
+        const friendly =
+          /email not confirmed|not confirmed/i.test(raw)
+            ? 'Ton compte n\'est pas encore validé par un administrateur.'
+            : raw;
+        set({ error: friendly, loading: false });
         throw err;
       }
     },

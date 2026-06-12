@@ -130,14 +130,20 @@ export const authService = {
     return data;
   },
 
-  /** Demande d'accès publique */
+  /** Demande d'accès publique — crée aussi le compte Supabase (inactif jusqu'à approbation) */
   async createAccessRequest(input: {
     first_name: string;
     last_name?: string;
     email: string;
     message?: string;
+    password: string;
   }): Promise<AccessRequest> {
     const email = input.email.toLowerCase().trim();
+    const password = input.password;
+
+    if (password.length < 8) {
+      throw new AppError(400, 'Le mot de passe doit contenir au moins 8 caractères', 'VALIDATION');
+    }
 
     const { data: alreadyInvited } = await supabase
       .from('family_members')
@@ -160,6 +166,24 @@ export const authService = {
       throw new AppError(409, 'Une demande est déjà en attente pour cet email', 'REQUEST_PENDING');
     }
 
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: false,
+      user_metadata: {
+        first_name: input.first_name,
+        last_name: input.last_name ?? 'Arbey',
+      },
+    });
+
+    if (authError || !authData.user) {
+      const message = authError?.message ?? 'Impossible de créer le compte';
+      if (/already|registered|exists/i.test(message)) {
+        throw new AppError(409, 'Un compte existe déjà avec cet email', 'EMAIL_TAKEN');
+      }
+      throw new AppError(400, message, 'AUTH_ERROR');
+    }
+
     const { data, error } = await supabase
       .from('access_requests')
       .insert({
@@ -167,12 +191,65 @@ export const authService = {
         last_name: input.last_name ?? 'Arbey',
         email,
         message: input.message,
+        auth_user_id: authData.user.id,
       })
       .select()
       .single();
 
-    if (error) throw new AppError(400, error.message, 'DB_ERROR');
+    if (error) {
+      await supabase.auth.admin.deleteUser(authData.user.id);
+      throw new AppError(400, error.message, 'DB_ERROR');
+    }
+
     return data;
+  },
+
+  /** Approuve une demande — active le compte déjà créé et lie le profil famille */
+  async approveAccessRequest(
+    requestId: string,
+    memberId: string,
+    reviewerId: string,
+  ): Promise<{ message: string }> {
+    const { data: request, error: fetchError } = await supabase
+      .from('access_requests')
+      .select('*')
+      .eq('id', requestId)
+      .eq('status', 'pending')
+      .maybeSingle();
+
+    if (fetchError) throw new AppError(500, fetchError.message, 'DB_ERROR');
+    if (!request) throw new AppError(404, 'Demande introuvable', 'NOT_FOUND');
+
+    if (request.auth_user_id) {
+      await this.linkMember(memberId, request.auth_user_id, request.email);
+
+      const { error: confirmError } = await supabase.auth.admin.updateUserById(
+        request.auth_user_id,
+        { email_confirm: true },
+      );
+
+      if (confirmError) throw new AppError(500, confirmError.message, 'AUTH_ERROR');
+
+      const { error: updateError } = await supabase
+        .from('access_requests')
+        .update({ status: 'approved', reviewed_by: reviewerId })
+        .eq('id', requestId);
+
+      if (updateError) throw new AppError(500, updateError.message, 'DB_ERROR');
+
+      return {
+        message: `${request.first_name} peut maintenant se connecter avec son email et le mot de passe choisi.`,
+      };
+    }
+
+    const result = await this.inviteMember(memberId, request.email);
+
+    await supabase
+      .from('access_requests')
+      .update({ status: 'approved', reviewed_by: reviewerId })
+      .eq('id', requestId);
+
+    return result;
   },
 
   async listAccessRequests(): Promise<AccessRequest[]> {
@@ -187,11 +264,21 @@ export const authService = {
   },
 
   async rejectAccessRequest(requestId: string, reviewerId: string): Promise<void> {
+    const { data: request } = await supabase
+      .from('access_requests')
+      .select('auth_user_id')
+      .eq('id', requestId)
+      .maybeSingle();
+
     const { error } = await supabase
       .from('access_requests')
       .update({ status: 'rejected', reviewed_by: reviewerId })
       .eq('id', requestId);
 
     if (error) throw new AppError(500, error.message, 'DB_ERROR');
+
+    if (request?.auth_user_id) {
+      await supabase.auth.admin.deleteUser(request.auth_user_id);
+    }
   },
 };

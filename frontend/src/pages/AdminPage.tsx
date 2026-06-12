@@ -12,6 +12,7 @@ interface AccessRequest {
   last_name: string;
   email: string;
   message: string | null;
+  auth_user_id: string | null;
 }
 
 export function AdminPage() {
@@ -139,6 +140,11 @@ export function AdminPage() {
                   {req.first_name} {req.last_name}
                 </p>
                 <p className="text-sm text-arbey-600">{req.email}</p>
+                {req.auth_user_id && (
+                  <span className="mt-1 inline-block rounded-full bg-arbey-100 px-2 py-0.5 text-xs font-medium text-arbey-700">
+                    Compte déjà créé
+                  </span>
+                )}
                 {req.message && <p className="text-sm text-arbey-500 mt-1">"{req.message}"</p>}
               </div>
               <div className="flex gap-2 flex-wrap">

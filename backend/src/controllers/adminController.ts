@@ -36,13 +36,11 @@ export const adminController = {
 
     if (!memberId) throw new AppError(400, 'memberId requis', 'MISSING_FIELDS');
 
-    const requests = await authService.listAccessRequests();
-    const request = requests.find((r) => r.id === requestId);
-    if (!request) throw new AppError(404, 'Demande introuvable', 'NOT_FOUND');
-
-    const result = await authService.inviteMember(memberId, request.email);
-
-    await supabaseUpdateRequest(requestId, req.member!.id);
+    const result = await authService.approveAccessRequest(
+      requestId,
+      memberId,
+      req.member!.id,
+    );
 
     res.json({ data: result });
   },
@@ -53,11 +51,3 @@ export const adminController = {
     res.status(204).send();
   },
 };
-
-async function supabaseUpdateRequest(requestId: string, reviewerId: string) {
-  const { supabase } = await import('../config/supabase.js');
-  await supabase
-    .from('access_requests')
-    .update({ status: 'approved', reviewed_by: reviewerId })
-    .eq('id', requestId);
-}
