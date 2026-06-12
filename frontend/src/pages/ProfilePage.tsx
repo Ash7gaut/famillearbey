@@ -15,7 +15,8 @@ import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { useAuthReady } from '../hooks/useAuthReady';
 import { useAuthStore } from '../stores/authStore';
 import { RelationGroup } from '../components/profile/RelationGroup';
-import { getInitials, sanitizeMemberBio } from '../components/profile/memberUtils';
+import { MemberAvatar } from '../components/profile/MemberAvatar';
+import { sanitizeMemberBio } from '../components/profile/memberUtils';
 import { api } from '../services/api';
 import type { FamilyMember, MemberProfile } from '../types';
 
@@ -159,17 +160,12 @@ export function ProfilePage() {
         <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-warm-200/25 blur-2xl" aria-hidden />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start">
           <div className="relative shrink-0">
-            <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-gradient-to-br from-cream-200 to-warm-100 font-display text-3xl font-semibold text-ink-600 shadow-warm sm:h-32 sm:w-32">
-              {member.photo_url ? (
-                <img
-                  src={member.photo_url}
-                  alt={member.first_name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                getInitials(member)
-              )}
-            </div>
+            <MemberAvatar
+              member={member}
+              size="hero"
+              shape="rounded"
+              className="border-4 border-white font-display shadow-warm"
+            />
             {isOwnProfile && (
               <>
                 <button

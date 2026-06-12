@@ -9,6 +9,8 @@ import type {
   SecretSantaGroupDetail,
   SecretSantaParticipantView,
 } from '../types/secretSanta';
+import { MemberAvatar } from '../components/profile/MemberAvatar';
+import { avatarPersonFromDisplayName } from '../components/profile/memberUtils';
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
@@ -354,10 +356,6 @@ export function SecretSantaDetailPage() {
   );
 }
 
-function participantInitial(name: string) {
-  return name.trim().charAt(0).toUpperCase() || '?';
-}
-
 function ParticipantRow({
   participant,
   isCreator,
@@ -386,12 +384,10 @@ function ParticipantRow({
   return (
     <li className="flex flex-wrap items-center gap-3 rounded-xl border border-[#EDE6DA] bg-white/60 px-3 py-2.5 sm:flex-nowrap">
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <span
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F5F0E8] text-sm font-semibold text-[#5C4F42]"
-          aria-hidden
-        >
-          {participantInitial(participant.display_name)}
-        </span>
+        <MemberAvatar
+          member={avatarPersonFromDisplayName(participant.display_name, participant.photo_url)}
+          size="md"
+        />
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-[#2C2419]">
             {participant.display_name}

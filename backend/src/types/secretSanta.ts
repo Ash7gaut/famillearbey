@@ -46,6 +46,7 @@ export interface SecretSantaParticipantView {
   is_creator: boolean;
   is_external: boolean;
   member_id: string | null;
+  photo_url: string | null;
 }
 
 export interface SecretSantaAssignment {

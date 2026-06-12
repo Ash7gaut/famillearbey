@@ -1,13 +1,10 @@
+import { MemberAvatar } from '../profile/MemberAvatar';
 import type { FamilyMember } from '../../types';
 
 interface MemberCardProps {
   member: FamilyMember;
   onClick?: () => void;
   size?: 'sm' | 'md';
-}
-
-function getInitials(first: string, last: string) {
-  return `${first[0]}${last[0]}`.toUpperCase();
 }
 
 function formatBirthYear(date: string | null) {
@@ -27,21 +24,11 @@ export function MemberCard({ member, onClick, size = 'md' }: MemberCardProps) {
         isSmall ? 'w-24' : 'w-28'
       }`}
     >
-      <div
-        className={`flex items-center justify-center rounded-full bg-gradient-to-br from-cream-200 to-warm-100 font-display font-semibold text-ink-700 ring-2 ring-white ${
-          isSmall ? 'h-14 w-14 text-sm' : 'h-20 w-20 text-lg'
-        }`}
-      >
-        {member.photo_url ? (
-          <img
-            src={member.photo_url}
-            alt={`${member.first_name} ${member.last_name}`}
-            className="h-full w-full rounded-full object-cover"
-          />
-        ) : (
-          getInitials(member.first_name, member.last_name)
-        )}
-      </div>
+      <MemberAvatar
+        member={member}
+        size={isSmall ? 'xl' : '2xl'}
+        className="font-display ring-2 ring-white"
+      />
 
       <div className="text-center">
         <p className={`font-medium text-ink-800 ${isSmall ? 'text-xs' : 'text-sm'}`}>

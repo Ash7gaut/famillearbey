@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { MemberAvatar } from '../profile/MemberAvatar';
 import { sanitizeMemberBio } from '../profile/memberUtils';
 import type { FamilyMember } from '../../types';
 
@@ -29,17 +30,7 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-arbey-100 to-warm-100 font-display text-xl font-semibold text-arbey-700">
-            {member.photo_url ? (
-              <img
-                src={member.photo_url}
-                alt={member.first_name}
-                className="h-full w-full rounded-full object-cover"
-              />
-            ) : (
-              `${member.first_name[0]}${member.last_name[0]}`
-            )}
-          </div>
+          <MemberAvatar member={member} size="xl" className="font-display" />
           <div>
             <h2 className="font-display text-xl font-semibold text-arbey-900">
               {member.first_name} {member.last_name}

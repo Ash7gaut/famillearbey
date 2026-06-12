@@ -13,8 +13,18 @@ export function sanitizeMemberBio(bio: string | null | undefined): string | null
   return cleaned || null;
 }
 
-export function getInitials(member: FamilyMember) {
+export function getInitials(member: Pick<FamilyMember, 'first_name' | 'last_name'>) {
   return `${member.first_name[0] ?? ''}${member.last_name[0] ?? ''}`.toUpperCase();
+}
+
+export function avatarPersonFromDisplayName(
+  displayName: string,
+  photoUrl?: string | null,
+): Pick<FamilyMember, 'first_name' | 'last_name' | 'photo_url'> {
+  const parts = displayName.trim().split(/\s+/);
+  const first_name = parts[0] ?? displayName;
+  const last_name = parts.slice(1).join(' ');
+  return { first_name, last_name, photo_url: photoUrl ?? null };
 }
 
 export function memberFullName(member: FamilyMember) {

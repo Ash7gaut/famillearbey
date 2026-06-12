@@ -2,10 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, LogOut, Settings, User, UserRound } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
-
-function getInitials(first: string, last: string) {
-  return `${first[0]}${last[0]}`.toUpperCase();
-}
+import { MemberAvatar } from '../profile/MemberAvatar';
 
 interface UserMenuProps {
   variant?: 'header' | 'sidebar' | 'floating';
@@ -114,13 +111,11 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
         aria-expanded={open}
         aria-haspopup="menu"
       >
-        <span
-          className={`flex items-center justify-center rounded-full bg-[#c66434] font-semibold text-white ${
-            isFloating || isSidebar ? 'h-10 w-10 text-sm' : 'h-7 w-7 text-xs'
-          }`}
-        >
-          {getInitials(member.first_name, member.last_name)}
-        </span>
+        <MemberAvatar
+          member={member}
+          size={isFloating || isSidebar ? 'lg' : 'xs'}
+          className="ring-2 ring-white"
+        />
         <span
           className={
             isSidebar || isFloating
@@ -140,11 +135,14 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
           role="menu"
           className={`absolute z-50 overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 py-1 shadow-[0_8px_30px_-6px_rgba(44,36,25,0.15)] ${isSidebar ? 'w-full' : 'w-56'} ${menuPositionClass}`}
         >
-          <div className="border-b border-cream-300/60 px-4 py-3">
-            <p className="font-medium text-ink-800">
-              {member.first_name} {member.last_name}
-            </p>
-            <p className="text-xs text-ink-400">Membre de la famille</p>
+          <div className="flex items-center gap-3 border-b border-cream-300/60 px-4 py-3">
+            <MemberAvatar member={member} size="md" />
+            <div className="min-w-0">
+              <p className="truncate font-medium text-ink-800">
+                {member.first_name} {member.last_name}
+              </p>
+              <p className="text-xs text-ink-400">Membre de la famille</p>
+            </div>
           </div>
 
           <Link

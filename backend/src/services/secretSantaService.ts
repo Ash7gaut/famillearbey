@@ -21,7 +21,10 @@ function memberDisplayName(m: Pick<FamilyMember, 'first_name' | 'last_name'>): s
   return `${m.first_name} ${m.last_name}`;
 }
 
-function toParticipantView(p: SecretSantaParticipant): SecretSantaParticipantView {
+function toParticipantView(
+  p: SecretSantaParticipant,
+  photoByMember?: Map<string, string | null>,
+): SecretSantaParticipantView {
   return {
     id: p.id,
     display_name: p.display_name,
@@ -29,7 +32,43 @@ function toParticipantView(p: SecretSantaParticipant): SecretSantaParticipantVie
     is_creator: p.is_creator,
     is_external: p.member_id === null,
     member_id: p.member_id,
+    photo_url: p.member_id ? (photoByMember?.get(p.member_id) ?? null) : null,
   };
+}
+
+async function photoUrlByMemberIds(memberIds: string[]): Promise<Map<string, string | null>> {
+  const map = new Map<string, string | null>();
+  if (memberIds.length === 0) return map;
+
+  const { data, error } = await supabase
+    .from('family_members')
+    .select('id, photo_url')
+    .in('id', memberIds);
+
+  if (error) throw new AppError(500, error.message, 'DB_ERROR');
+
+  for (const member of data ?? []) {
+    map.set(member.id, member.photo_url);
+  }
+
+  return map;
+}
+
+async function toParticipantViews(
+  participants: SecretSantaParticipant[],
+): Promise<SecretSantaParticipantView[]> {
+  const memberIds = participants
+    .map((p) => p.member_id)
+    .filter((id): id is string => Boolean(id));
+  const photoByMember = await photoUrlByMemberIds(memberIds);
+  return participants.map((p) => toParticipantView(p, photoByMember));
+}
+
+async function toParticipantViewAsync(
+  participant: SecretSantaParticipant,
+): Promise<SecretSantaParticipantView> {
+  const [view] = await toParticipantViews([participant]);
+  return view;
 }
 
 function inviteLink(token: string): string {
@@ -200,7 +239,7 @@ export const secretSantaService = {
       is_creator: group.created_by === member.id,
       my_participant_id: me?.id ?? null,
       my_status: me?.status ?? null,
-      participants: participants.map(toParticipantView),
+      participants: await toParticipantViews(participants),
     };
   },
 
@@ -274,7 +313,7 @@ export const secretSantaService = {
     }
 
     return {
-      participant: toParticipantView(participant),
+      participant: await toParticipantViewAsync(participant),
       email_sent,
       email_message,
     };
@@ -332,7 +371,7 @@ export const secretSantaService = {
     });
 
     return {
-      participant: toParticipantView(participant),
+      participant: await toParticipantViewAsync(participant),
       invite_link: link,
       email_sent,
       email_message: email_sent
@@ -364,7 +403,7 @@ export const secretSantaService = {
       .single();
 
     if (error) throw new AppError(500, error.message, 'DB_ERROR');
-    return toParticipantView(data);
+    return toParticipantViewAsync(data);
   },
 
   async draw(groupId: string, member: FamilyMember): Promise<SecretSantaGroupDetail> {
