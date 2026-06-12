@@ -4,6 +4,7 @@ import { Bookmark, Link2 } from 'lucide-react';
 import { api } from '../services/api';
 import type { GuestInviteInfo, SecretSantaAssignment } from '../types/secretSanta';
 import { AssignmentReveal } from '../components/secretSanta/AssignmentReveal';
+import { DrawParticipantsPanel } from '../components/secretSanta/DrawParticipantsPanel';
 import { LockedAssignment } from '../components/secretSanta/LockedAssignment';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
@@ -84,16 +85,20 @@ export function SecretSantaGuestPage() {
 
   if (locked && assignment) {
     return (
-      <div className="mx-auto max-w-md space-y-6">
+      <div className="mx-auto max-w-lg space-y-6">
         <BookmarkCard onCopy={copyPersonalLink} copied={copied} />
         <LockedAssignment name={assignment.receiver_display_name} />
+        <DrawParticipantsPanel
+          participants={assignment.participants ?? []}
+          showProfileLinks={false}
+        />
         <HubReminder />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-6">
+    <div className="mx-auto max-w-lg space-y-6">
       <div className="text-center">
         <p className="mb-2 text-4xl" aria-hidden>
           🎁
@@ -142,6 +147,7 @@ export function SecretSantaGuestPage() {
         <AssignmentReveal
           assignment={assignment}
           storageKey={storageKey}
+          showProfileLinks={false}
           onConfirmReveal={async () => {
             const updated = await api.post<SecretSantaAssignment>(
               `/secret-santa/invite/${token}/confirm-reveal`,

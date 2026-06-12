@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { api } from '../services/api';
 import type { SecretSantaAssignment } from '../types/secretSanta';
 import { AssignmentReveal } from '../components/secretSanta/AssignmentReveal';
+import { DrawParticipantsPanel } from '../components/secretSanta/DrawParticipantsPanel';
 import { LockedAssignment } from '../components/secretSanta/LockedAssignment';
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
@@ -50,12 +51,17 @@ export function SecretSantaRevealPage() {
 
   const locked = assignment.revealed === true || isRevealStored(storageKey);
 
+  const participants = assignment.participants ?? [];
+
   return (
-    <div className="mx-auto max-w-md space-y-6">
+    <div className="mx-auto max-w-lg space-y-6">
       <BackLink to={`/secret-santa/${id}`} label="Secret Santa" />
 
       {locked ? (
-        <LockedAssignment name={assignment.receiver_display_name} />
+        <>
+          <LockedAssignment name={assignment.receiver_display_name} />
+          <DrawParticipantsPanel participants={participants} />
+        </>
       ) : (
         <AssignmentReveal
           assignment={assignment}

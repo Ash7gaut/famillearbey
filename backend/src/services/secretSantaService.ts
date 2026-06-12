@@ -7,6 +7,7 @@ import type {
   InviteEmailResult,
   ParticipantStatus,
   SecretSantaAssignment,
+  SecretSantaDrawParticipant,
   SecretSantaGroup,
   SecretSantaGroupDetail,
   SecretSantaGroupSummary,
@@ -36,22 +37,51 @@ function toParticipantView(
   };
 }
 
-async function photoUrlByMemberIds(memberIds: string[]): Promise<Map<string, string | null>> {
-  const map = new Map<string, string | null>();
+type MemberDrawInfo = Pick<FamilyMember, 'id' | 'photo_url' | 'bio'>;
+
+async function memberDrawInfoByIds(memberIds: string[]): Promise<Map<string, MemberDrawInfo>> {
+  const map = new Map<string, MemberDrawInfo>();
   if (memberIds.length === 0) return map;
 
   const { data, error } = await supabase
     .from('family_members')
-    .select('id, photo_url')
+    .select('id, photo_url, bio')
     .in('id', memberIds);
 
   if (error) throw new AppError(500, error.message, 'DB_ERROR');
 
   for (const member of data ?? []) {
-    map.set(member.id, member.photo_url);
+    map.set(member.id, member);
   }
 
   return map;
+}
+
+async function photoUrlByMemberIds(memberIds: string[]): Promise<Map<string, string | null>> {
+  const info = await memberDrawInfoByIds(memberIds);
+  return new Map([...info.entries()].map(([id, member]) => [id, member.photo_url]));
+}
+
+async function toDrawParticipants(
+  participants: SecretSantaParticipant[],
+): Promise<SecretSantaDrawParticipant[]> {
+  const memberIds = participants
+    .map((participant) => participant.member_id)
+    .filter((id): id is string => Boolean(id));
+  const memberInfo = await memberDrawInfoByIds(memberIds);
+
+  return participants.map((participant) => {
+    const member = participant.member_id ? memberInfo.get(participant.member_id) : undefined;
+    return {
+      id: participant.id,
+      display_name: participant.display_name,
+      is_creator: participant.is_creator,
+      is_external: participant.member_id === null,
+      member_id: participant.member_id,
+      photo_url: member?.photo_url ?? null,
+      bio: member?.bio ?? null,
+    };
+  });
 }
 
 async function toParticipantViews(
@@ -487,6 +517,7 @@ export const secretSantaService = {
     return {
       receiver_display_name: receiver.display_name,
       participant_names: accepted.map((p) => p.display_name),
+      participants: await toDrawParticipants(accepted),
       revealed: Boolean(giver?.revealed_at),
     };
   },

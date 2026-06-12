@@ -39,9 +39,20 @@ export interface SecretSantaGroupDetail {
   participants: SecretSantaParticipantView[];
 }
 
+export interface SecretSantaDrawParticipant {
+  id: string;
+  display_name: string;
+  is_creator: boolean;
+  is_external: boolean;
+  member_id: string | null;
+  photo_url: string | null;
+  bio: string | null;
+}
+
 export interface SecretSantaAssignment {
   receiver_display_name: string;
   participant_names: string[];
+  participants?: SecretSantaDrawParticipant[];
   revealed?: boolean;
 }
 
