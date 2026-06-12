@@ -1,5 +1,7 @@
 export type RelationshipType = 'parent' | 'spouse' | 'sibling';
 
+export type BirthDateDisplay = 'day_month' | 'full';
+
 export interface FamilyMember {
   id: string;
   auth_user_id: string | null;
@@ -9,6 +11,7 @@ export interface FamilyMember {
   last_name: string;
   photo_url: string | null;
   birth_date: string | null;
+  birth_date_display: BirthDateDisplay;
   death_date: string | null;
   bio: string | null;
   is_alive: boolean;
@@ -35,6 +38,7 @@ export interface MemberProfile {
 export interface UpdateOwnProfileInput {
   bio?: string | null;
   birth_date?: string | null;
+  birth_date_display?: BirthDateDisplay;
 }
 
 export type AlbumVisibility = 'family' | 'close_family';

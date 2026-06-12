@@ -18,9 +18,12 @@ import { useAuthStore } from '../stores/authStore';
 import { RelationGroup } from '../components/profile/RelationGroup';
 import { MemberAvatar } from '../components/profile/MemberAvatar';
 import { ProfilePhotoCropModal } from '../components/profile/ProfilePhotoCropModal';
-import { sanitizeMemberBio } from '../components/profile/memberUtils';
+import {
+  formatBirthDateForProfile,
+  sanitizeMemberBio,
+} from '../components/profile/memberUtils';
 import { api } from '../services/api';
-import type { FamilyMember, MemberProfile } from '../types';
+import type { BirthDateDisplay, FamilyMember, MemberProfile } from '../types';
 
 function formatDate(date: string | null) {
   if (!date) return null;
@@ -29,18 +32,6 @@ function formatDate(date: string | null) {
     month: 'long',
     year: 'numeric',
   });
-}
-
-function getAge(birthDate: string | null) {
-  if (!birthDate) return null;
-  const birth = new Date(birthDate);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age -= 1;
-  }
-  return age;
 }
 
 export function ProfilePage() {
@@ -56,6 +47,7 @@ export function ProfilePage() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [bio, setBio] = useState('');
   const [birthDate, setBirthDate] = useState('');
+  const [birthDateDisplay, setBirthDateDisplay] = useState<BirthDateDisplay>('full');
   const [feedback, setFeedback] = useState<string | null>(null);
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const [photoLightboxOpen, setPhotoLightboxOpen] = useState(false);
@@ -74,6 +66,7 @@ export function ProfilePage() {
       setProfile(data);
       setBio(sanitizeMemberBio(data.member.bio) ?? '');
       setBirthDate(data.member.birth_date ?? '');
+      setBirthDateDisplay(data.member.birth_date_display ?? 'full');
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -108,6 +101,7 @@ export function ProfilePage() {
       const updated = await api.patch<FamilyMember>('/members/me', {
         bio: bio.trim() || null,
         birth_date: birthDate || null,
+        birth_date_display: birthDateDisplay,
       });
       setMember(updated);
       setProfile((prev) => (prev ? { ...prev, member: updated } : prev));
@@ -165,6 +159,7 @@ export function ProfilePage() {
     if (!profile) return;
     setBio(sanitizeMemberBio(profile.member.bio) ?? '');
     setBirthDate(profile.member.birth_date ?? '');
+    setBirthDateDisplay(profile.member.birth_date_display ?? 'full');
     setEditing(false);
   }
 
@@ -175,7 +170,9 @@ export function ProfilePage() {
 
   const { member } = profile;
   const displayBio = sanitizeMemberBio(member.bio);
-  const age = getAge(member.birth_date);
+  const birthDateInfo = member.birth_date
+    ? formatBirthDateForProfile(member.birth_date, member.birth_date_display ?? 'full')
+    : null;
   const hasRelations =
     profile.parents.length > 0 ||
     profile.spouses.length > 0 ||
@@ -294,11 +291,12 @@ export function ProfilePage() {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-4 text-sm text-ink-500">
-              {member.birth_date && (
+              {birthDateInfo && (
                 <p>
-                  Né(e) le <span className="font-medium text-ink-700">{formatDate(member.birth_date)}</span>
-                  {age !== null && (
-                    <span className="text-ink-400"> · {age} ans</span>
+                  Né(e) le{' '}
+                  <span className="font-medium text-ink-700">{birthDateInfo.label}</span>
+                  {birthDateInfo.age !== null && (
+                    <span className="text-ink-400"> · {birthDateInfo.age} ans</span>
                   )}
                 </p>
               )}
@@ -361,6 +359,59 @@ export function ProfilePage() {
                     className="input-field max-w-xs"
                   />
                 </div>
+                {birthDate && (
+                  <fieldset className="space-y-2">
+                    <legend className="mb-1.5 text-sm font-medium text-ink-700">
+                      Affichage sur le profil
+                    </legend>
+                    <label
+                      className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition ${
+                        birthDateDisplay === 'day_month'
+                          ? 'border-warm-400 bg-warm-50/80 ring-1 ring-warm-200'
+                          : 'border-cream-300 bg-cream-50 hover:border-cream-400'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="birth-date-display"
+                        value="day_month"
+                        checked={birthDateDisplay === 'day_month'}
+                        onChange={() => setBirthDateDisplay('day_month')}
+                        className="mt-1 accent-warm-600"
+                      />
+                      <span className="text-sm text-ink-700">
+                        <span className="font-medium">Jour et mois uniquement</span>
+                        <span className="mt-0.5 block text-xs text-ink-500">
+                          Ex. {formatBirthDateForProfile(birthDate, 'day_month').label} — sans année ni âge
+                        </span>
+                      </span>
+                    </label>
+                    <label
+                      className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition ${
+                        birthDateDisplay === 'full'
+                          ? 'border-warm-400 bg-warm-50/80 ring-1 ring-warm-200'
+                          : 'border-cream-300 bg-cream-50 hover:border-cream-400'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="birth-date-display"
+                        value="full"
+                        checked={birthDateDisplay === 'full'}
+                        onChange={() => setBirthDateDisplay('full')}
+                        className="mt-1 accent-warm-600"
+                      />
+                      <span className="text-sm text-ink-700">
+                        <span className="font-medium">Date complète</span>
+                        <span className="mt-0.5 block text-xs text-ink-500">
+                          Ex. {formatBirthDateForProfile(birthDate, 'full').label}
+                          {formatBirthDateForProfile(birthDate, 'full').age !== null &&
+                            ` · ${formatBirthDateForProfile(birthDate, 'full').age} ans`}
+                        </span>
+                      </span>
+                    </label>
+                  </fieldset>
+                )}
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"

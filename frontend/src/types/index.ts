@@ -16,9 +16,12 @@ export interface MemberProfile {
   siblings: FamilyMember[];
 }
 
+export type BirthDateDisplay = 'day_month' | 'full';
+
 export interface UpdateOwnProfileInput {
   bio?: string | null;
   birth_date?: string | null;
+  birth_date_display?: BirthDateDisplay;
 }
 
 export interface FamilyMember {
@@ -30,6 +33,7 @@ export interface FamilyMember {
   last_name: string;
   photo_url: string | null;
   birth_date: string | null;
+  birth_date_display?: BirthDateDisplay;
   death_date: string | null;
   bio: string | null;
   is_alive: boolean;

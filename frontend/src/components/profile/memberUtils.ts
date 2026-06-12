@@ -1,4 +1,4 @@
-import type { FamilyMember } from '../../types';
+import type { BirthDateDisplay, FamilyMember } from '../../types';
 
 /** Retire les tags techniques de seed type [branche-gautier-arbey]. */
 export function sanitizeMemberBio(bio: string | null | undefined): string | null {
@@ -29,6 +29,33 @@ export function avatarPersonFromDisplayName(
 
 export function memberFullName(member: Pick<FamilyMember, 'first_name' | 'last_name'>) {
   return `${member.first_name} ${member.last_name}`;
+}
+
+export function getMemberAge(birthDate: string): number {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age -= 1;
+  }
+  return age;
+}
+
+export function formatBirthDateForProfile(
+  birthDate: string,
+  display: BirthDateDisplay = 'full',
+): { label: string; age: number | null } {
+  const date = new Date(birthDate);
+  const label =
+    display === 'day_month'
+      ? date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
+      : date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  return {
+    label,
+    age: display === 'full' ? getMemberAge(birthDate) : null,
+  };
 }
 
 export function sortMembersByName(members: FamilyMember[]) {

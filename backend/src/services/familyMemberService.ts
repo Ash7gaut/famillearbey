@@ -104,6 +104,10 @@ export const familyMemberService = {
       payload.birth_date = input.birth_date || null;
     }
 
+    if (input.birth_date_display !== undefined) {
+      payload.birth_date_display = input.birth_date_display;
+    }
+
     if (Object.keys(payload).length === 0) {
       return this.getById(memberId);
     }
