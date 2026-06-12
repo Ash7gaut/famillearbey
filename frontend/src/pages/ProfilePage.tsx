@@ -16,6 +16,7 @@ import { useAuthReady } from '../hooks/useAuthReady';
 import { useAuthStore } from '../stores/authStore';
 import { RelationGroup } from '../components/profile/RelationGroup';
 import { MemberAvatar } from '../components/profile/MemberAvatar';
+import { ProfilePhotoCropModal } from '../components/profile/ProfilePhotoCropModal';
 import { sanitizeMemberBio } from '../components/profile/memberUtils';
 import { api } from '../services/api';
 import type { FamilyMember, MemberProfile } from '../types';
@@ -55,7 +56,9 @@ export function ProfilePage() {
   const [bio, setBio] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cropObjectUrlRef = useRef<string | null>(null);
 
   const isOwnProfile = !id || (currentMember && id === currentMember.id);
   const profileId = id ?? currentMember?.id;
@@ -115,7 +118,31 @@ export function ProfilePage() {
     }
   }
 
-  async function handlePhotoChange(file: File) {
+  function closeCropModal() {
+    if (cropObjectUrlRef.current) {
+      URL.revokeObjectURL(cropObjectUrlRef.current);
+      cropObjectUrlRef.current = null;
+    }
+    setCropImageSrc(null);
+  }
+
+  function openCropModal(file: File) {
+    closeCropModal();
+    const objectUrl = URL.createObjectURL(file);
+    cropObjectUrlRef.current = objectUrl;
+    setCropImageSrc(objectUrl);
+  }
+
+  useEffect(
+    () => () => {
+      if (cropObjectUrlRef.current) {
+        URL.revokeObjectURL(cropObjectUrlRef.current);
+      }
+    },
+    [],
+  );
+
+  async function uploadProfilePhoto(file: File) {
     if (!isOwnProfile) return;
     setUploadingPhoto(true);
     setFeedback(null);
@@ -126,6 +153,7 @@ export function ProfilePage() {
       setFeedback('Photo mise à jour.');
     } catch (err) {
       setFeedback((err as Error).message);
+      throw err;
     } finally {
       setUploadingPhoto(false);
     }
@@ -154,6 +182,14 @@ export function ProfilePage() {
 
   return (
     <div className="space-y-6">
+      {cropImageSrc && (
+        <ProfilePhotoCropModal
+          imageSrc={cropImageSrc}
+          onClose={closeCropModal}
+          onConfirm={uploadProfilePhoto}
+        />
+      )}
+
       <BackLink to="/" label="Accueil" />
 
       <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/90 p-6 shadow-warm sm:p-8">
@@ -184,7 +220,7 @@ export function ProfilePage() {
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) void handlePhotoChange(file);
+                    if (file) openCropModal(file);
                     e.target.value = '';
                   }}
                 />
