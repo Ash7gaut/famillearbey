@@ -37,7 +37,9 @@ export const photoController = {
     const { caption } = req.body;
     const photo = await photoService.upload(albumId, req.file, req.member!, caption);
     const album = await albumService.getById(albumId, req.member!.id);
-    res.status(201).json({ data: withPhotoMeta(photo, album, req.member) });
+    res.status(201).json({
+      data: { ...withPhotoMeta(photo, album, req.member), latest_comment: null },
+    });
   },
 
   async delete(req: AuthRequest, res: Response) {
