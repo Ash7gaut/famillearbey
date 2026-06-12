@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Cake, ChevronLeft, ChevronRight, MapPin, PartyPopper, Plus, Trash2 } from 'lucide-react';
+import {
+  Cake,
+  ChevronLeft,
+  ChevronRight,
+  Images,
+  MapPin,
+  PartyPopper,
+  Plus,
+  Trash2,
+} from 'lucide-react';
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
@@ -87,9 +96,28 @@ export function CalendarPage() {
     return map;
   }, [data?.events]);
 
+  const albumsByDay = useMemo(() => {
+    const map = new Map<number, CalendarMonth['albums']>();
+    for (const album of data?.albums ?? []) {
+      const list = map.get(album.day) ?? [];
+      list.push(album);
+      map.set(album.day, list);
+    }
+    return map;
+  }, [data?.albums]);
+
   const selectedDay = Number(selectedIso.split('-')[2]);
   const selectedBirthdays = birthdaysByDay.get(selectedDay) ?? [];
   const selectedEvents = eventsByDay.get(selectedDay) ?? [];
+  const selectedAlbums = albumsByDay.get(selectedDay) ?? [];
+  const hasSelectedItems =
+    selectedBirthdays.length > 0 || selectedEvents.length > 0 || selectedAlbums.length > 0;
+
+  function openEventFormForDay(iso: string) {
+    setStartDate(iso);
+    setEndDate('');
+    setShowForm(true);
+  }
 
   function goToMonth(nextYear: number, nextMonth: number) {
     setYear(nextYear);
@@ -309,6 +337,7 @@ export function CalendarPage() {
               {grid.map((cell) => {
                 const birthdays = cell.inMonth ? birthdaysByDay.get(cell.day) ?? [] : [];
                 const events = cell.inMonth ? eventsByDay.get(cell.day) ?? [] : [];
+                const albums = cell.inMonth ? albumsByDay.get(cell.day) ?? [] : [];
                 const isSelected = isSameDay(cell.iso, selectedIso);
                 const isToday = isSameDay(cell.iso, today.iso);
                 const items = [
@@ -322,17 +351,44 @@ export function CalendarPage() {
                     label: event.title,
                     tone: 'event' as const,
                   })),
+                  ...albums.map((album) => ({
+                    key: `a-${album.id}`,
+                    label: album.title,
+                    tone: 'album' as const,
+                  })),
                 ];
 
                 return (
-                  <button
+                  <div
                     key={cell.iso}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedIso(cell.iso)}
-                    className={`min-h-[88px] border-b border-r border-cream-300/50 p-1.5 text-left transition sm:min-h-[104px] sm:p-2 ${
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedIso(cell.iso);
+                      }
+                    }}
+                    className={`group relative min-h-[88px] cursor-pointer border-b border-r border-cream-300/50 p-1.5 text-left transition sm:min-h-[104px] sm:p-2 ${
                       cell.inMonth ? 'bg-cream-50 hover:bg-cream-100/80' : 'bg-cream-100/40 text-ink-300'
                     } ${isSelected ? 'ring-2 ring-inset ring-warm-400' : ''}`}
                   >
+                    {isAuthenticated && cell.inMonth && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedIso(cell.iso);
+                          openEventFormForDay(cell.iso);
+                        }}
+                        className="focus-ring absolute right-1 top-1 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-cream-200 bg-cream-50/95 text-warm-700 opacity-0 shadow-sm transition hover:bg-warm-50 hover:text-warm-800 group-hover:opacity-100 sm:right-1.5 sm:top-1.5"
+                        title="Créer un événement ce jour"
+                      >
+                        <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      </button>
+                    )}
+
                     <span
                       className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold sm:h-7 sm:w-7 sm:text-sm ${
                         isToday
@@ -352,17 +408,23 @@ export function CalendarPage() {
                           className={`truncate rounded px-1 py-0.5 text-[10px] font-medium sm:text-[11px] ${
                             item.tone === 'birthday'
                               ? 'bg-warm-100 text-warm-800'
-                              : 'bg-arbey-100 text-arbey-800'
+                              : item.tone === 'album'
+                                ? 'bg-cream-200 text-ink-700'
+                                : 'bg-arbey-100 text-arbey-800'
                           }`}
                         >
-                          {item.tone === 'birthday' ? `🎂 ${item.label}` : item.label}
+                          {item.tone === 'birthday'
+                            ? `🎂 ${item.label}`
+                            : item.tone === 'album'
+                              ? `📸 ${item.label}`
+                              : item.label}
                         </p>
                       ))}
                       {items.length > 2 && (
                         <p className="px-1 text-[10px] font-medium text-ink-400">+{items.length - 2}</p>
                       )}
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -372,16 +434,28 @@ export function CalendarPage() {
 
       {!loading && !error && (
         <div className="card">
-          <h2 className="font-display text-lg font-semibold text-ink-800">
-            {new Date(selectedIso).toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
-          </h2>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <h2 className="font-display text-lg font-semibold text-ink-800">
+              {new Date(selectedIso).toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+            </h2>
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={() => openEventFormForDay(selectedIso)}
+                className="btn-secondary shrink-0"
+              >
+                <Plus className="h-4 w-4" strokeWidth={2} />
+                Événement ce jour
+              </button>
+            )}
+          </div>
 
-          {selectedBirthdays.length === 0 && selectedEvents.length === 0 ? (
+          {!hasSelectedItems ? (
             <p className="mt-3 text-sm text-ink-500">Rien de prévu ce jour-là.</p>
           ) : (
             <div className="mt-4 space-y-3">
@@ -397,6 +471,30 @@ export function CalendarPage() {
                       Anniversaire de {memberFullName(birthday)}
                     </p>
                     <p className="text-sm text-ink-500">Voir le profil</p>
+                  </div>
+                </Link>
+              ))}
+
+              {selectedAlbums.map((album) => (
+                <Link
+                  key={album.id}
+                  to={`/albums/${album.id}`}
+                  className="flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-100/80 px-4 py-3 transition hover:bg-cream-100"
+                >
+                  {album.cover_url ? (
+                    <img
+                      src={album.cover_url}
+                      alt=""
+                      className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-cream-200 text-ink-400">
+                      <Images className="h-5 w-5" strokeWidth={1.75} />
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium text-ink-800">Album · {album.title}</p>
+                    <p className="text-sm text-ink-500">Voir les photos</p>
                   </div>
                 </Link>
               ))}
@@ -444,12 +542,9 @@ export function CalendarPage() {
       )}
 
       <div className="flex flex-wrap gap-4 text-sm text-ink-500">
-        <span className="inline-flex items-center gap-2">
-          <span className="rounded bg-warm-100 px-2 py-0.5 text-warm-800">🎂 Anniversaire</span>
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="rounded bg-arbey-100 px-2 py-0.5 text-arbey-800">Événement</span>
-        </span>
+        <span className="rounded bg-warm-100 px-2 py-0.5 text-warm-800">🎂 Anniversaire</span>
+        <span className="rounded bg-arbey-100 px-2 py-0.5 text-arbey-800">Événement</span>
+        <span className="rounded bg-cream-200 px-2 py-0.5 text-ink-700">📸 Album photo</span>
       </div>
     </div>
   );

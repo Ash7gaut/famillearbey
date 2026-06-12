@@ -17,11 +17,19 @@ export interface CalendarEvent {
   can_manage?: boolean;
 }
 
+export interface CalendarAlbum {
+  id: string;
+  title: string;
+  day: number;
+  cover_url: string | null;
+}
+
 export interface CalendarMonth {
   year: number;
   month: number;
   birthdays: CalendarBirthday[];
   events: CalendarEvent[];
+  albums: CalendarAlbum[];
 }
 
 export interface CreateEventInput {

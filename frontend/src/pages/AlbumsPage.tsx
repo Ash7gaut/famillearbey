@@ -23,6 +23,7 @@ export function AlbumsPage() {
   const [creatorFilter, setCreatorFilter] = useState<AlbumCreatorFilter>('all');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [eventDate, setEventDate] = useState('');
   const [visibility, setVisibility] = useState<AlbumVisibility>('family');
   const [creating, setCreating] = useState(false);
 
@@ -40,9 +41,15 @@ export function AlbumsPage() {
     if (!title.trim() || !isAuthenticated) return;
     setCreating(true);
     try {
-      await createAlbum({ title, description: description || undefined, visibility });
+      await createAlbum({
+        title,
+        description: description || undefined,
+        event_date: eventDate || undefined,
+        visibility,
+      });
       setTitle('');
       setDescription('');
+      setEventDate('');
       setVisibility('family');
       setShowForm(false);
     } catch {
@@ -88,6 +95,19 @@ export function AlbumsPage() {
               className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
               required
             />
+          </div>
+          <div>
+            <label htmlFor="event-date" className="mb-1 block text-sm font-medium text-arbey-700">
+              Date de l&apos;événement (optionnel)
+            </label>
+            <input
+              id="event-date"
+              type="date"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              className="w-full max-w-xs rounded-xl border border-arbey-200 px-4 py-2.5 text-sm focus:border-arbey-400 focus:outline-none focus:ring-2 focus:ring-arbey-100"
+            />
+            <p className="mt-1 text-xs text-ink-400">Affichée sur le calendrier familial.</p>
           </div>
           <div>
             <label htmlFor="description" className="mb-1 block text-sm font-medium text-arbey-700">
