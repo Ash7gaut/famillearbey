@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, BrainCircuit, Calendar, Gift, Images, MessageCircle, BookOpen, TreePine, Users } from 'lucide-react';
 import { useAuthReady } from '../hooks/useAuthReady';
-import { hasGuestInvites } from '../lib/guestInviteStorage';
 
 const mainFeatures: {
   to: string;
@@ -42,30 +41,10 @@ const otherFeatures: {
 ];
 
 export function HomePage() {
-  const { isAuthenticated, member } = useAuthReady();
-  const showGuestHub = !isAuthenticated && hasGuestInvites();
+  const { member } = useAuthReady();
 
   return (
     <div className="space-y-12">
-      {showGuestHub && (
-        <section className="card border-warm-200/80 bg-warm-50/50">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-medium text-warm-700">Tu participes en invité</p>
-              <h2 className="mt-1 font-display text-xl font-semibold text-ink-800">
-                Retrouve tes Secret Santa
-              </h2>
-              <p className="mt-1 text-sm text-ink-500">
-                Pas besoin de compte — tes invitations sont enregistrées sur cet appareil.
-              </p>
-            </div>
-            <Link to="/mes-invitations" className="btn-primary shrink-0">
-              Mes invitations
-            </Link>
-          </div>
-        </section>
-      )}
-
       <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/80 px-6 py-10 shadow-warm sm:px-10 sm:py-12">
         <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-warm-200/30 blur-2xl" aria-hidden />
         <div className="absolute -bottom-10 -left-6 h-32 w-32 rounded-full bg-arbey-200/25 blur-2xl" aria-hidden />
@@ -76,20 +55,10 @@ export function HomePage() {
             Famille Arbey
           </h1>
           <p className="mt-4 text-base leading-relaxed text-ink-500">
-            {isAuthenticated && member
+            {member
               ? `Content de te revoir, ${member.first_name} — retrouve l'arbre, les photos et les petits jeux entre cousins.`
-              : "Notre coin à nous pour retrouver l'arbre, les photos et les petits jeux entre cousins."}
+              : "Retrouve l'arbre, les photos et les petits jeux entre cousins."}
           </p>
-          {!isAuthenticated && (
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/login" className="btn-primary">
-                Se connecter
-              </Link>
-              <Link to="/demande-acces" className="btn-secondary">
-                Demander l&apos;accès
-              </Link>
-            </div>
-          )}
         </div>
       </section>
 

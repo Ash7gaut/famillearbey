@@ -4,7 +4,7 @@ import { Calendar, Gift, Home, Images, TreePine, BrainCircuit, Users } from 'luc
 import { UserMenu } from './UserMenu';
 
 const navItems: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: '/', label: 'Accueil', icon: Home },
+  { to: '/accueil', label: 'Accueil', icon: Home },
   { to: '/tree', label: 'Arbre', icon: TreePine },
   { to: '/famille', label: 'Famille', icon: Users },
   { to: '/albums', label: 'Albums', icon: Images },
@@ -32,7 +32,7 @@ export function Layout() {
       {/* Sidebar desktop — fixe, toujours visible */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-cream-300/60 bg-cream-50/95 backdrop-blur-md lg:flex">
         <div className="flex h-full flex-col px-4 py-6">
-          <NavLink to="/" className="focus-ring mb-8 block shrink-0 rounded-xl px-2 py-1 focus-visible:ring-offset-[#FDFBF7]">
+          <NavLink to="/accueil" className="focus-ring mb-8 block shrink-0 rounded-xl px-2 py-1 focus-visible:ring-offset-[#FDFBF7]">
             <p className="font-display text-xl font-semibold leading-tight text-ink-800">
               Famille Arbey
             </p>
@@ -41,7 +41,7 @@ export function Layout() {
 
           <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
             {navItems.map((item) => (
-              <NavItem key={item.to} {...item} end={item.to === '/'} />
+              <NavItem key={item.to} {...item} end={item.to === '/accueil'} />
             ))}
           </nav>
 
@@ -55,7 +55,7 @@ export function Layout() {
       <div className="flex min-h-screen flex-col lg:ml-60">
         <header className="sticky top-0 z-30 border-b border-cream-300/60 bg-cream-50/90 backdrop-blur-md lg:hidden">
           <div className="flex h-16 items-center justify-between gap-3 px-4">
-            <NavLink to="/" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
+            <NavLink to="/accueil" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
               <p className="truncate font-display text-lg font-semibold text-ink-800">Famille Arbey</p>
             </NavLink>
             <UserMenu variant="header" />
@@ -74,7 +74,7 @@ export function Layout() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  end={item.to === '/'}
+                  end={item.to === '/accueil'}
                   className={({ isActive }) =>
                     `focus-ring flex flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-[10px] font-medium transition ${
                       isActive ? 'text-warm-700' : 'text-ink-400'

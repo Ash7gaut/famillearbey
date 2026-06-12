@@ -1,21 +1,25 @@
 import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { BackLink } from '../components/ui/BackLink';
 import { useAuthStore } from '../stores/authStore';
 
 export function LoginPage() {
   const { login, loading, error, member, session } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  if (session && member) return <Navigate to="/" replace />;
+  const redirectTo =
+    (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/accueil';
+
+  if (session && member) return <Navigate to={redirectTo} replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate('/');
+      navigate(redirectTo);
     } catch {
       // erreur dans le store
     }

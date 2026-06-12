@@ -35,7 +35,7 @@ export function TreePage() {
 
   return (
     <div className="space-y-6">
-      <BackLink to="/" label="Accueil" />
+      <BackLink to="/accueil" label="Accueil" />
       <div>
         <h1 className="page-title">
           Arbre généalogique

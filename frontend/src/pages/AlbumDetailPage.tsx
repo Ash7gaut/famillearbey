@@ -150,7 +150,7 @@ export function AlbumDetailPage() {
               </label>
             </>
           ) : (
-            <Link to="/connexion" className="btn-secondary">
+            <Link to="/login" className="btn-secondary">
               Se connecter pour ajouter
             </Link>
           )}

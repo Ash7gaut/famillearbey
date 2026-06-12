@@ -43,7 +43,7 @@ export function AdminPage() {
   };
 
   if (!session) return <Navigate to="/login" replace />;
-  if (!member?.is_admin) return <Navigate to="/" replace />;
+  if (!member?.is_admin) return <Navigate to="/accueil" replace />;
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +83,7 @@ export function AdminPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
-      <BackLink to="/" label="Accueil" />
+      <BackLink to="/accueil" label="Accueil" />
       <div>
         <h1 className="page-title">Administration</h1>
         <p className="mt-1 text-sm text-arbey-600">Gérer les invitations et demandes d'accès</p>

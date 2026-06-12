@@ -35,7 +35,7 @@ export function QuizPage() {
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
-      <BackLink to="/" label="Accueil" />
+      <BackLink to="/accueil" label="Accueil" />
       <div className="text-center">
         <p className="text-4xl mb-2">🧠</p>
         <h1 className="page-title">Quiz familial</h1>

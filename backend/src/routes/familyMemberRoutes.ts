@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { familyMemberController } from '../controllers/familyMemberController.js';
-import { asyncHandler } from '../middleware/errorHandler.js';
+import { asyncHandler, asyncMiddleware } from '../middleware/errorHandler.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const upload = multer({
@@ -18,12 +18,13 @@ const upload = multer({
 
 const router = Router();
 
+router.use(asyncMiddleware(requireAuth));
+
 router.get('/', asyncHandler(familyMemberController.getAll));
 router.get('/directory', asyncHandler(familyMemberController.getDirectory));
-router.patch('/me', requireAuth, asyncHandler(familyMemberController.updateMe));
+router.patch('/me', asyncHandler(familyMemberController.updateMe));
 router.post(
   '/me/photo',
-  requireAuth,
   upload.single('file'),
   asyncHandler(familyMemberController.uploadMyPhoto),
 );

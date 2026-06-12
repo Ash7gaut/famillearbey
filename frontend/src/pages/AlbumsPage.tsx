@@ -61,7 +61,7 @@ export function AlbumsPage() {
 
   return (
     <div className="space-y-6">
-      <BackLink to="/" label="Accueil" />
+      <BackLink to="/accueil" label="Accueil" />
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="page-title">Albums photos</h1>
@@ -74,7 +74,7 @@ export function AlbumsPage() {
             + Nouvel album
           </button>
         ) : (
-          <Link to="/connexion" className="btn-secondary shrink-0">
+          <Link to="/login" className="btn-secondary shrink-0">
             Se connecter pour créer
           </Link>
         )}

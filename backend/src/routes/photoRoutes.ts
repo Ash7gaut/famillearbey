@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { photoController } from '../controllers/photoController.js';
 import { asyncHandler, asyncMiddleware } from '../middleware/errorHandler.js';
-import { optionalAuth, requireAuth } from '../middleware/auth.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -18,17 +18,10 @@ const upload = multer({
 
 const router = Router();
 
-router.get(
-  '/album/:albumId',
-  asyncMiddleware(optionalAuth),
-  asyncHandler(photoController.getByAlbum),
-);
-router.post(
-  '/album/:albumId',
-  asyncMiddleware(requireAuth),
-  upload.single('file'),
-  asyncHandler(photoController.upload),
-);
-router.delete('/:id', asyncMiddleware(requireAuth), asyncHandler(photoController.delete));
+router.use(asyncMiddleware(requireAuth));
+
+router.get('/album/:albumId', asyncHandler(photoController.getByAlbum));
+router.post('/album/:albumId', upload.single('file'), asyncHandler(photoController.upload));
+router.delete('/:id', asyncHandler(photoController.delete));
 
 export default router;
