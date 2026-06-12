@@ -12,6 +12,7 @@ import {
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
+import { PhotoLightbox } from '../components/ui/PhotoLightbox';
 import { useAuthReady } from '../hooks/useAuthReady';
 import { useAuthStore } from '../stores/authStore';
 import { RelationGroup } from '../components/profile/RelationGroup';
@@ -57,6 +58,7 @@ export function ProfilePage() {
   const [birthDate, setBirthDate] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
+  const [photoLightboxOpen, setPhotoLightboxOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cropObjectUrlRef = useRef<string | null>(null);
 
@@ -190,18 +192,42 @@ export function ProfilePage() {
         />
       )}
 
+      {photoLightboxOpen && member.photo_url && (
+        <PhotoLightbox
+          src={member.photo_url}
+          alt={`Photo de ${member.first_name} ${member.last_name}`}
+          onClose={() => setPhotoLightboxOpen(false)}
+        />
+      )}
+
       <BackLink to="/" label="Accueil" />
 
       <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/90 p-6 shadow-warm sm:p-8">
         <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-warm-200/25 blur-2xl" aria-hidden />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start">
           <div className="relative shrink-0">
-            <MemberAvatar
-              member={member}
-              size="hero"
-              shape="rounded"
-              className="border-4 border-white font-display shadow-warm"
-            />
+            {member.photo_url ? (
+              <button
+                type="button"
+                onClick={() => setPhotoLightboxOpen(true)}
+                className="focus-ring group block cursor-zoom-in rounded-2xl transition hover:brightness-[0.97]"
+                title="Agrandir la photo"
+              >
+                <MemberAvatar
+                  member={member}
+                  size="hero"
+                  shape="rounded"
+                  className="border-4 border-white font-display shadow-warm transition group-hover:shadow-[0_8px_28px_-6px_rgba(44,36,25,0.22)]"
+                />
+              </button>
+            ) : (
+              <MemberAvatar
+                member={member}
+                size="hero"
+                shape="rounded"
+                className="border-4 border-white font-display shadow-warm"
+              />
+            )}
             {isOwnProfile && (
               <>
                 <button
