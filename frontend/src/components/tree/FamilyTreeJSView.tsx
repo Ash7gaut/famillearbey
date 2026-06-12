@@ -157,6 +157,10 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
           heightClass="h-[calc(100vh-10rem)] min-h-[640px]"
           contentClass="!h-full !w-full !p-0"
           panExcluded={['family-treejs-node']}
+          smooth
+          wheelStep={0.04}
+          enablePanMomentum
+          enableTrackPadPanning
         >
           <div id={chartId} ref={containerRef} className="family-treejs-chart-host h-full w-full" />
         </TreePanZoom>

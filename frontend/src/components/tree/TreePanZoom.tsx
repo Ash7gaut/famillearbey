@@ -13,6 +13,13 @@ interface TreePanZoomProps {
   contentClass?: string;
   panExcluded?: string[];
   showHint?: boolean;
+  /** Molette : zoom plus réactif quand true (step adapté au delta). */
+  smooth?: boolean;
+  wheelStep?: number;
+  /** Inertie après un glisser-déposer. */
+  enablePanMomentum?: boolean;
+  /** Défilement trackpad à deux doigts pour se déplacer. */
+  enableTrackPadPanning?: boolean;
 }
 
 function ZoomControls() {
@@ -57,7 +64,13 @@ export function TreePanZoom({
   contentClass = '!w-max !p-8',
   panExcluded = [],
   showHint = true,
+  smooth = false,
+  wheelStep = 0.015,
+  enablePanMomentum = false,
+  enableTrackPadPanning = false,
 }: TreePanZoomProps) {
+  const panExcludedClasses = ['tree-member-card', 'tree-control', ...panExcluded];
+
   return (
     <div
       className={`relative overflow-hidden rounded-b-2xl bg-arbey-50/80 bg-[radial-gradient(circle_at_1px_1px,#d2d8c8_1px,transparent_0)] bg-[length:24px_24px] ${heightClass}`}
@@ -69,16 +82,31 @@ export function TreePanZoom({
         maxScale={2}
         centerOnInit
         limitToBounds={false}
-        smooth={false}
+        smooth={smooth}
         panning={{
-          velocityDisabled: true,
-          excluded: ['tree-member-card', 'tree-control', ...panExcluded],
+          velocityDisabled: !enablePanMomentum,
+          excluded: panExcludedClasses,
         }}
-        wheel={{ step: 0.015 }}
+        trackPadPanning={{
+          disabled: !enableTrackPadPanning,
+          velocityDisabled: !enablePanMomentum,
+          excluded: panExcludedClasses,
+        }}
+        wheel={{ step: wheelStep }}
+        velocityAnimation={
+          enablePanMomentum
+            ? {
+                sensitivityMouse: 1.35,
+                sensitivityTouch: 1.5,
+                maxStrengthMouse: 28,
+                animationTime: 260,
+              }
+            : undefined
+        }
         zoomAnimation={{
           disabled: false,
           size: 0.2,
-          animationTime: 280,
+          animationTime: smooth ? 180 : 280,
           animationType: 'easeOut',
         }}
         doubleClick={{ disabled: true }}
