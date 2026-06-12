@@ -37,12 +37,15 @@ export interface UpdateOwnProfileInput {
   birth_date?: string | null;
 }
 
+export type AlbumVisibility = 'family' | 'close_family';
+
 export interface Album {
   id: string;
   title: string;
   description: string | null;
   event_date: string | null;
   cover_url: string | null;
+  visibility: AlbumVisibility;
   created_by: string | null;
   created_at: string;
   updated_at: string;

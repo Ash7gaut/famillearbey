@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Images } from 'lucide-react';
 import type { Album } from '../../types';
+import { AlbumVisibilityBadge } from './AlbumVisibilityBadge';
 
 interface AlbumCardProps {
   album: Album;
@@ -18,7 +19,7 @@ function formatDate(date: string | null) {
 export function AlbumCard({ album }: AlbumCardProps) {
   return (
     <Link to={`/albums/${album.id}`} className="card-photo group block">
-      <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-cream-200 to-warm-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-cream-200 to-warm-100">
         {album.cover_url ? (
           <img
             src={album.cover_url}
@@ -28,6 +29,11 @@ export function AlbumCard({ album }: AlbumCardProps) {
         ) : (
           <div className="flex h-full items-center justify-center text-ink-300">
             <Images className="h-12 w-12" strokeWidth={1.25} />
+          </div>
+        )}
+        {album.visibility === 'close_family' && (
+          <div className="absolute left-3 top-3">
+            <AlbumVisibilityBadge visibility={album.visibility} className="bg-cream-50/95 shadow-sm" />
           </div>
         )}
       </div>

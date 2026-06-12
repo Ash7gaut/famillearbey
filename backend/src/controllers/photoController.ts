@@ -1,32 +1,38 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { photoService } from '../services/photoService.js';
+import { albumService } from '../services/albumService.js';
+import { withPhotoMeta } from '../services/albumAccessService.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { requireParam } from '../utils/params.js';
+import type { AuthRequest } from '../middleware/auth.js';
 import type { ApiResponse, Photo } from '../types/index.js';
 
+type PhotoResponse = Photo & { can_delete: boolean };
+
 export const photoController = {
-  async getByAlbum(req: Request, res: Response<ApiResponse<Photo[]>>) {
-    const data = await photoService.getByAlbum(requireParam(req.params.albumId, 'albumId'));
-    res.json({ data });
+  async getByAlbum(req: AuthRequest, res: Response<ApiResponse<PhotoResponse[]>>) {
+    const albumId = requireParam(req.params.albumId, 'albumId');
+    const album = await albumService.getById(albumId, req.member?.id);
+    const photos = await photoService.getByAlbum(albumId, req.member?.id);
+    res.json({
+      data: photos.map((photo) => withPhotoMeta(photo, album, req.member)),
+    });
   },
 
-  async upload(req: Request, res: Response<ApiResponse<Photo>>) {
+  async upload(req: AuthRequest, res: Response<ApiResponse<PhotoResponse>>) {
     if (!req.file) {
       throw new AppError(400, 'Fichier requis', 'MISSING_FILE');
     }
 
-    const { caption, uploaded_by } = req.body;
-    const data = await photoService.upload(
-      requireParam(req.params.albumId, 'albumId'),
-      req.file,
-      caption,
-      uploaded_by,
-    );
-    res.status(201).json({ data });
+    const albumId = requireParam(req.params.albumId, 'albumId');
+    const { caption } = req.body;
+    const photo = await photoService.upload(albumId, req.file, req.member!, caption);
+    const album = await albumService.getById(albumId, req.member!.id);
+    res.status(201).json({ data: withPhotoMeta(photo, album, req.member) });
   },
 
-  async delete(req: Request, res: Response) {
-    await photoService.delete(requireParam(req.params.id, 'id'));
+  async delete(req: AuthRequest, res: Response) {
+    await photoService.delete(requireParam(req.params.id, 'id'), req.member!);
     res.status(204).send();
   },
 };

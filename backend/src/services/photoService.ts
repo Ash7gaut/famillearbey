@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../config/supabase.js';
 import { AppError } from '../middleware/errorHandler.js';
-import type { Photo } from '../types/index.js';
+import type { FamilyMember, Photo } from '../types/index.js';
+import { canDeletePhoto } from './albumAccessService.js';
 import { albumService } from './albumService.js';
 
 const BUCKET = 'albums';
 
 export const photoService = {
-  async getByAlbum(albumId: string): Promise<Photo[]> {
-    await albumService.getById(albumId);
+  async getByAlbum(albumId: string, viewerMemberId?: string | null): Promise<Photo[]> {
+    await albumService.getById(albumId, viewerMemberId);
 
     const { data, error } = await supabase
       .from('photos')
@@ -23,10 +24,10 @@ export const photoService = {
   async upload(
     albumId: string,
     file: Express.Multer.File,
+    member: FamilyMember,
     caption?: string,
-    uploadedBy?: string,
   ): Promise<Photo> {
-    await albumService.getById(albumId);
+    await albumService.getById(albumId, member.id);
 
     const ext = file.originalname.split('.').pop() ?? 'jpg';
     const storagePath = `${albumId}/${uuidv4()}.${ext}`;
@@ -49,7 +50,7 @@ export const photoService = {
         storage_path: storagePath,
         url: urlData.publicUrl,
         caption,
-        uploaded_by: uploadedBy,
+        uploaded_by: member.id,
       })
       .select()
       .single();
@@ -65,7 +66,7 @@ export const photoService = {
     return data;
   },
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, member: FamilyMember): Promise<void> {
     const { data: photo, error: fetchError } = await supabase
       .from('photos')
       .select('*')
@@ -74,9 +75,27 @@ export const photoService = {
 
     if (fetchError || !photo) throw new AppError(404, 'Photo introuvable', 'NOT_FOUND');
 
+    const album = await albumService.getById(photo.album_id, member.id);
+    if (!canDeletePhoto(photo, album, member)) {
+      throw new AppError(403, 'Vous ne pouvez pas supprimer cette photo', 'FORBIDDEN');
+    }
+
     await supabase.storage.from(BUCKET).remove([photo.storage_path]);
 
     const { error } = await supabase.from('photos').delete().eq('id', id);
     if (error) throw new AppError(500, error.message, 'DB_ERROR');
+
+    if (album.cover_url === photo.url) {
+      const { data: remaining } = await supabase
+        .from('photos')
+        .select('url')
+        .eq('album_id', photo.album_id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      await albumService.update(photo.album_id, {
+        cover_url: remaining?.[0]?.url ?? null,
+      });
+    }
   },
 };

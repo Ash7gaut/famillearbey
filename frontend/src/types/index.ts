@@ -50,15 +50,19 @@ export interface TreeNode {
   children: TreeNode[];
 }
 
+export type AlbumVisibility = 'family' | 'close_family';
+
 export interface Album {
   id: string;
   title: string;
   description: string | null;
   event_date: string | null;
   cover_url: string | null;
+  visibility: AlbumVisibility;
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  can_manage?: boolean;
 }
 
 export interface Photo {
@@ -69,6 +73,7 @@ export interface Photo {
   url: string;
   caption: string | null;
   created_at: string;
+  can_delete?: boolean;
 }
 
 export interface ApiResponse<T> {
