@@ -36,7 +36,12 @@ Dans VS Code, `Ctrl+Shift+B` (tâche par défaut) lance `docker compose up --bui
 - API Supabase locale (Auth + REST) : `http://localhost:8000`
 - Postgres (accès direct, ex. via un client SQL) : `localhost:54322` (user `postgres` / mdp `postgres`)
 
-La stack reproduit localement les briques Supabase dont l'app dépend (Postgres, Auth/GoTrue, PostgREST) — voir [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ou `docker-compose.yml` pour le détail des services. Les migrations SQL de `supabase/migrations/` sont appliquées automatiquement au démarrage (une seule fois, service `migrate`).
+La stack reproduit localement les briques Supabase dont l'app dépend (Postgres, Auth/GoTrue, PostgREST) — voir [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ou `docker-compose.yml` pour le détail des services. Les migrations SQL de `supabase/migrations/` sont appliquées automatiquement au démarrage (idempotent, service `migrate`).
+
+**Compte admin par défaut** (créé/recréé automatiquement à chaque démarrage si absent) :
+- Email : `admin@arbey.local`
+- Mot de passe : `password123`
+- Défini dans `supabase/docker/seed-admin.sql`
 
 **Non couvert en local pour l'instant :** Supabase Storage (upload de photos albums/profils) — nécessiterait un service Storage supplémentaire, pas encore ajouté.
 

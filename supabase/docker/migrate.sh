@@ -30,3 +30,11 @@ for f in /migrations/*.sql; do
 done
 
 echo "Migrations applied."
+
+echo "Ensuring default admin account exists..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f /seed-admin.sql
+
+echo "Reloading PostgREST schema cache..."
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c "NOTIFY pgrst, 'reload schema';"
+
+echo "Done."
