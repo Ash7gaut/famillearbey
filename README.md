@@ -70,6 +70,8 @@ App disponible sur `http://localhost:5173`
 - [x] MVP : arbre généalogique + albums photos
 - [ ] Mur familial
 - [ ] Événements + RSVP
+- [x] Tribus
+- [ ] Cousinade Planner
 - [ ] Secret Santa
 - [ ] Mémoire familiale
 - [ ] Family Arbey Wrapped

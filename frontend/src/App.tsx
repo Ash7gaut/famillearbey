@@ -13,6 +13,7 @@ import { QuizPage } from './pages/QuizPage';
 import { LoginPage } from './pages/LoginPage';
 import { RequestAccessPage } from './pages/RequestAccessPage';
 import { AdminPage } from './pages/AdminPage';
+import { TribuPage } from './pages/TribuPage';
 import { SecretSantaPage } from './pages/SecretSantaPage';
 import { SecretSantaNewPage } from './pages/SecretSantaNewPage';
 import { SecretSantaDetailPage } from './pages/SecretSantaDetailPage';
@@ -59,6 +60,7 @@ export default function App() {
               <Route path="secret-santa/:id" element={<SecretSantaDetailPage />} />
               <Route path="secret-santa/:id/reveal" element={<SecretSantaRevealPage />} />
               <Route path="famille" element={<FamilyDirectoryPage />} />
+              <Route path="tribu" element={<TribuPage />} />
               <Route path="calendrier" element={<CalendarPage />} />
               <Route path="profil" element={<ProfilePage />} />
               <Route path="profil/:id" element={<ProfilePage />} />

@@ -7,6 +7,7 @@ const navItems: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/accueil', label: 'Accueil', icon: Home },
   { to: '/tree', label: 'Arbre', icon: TreePine },
   { to: '/famille', label: 'Famille', icon: Users },
+  { to: '/tribu', label: 'Tribu', icon: Users },
   { to: '/albums', label: 'Albums', icon: Images },
   { to: '/calendrier', label: 'Calendrier', icon: Calendar },
   { to: '/quiz', label: 'Quiz', icon: BrainCircuit },

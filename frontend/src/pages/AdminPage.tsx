@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { useTribuStore } from '../stores/tribuStore';
 import { api } from '../services/api';
 import type { FamilyMember } from '../types';
 import { BackLink } from '../components/ui/BackLink';
@@ -17,12 +18,21 @@ interface AccessRequest {
 
 export function AdminPage() {
   const { member, session } = useAuthStore();
+  const {
+    allTribus,
+    fetchAll: fetchAllTribus,
+    deleteTribu,
+    addMember: addTribuMember,
+    removeMember: removeTribuMember,
+  } = useTribuStore();
+  const [allMembers, setAllMembers] = useState<FamilyMember[]>([]);
   const [unlinked, setUnlinked] = useState<FamilyMember[]>([]);
   const [requests, setRequests] = useState<AccessRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviteMemberId, setInviteMemberId] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const [addMemberByTribu, setAddMemberByTribu] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (member?.is_admin) loadData();
@@ -31,14 +41,48 @@ export function AdminPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [members, reqs] = await Promise.all([
+      const [members, reqs, all] = await Promise.all([
         api.get<FamilyMember[]>('/admin/members/unlinked'),
         api.get<AccessRequest[]>('/admin/requests'),
+        api.get<FamilyMember[]>('/members'),
       ]);
       setUnlinked(members);
       setRequests(reqs);
+      setAllMembers(all);
+      await fetchAllTribus();
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteTribu = async (id: string) => {
+    if (!window.confirm('Supprimer cette tribu ? Cette action est irréversible.')) return;
+    setMessage(null);
+    try {
+      await deleteTribu(id);
+    } catch (err) {
+      setMessage((err as Error).message);
+    }
+  };
+
+  const handleAddTribuMember = async (tribuId: string) => {
+    const memberId = addMemberByTribu[tribuId];
+    if (!memberId) return;
+    setMessage(null);
+    try {
+      await addTribuMember(tribuId, memberId);
+      setAddMemberByTribu((prev) => ({ ...prev, [tribuId]: '' }));
+    } catch (err) {
+      setMessage((err as Error).message);
+    }
+  };
+
+  const handleRemoveTribuMember = async (tribuId: string, memberId: string) => {
+    setMessage(null);
+    try {
+      await removeTribuMember(tribuId, memberId);
+    } catch (err) {
+      setMessage((err as Error).message);
     }
   };
 
@@ -176,6 +220,74 @@ export function AdminPage() {
               </div>
             </div>
           ))
+        )}
+      </section>
+
+      {/* Tribus */}
+      <section className="card space-y-4">
+        <h2 className="font-display font-semibold text-arbey-900">
+          Tribus ({allTribus.length})
+        </h2>
+        {allTribus.length === 0 ? (
+          <p className="text-sm text-arbey-500">Aucune tribu pour l'instant.</p>
+        ) : (
+          allTribus.map((tribu) => {
+            const availableMembers = allMembers.filter(
+              (m) => !tribu.members.some((tm) => tm.id === m.id),
+            );
+            return (
+              <div key={tribu.id} className="rounded-xl border border-arbey-100 p-4 space-y-3">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="font-medium text-arbey-900">{tribu.label ?? 'Tribu sans nom'}</p>
+                  <button type="button" className="btn-secondary" onClick={() => handleDeleteTribu(tribu.id)}>
+                    Supprimer
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  {tribu.members.map((m) => (
+                    <div key={m.id} className="flex items-center justify-between gap-2 text-sm">
+                      <span className="text-arbey-700">
+                        {m.first_name} {m.last_name}
+                        {m.is_chef && (
+                          <span className="ml-2 rounded-full bg-arbey-100 px-2 py-0.5 text-xs font-medium text-arbey-700">
+                            Chef
+                          </span>
+                        )}
+                      </span>
+                      {!m.is_chef && (
+                        <button
+                          type="button"
+                          className="text-xs font-medium text-arbey-500 hover:text-arbey-700"
+                          onClick={() => handleRemoveTribuMember(tribu.id, m.id)}
+                        >
+                          Retirer
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <select
+                    value={addMemberByTribu[tribu.id] ?? ''}
+                    onChange={(e) =>
+                      setAddMemberByTribu((prev) => ({ ...prev, [tribu.id]: e.target.value }))
+                    }
+                    className="flex-1 min-w-[160px] rounded-xl border border-arbey-200 px-3 py-2 text-sm"
+                  >
+                    <option value="">Ajouter un membre...</option>
+                    {availableMembers.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.first_name} {m.last_name}
+                      </option>
+                    ))}
+                  </select>
+                  <button type="button" className="btn-primary" onClick={() => handleAddTribuMember(tribu.id)}>
+                    Ajouter
+                  </button>
+                </div>
+              </div>
+            );
+          })
         )}
       </section>
     </div>

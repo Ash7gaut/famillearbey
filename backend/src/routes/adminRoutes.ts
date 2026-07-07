@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { adminController } from '../controllers/adminController.js';
+import { tribuController } from '../controllers/tribuController.js';
 import { asyncHandler, asyncMiddleware } from '../middleware/errorHandler.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 
@@ -12,5 +13,6 @@ router.post('/invite', asyncHandler(adminController.invite));
 router.get('/requests', asyncHandler(adminController.listRequests));
 router.post('/requests/:id/approve', asyncHandler(adminController.approveRequest));
 router.post('/requests/:id/reject', asyncHandler(adminController.rejectRequest));
+router.get('/tribus', asyncHandler(tribuController.listAll));
 
 export default router;
