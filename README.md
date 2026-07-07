@@ -22,14 +22,29 @@ famillearbey/
 
 ## Démarrage rapide
 
-### 1. Supabase
+### Docker (recommandé — tout tourne en local, aucun compte Supabase requis)
 
-1. Créer un projet sur [supabase.com](https://supabase.com)
-2. Exécuter `supabase/migrations/001_initial_schema.sql` dans le SQL Editor
-3. Créer un bucket Storage nommé `albums` (public)
-4. Récupérer l'URL du projet et la **service role key**
+```bash
+cp .env.example .env
+docker compose up --build
+```
 
-### 2. Backend
+Dans VS Code, `Ctrl+Shift+B` (tâche par défaut) lance `docker compose up --build`. La tâche « Docker: down » arrête les conteneurs.
+
+- Frontend : `http://localhost:5173`
+- Backend : `http://localhost:3001`
+- API Supabase locale (Auth + REST) : `http://localhost:8000`
+- Postgres (accès direct, ex. via un client SQL) : `localhost:54322` (user `postgres` / mdp `postgres`)
+
+La stack reproduit localement les briques Supabase dont l'app dépend (Postgres, Auth/GoTrue, PostgREST) — voir [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ou `docker-compose.yml` pour le détail des services. Les migrations SQL de `supabase/migrations/` sont appliquées automatiquement au démarrage (une seule fois, service `migrate`).
+
+**Non couvert en local pour l'instant :** Supabase Storage (upload de photos albums/profils) — nécessiterait un service Storage supplémentaire, pas encore ajouté.
+
+**Réinitialiser la base locale :** `docker compose down -v` (supprime aussi les volumes Postgres).
+
+### Sans Docker
+
+Nécessite un projet [supabase.com](https://supabase.com) (les migrations locales ne remplacent pas Auth/Storage cloud dans ce mode).
 
 ```bash
 cd backend
@@ -40,8 +55,6 @@ npm run dev
 ```
 
 API disponible sur `http://localhost:3001`
-
-### 3. Frontend
 
 ```bash
 cd frontend
