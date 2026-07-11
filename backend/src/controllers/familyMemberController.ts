@@ -26,6 +26,11 @@ export const familyMemberController = {
     res.json({ data });
   },
 
+  async remove(req: Request, res: Response) {
+    await familyMemberService.delete(requireParam(req.params.id, 'id'));
+    res.status(204).send();
+  },
+
   async getDirectory(_req: Request, res: Response<ApiResponse<MemberProfile[]>>) {
     const data = await familyMemberService.listDirectory();
     res.json({ data });

@@ -25,6 +25,11 @@ export const relationshipService = {
     return data;
   },
 
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase.from('relationships').delete().eq('id', id);
+    if (error) throw new AppError(400, error.message, 'DB_ERROR');
+  },
+
   /** Construit l'arbre généalogique à partir d'un membre racine */
   async buildTree(rootId?: string): Promise<TreeNode[]> {
     const [members, relationships] = await Promise.all([

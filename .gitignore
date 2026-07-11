@@ -11,3 +11,9 @@ build/
 .idea/
 coverage/
 *.tsbuildinfo
+
+# Docker (local)
+docker-compose.dev.yml
+.dockerignore
+docker/
+docker-data/

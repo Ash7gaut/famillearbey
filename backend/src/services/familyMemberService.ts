@@ -36,6 +36,7 @@ export const familyMemberService = {
         last_name: input.last_name ?? 'Arbey',
         photo_url: input.photo_url,
         birth_date: input.birth_date,
+        death_date: input.death_date,
         bio: sanitizeMemberBio(input.bio),
         is_alive: input.is_alive ?? true,
       })
@@ -54,6 +55,7 @@ export const familyMemberService = {
         last_name: input.last_name,
         photo_url: input.photo_url,
         birth_date: input.birth_date,
+        death_date: input.death_date,
         bio: sanitizeMemberBio(input.bio),
         is_alive: input.is_alive,
       })
@@ -63,6 +65,11 @@ export const familyMemberService = {
 
     if (error || !data) throw new AppError(404, 'Membre introuvable', 'NOT_FOUND');
     return sanitizeMember(data);
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase.from('family_members').delete().eq('id', id);
+    if (error) throw new AppError(400, error.message, 'DB_ERROR');
   },
 
   async getProfile(id: string): Promise<MemberProfile> {

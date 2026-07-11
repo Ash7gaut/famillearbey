@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { familyMemberController } from '../controllers/familyMemberController.js';
 import { asyncHandler, asyncMiddleware } from '../middleware/errorHandler.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireAdmin } from '../middleware/auth.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -30,7 +30,10 @@ router.post(
 );
 router.get('/:id/profile', asyncHandler(familyMemberController.getProfile));
 router.get('/:id', asyncHandler(familyMemberController.getById));
-router.post('/', asyncHandler(familyMemberController.create));
-router.patch('/:id', asyncHandler(familyMemberController.update));
+
+// Mutations réservées aux admins
+router.post('/', requireAdmin, asyncHandler(familyMemberController.create));
+router.patch('/:id', requireAdmin, asyncHandler(familyMemberController.update));
+router.delete('/:id', requireAdmin, asyncHandler(familyMemberController.remove));
 
 export default router;

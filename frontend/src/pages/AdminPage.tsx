@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { api } from '../services/api';
 import type { FamilyMember } from '../types';
@@ -94,6 +94,20 @@ export function AdminPage() {
           {message}
         </div>
       )}
+
+      {/* Gérer les membres (CRUD) */}
+      <Link
+        to="/admin/membres"
+        className="card flex items-center justify-between gap-3 no-underline transition hover:border-[#f2d8bd]"
+      >
+        <div>
+          <h2 className="font-display font-semibold text-arbey-900">Gérer les membres</h2>
+          <p className="mt-0.5 text-sm text-arbey-600">
+            Ajouter, modifier (infos + liens de parenté) ou supprimer des membres.
+          </p>
+        </div>
+        <span aria-hidden className="text-xl text-arbey-400">→</span>
+      </Link>
 
       {/* Inviter un membre */}
       <section className="card space-y-4">
