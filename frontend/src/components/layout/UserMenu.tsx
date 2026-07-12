@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, LogOut, Settings, User, UserRound } from 'lucide-react';
+import { ChevronDown, LogOut, Settings, User, UserRound, Users } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { MemberAvatar } from '../profile/MemberAvatar';
 
@@ -153,6 +153,16 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
           >
             <User className="h-4 w-4" strokeWidth={1.75} />
             Mon profil
+          </Link>
+
+          <Link
+            to="/admin/membres"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
+          >
+            <Users className="h-4 w-4" strokeWidth={1.75} />
+            Gérer les membres
           </Link>
 
           {member.is_admin && (

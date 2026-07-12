@@ -9,7 +9,7 @@ import { MemberAvatar } from '../components/profile/MemberAvatar';
 import { MemberFormModal } from '../components/admin/MemberFormModal';
 
 export function MembersAdminPage() {
-  const { member, session } = useAuthStore();
+  const { session } = useAuthStore();
   const [members, setMembers] = useState<FamilyMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -18,8 +18,8 @@ export function MembersAdminPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (member?.is_admin) loadMembers();
-  }, [member]);
+    if (session) loadMembers();
+  }, [session]);
 
   async function loadMembers() {
     setLoading(true);
@@ -42,7 +42,6 @@ export function MembersAdminPage() {
   }, [members, search]);
 
   if (!session) return <Navigate to="/login" replace />;
-  if (!member?.is_admin) return <Navigate to="/accueil" replace />;
 
   async function handleDelete(target: FamilyMember) {
     const confirmed = window.confirm(
