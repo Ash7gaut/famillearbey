@@ -60,6 +60,7 @@ export const familyMemberService = {
         first_name: input.first_name,
         last_name: input.last_name === undefined ? undefined : upperLastName(input.last_name),
         gender: input.gender,
+        tribu_id: input.tribu_id,
         photo_url: input.photo_url,
         birth_date: input.birth_date,
         death_date: input.death_date,

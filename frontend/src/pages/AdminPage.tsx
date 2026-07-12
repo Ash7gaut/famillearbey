@@ -112,6 +112,20 @@ export function AdminPage() {
         <span aria-hidden className="text-xl text-arbey-400">→</span>
       </Link>
 
+      {/* Gérer les tribus */}
+      <Link
+        to="/admin/tribus"
+        className="card flex items-center justify-between gap-3 no-underline transition hover:border-warm-200"
+      >
+        <div>
+          <h2 className="font-display font-semibold text-arbey-900">Gérer les tribus</h2>
+          <p className="mt-0.5 text-sm text-arbey-600">
+            Créer des tribus et y regrouper des membres.
+          </p>
+        </div>
+        <span aria-hidden className="text-xl text-arbey-400">→</span>
+      </Link>
+
       {/* Inviter un membre */}
       <section className="card space-y-4">
         <h2 className="font-display font-semibold text-arbey-900">Inviter un membre</h2>

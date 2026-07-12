@@ -53,6 +53,13 @@ class ApiClient {
     return this.request<T>(path, { method: 'PATCH', body: JSON.stringify(body) });
   }
 
+  put<T = void>(path: string, body?: unknown) {
+    return this.request<T>(path, {
+      method: 'PUT',
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  }
+
   delete<T = void>(path: string) {
     return this.request<T>(path, { method: 'DELETE' });
   }

@@ -37,12 +37,22 @@ export interface FamilyMember {
   last_name: string;
   gender: Gender;
   is_mamie: boolean;
+  tribu_id: string | null;
   photo_url: string | null;
   birth_date: string | null;
   birth_date_display?: BirthDateDisplay;
   death_date: string | null;
   bio: string | null;
   is_alive: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Tribu {
+  id: string;
+  name: string;
+  description: string | null;
+  color: string | null;
   created_at: string;
   updated_at: string;
 }
