@@ -6,6 +6,11 @@ import { sanitizeMember, sanitizeMemberBio, sanitizeMembers } from '../utils/mem
 
 const PROFILE_PHOTO_BUCKET = 'albums';
 
+/** Nom de famille toujours stocké en MAJUSCULES (locale FR). */
+function upperLastName(value: string): string {
+  return value.trim().toLocaleUpperCase('fr-FR');
+}
+
 export const familyMemberService = {
   async getAll(): Promise<FamilyMember[]> {
     const { data, error } = await supabase
@@ -33,7 +38,7 @@ export const familyMemberService = {
       .from('family_members')
       .insert({
         first_name: input.first_name,
-        last_name: input.last_name ?? 'Arbey',
+        last_name: upperLastName(input.last_name ?? 'Arbey'),
         gender: input.gender ?? 'male',
         photo_url: input.photo_url,
         birth_date: input.birth_date,
@@ -53,7 +58,7 @@ export const familyMemberService = {
       .from('family_members')
       .update({
         first_name: input.first_name,
-        last_name: input.last_name,
+        last_name: input.last_name === undefined ? undefined : upperLastName(input.last_name),
         gender: input.gender,
         photo_url: input.photo_url,
         birth_date: input.birth_date,
