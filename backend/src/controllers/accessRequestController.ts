@@ -6,10 +6,10 @@ import type { AccessRequest } from '../types/auth.js';
 
 export const accessRequestController = {
   async create(req: Request, res: Response<ApiResponse<AccessRequest>>) {
-    const { first_name, last_name, email, message, password } = req.body;
+    const { first_name, last_name, email, message } = req.body;
 
-    if (!first_name || !email || !password) {
-      throw new AppError(400, 'Prénom, email et mot de passe requis', 'MISSING_FIELDS');
+    if (!first_name || !email) {
+      throw new AppError(400, 'Prénom et email requis', 'MISSING_FIELDS');
     }
 
     const data = await authService.createAccessRequest({
@@ -17,7 +17,6 @@ export const accessRequestController = {
       last_name,
       email,
       message,
-      password,
     });
 
     res.status(201).json({ data });

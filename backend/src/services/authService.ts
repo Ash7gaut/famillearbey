@@ -136,14 +136,8 @@ export const authService = {
     last_name?: string;
     email: string;
     message?: string;
-    password: string;
   }): Promise<AccessRequest> {
     const email = input.email.toLowerCase().trim();
-    const password = input.password;
-
-    if (password.length < 8) {
-      throw new AppError(400, 'Le mot de passe doit contenir au moins 8 caractères', 'VALIDATION');
-    }
 
     const { data: alreadyInvited } = await supabase
       .from('family_members')
@@ -168,7 +162,6 @@ export const authService = {
 
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
       email,
-      password,
       email_confirm: false,
       user_metadata: {
         first_name: input.first_name,
@@ -238,7 +231,7 @@ export const authService = {
       if (updateError) throw new AppError(500, updateError.message, 'DB_ERROR');
 
       return {
-        message: `${request.first_name} peut maintenant se connecter avec son email et le mot de passe choisi.`,
+        message: `${request.first_name} peut maintenant se connecter avec son email — un lien de connexion lui sera envoyé.`,
       };
     }
 
