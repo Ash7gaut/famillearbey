@@ -1,0 +1,69 @@
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Share, SquarePlus } from 'lucide-react';
+
+interface InstallInstructionsModalProps {
+  onClose: () => void;
+}
+
+export function InstallInstructionsModal({ onClose }: InstallInstructionsModalProps) {
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-ink-900/55 backdrop-blur-md" aria-hidden />
+
+      <div
+        className="relative z-10 w-full max-w-sm overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 shadow-[0_16px_48px_-12px_rgba(44,36,25,0.35)]"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="install-instructions-title"
+      >
+        <div className="border-b border-cream-300/60 px-5 py-4">
+          <h2 id="install-instructions-title" className="font-display text-lg font-semibold text-ink-800">
+            Installer l'app
+          </h2>
+          <p className="mt-1 text-sm text-ink-500">
+            Sur iPhone/iPad, l'installation se fait depuis Safari.
+          </p>
+        </div>
+
+        <div className="space-y-4 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-arbey-100 text-arbey-700">
+              <Share className="h-4 w-4" strokeWidth={1.75} />
+            </span>
+            <p className="text-sm text-ink-700">
+              Appuie sur le bouton <strong>Partager</strong> dans la barre de Safari
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-arbey-100 text-arbey-700">
+              <SquarePlus className="h-4 w-4" strokeWidth={1.75} />
+            </span>
+            <p className="text-sm text-ink-700">
+              Choisis <strong>« Sur l'écran d'accueil »</strong>
+            </p>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button type="button" onClick={onClose} className="btn-primary">
+              Compris
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}

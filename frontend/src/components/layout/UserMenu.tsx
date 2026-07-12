@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, LogOut, Settings, User, UserRound } from 'lucide-react';
+import { ChevronDown, Download, LogOut, Settings, User, UserRound } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
+import { useInstallPrompt } from '../../hooks/useInstallPrompt';
 import { MemberAvatar } from '../profile/MemberAvatar';
+import { InstallInstructionsModal } from '../ui/InstallInstructionsModal';
 
 interface UserMenuProps {
   variant?: 'header' | 'sidebar' | 'floating';
@@ -20,7 +22,9 @@ const menuItemClass =
 export function UserMenu({ variant = 'header' }: UserMenuProps) {
   const { member, session, logout } = useAuthStore();
   const [open, setOpen] = useState(false);
+  const [showIosInstructions, setShowIosInstructions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { isVisible: showInstallItem, isIos, promptInstall } = useInstallPrompt();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -155,6 +159,25 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
             Mon profil
           </Link>
 
+          {showInstallItem && (
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setOpen(false);
+                if (isIos) {
+                  setShowIosInstructions(true);
+                } else {
+                  void promptInstall();
+                }
+              }}
+              className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
+            >
+              <Download className="h-4 w-4" strokeWidth={1.75} />
+              Installer l'app
+            </button>
+          )}
+
           {member.is_admin && (
             <Link
               to="/admin"
@@ -180,6 +203,10 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
             Déconnexion
           </button>
         </div>
+      )}
+
+      {showIosInstructions && (
+        <InstallInstructionsModal onClose={() => setShowIosInstructions(false)} />
       )}
     </div>
   );

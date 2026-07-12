@@ -4,7 +4,7 @@ import { ThemeToggle } from '../ui/ThemeToggle';
 export function GuestLayout() {
   return (
     <div className="min-h-screen bg-cream-100">
-      <header className="border-b border-cream-300/60 bg-cream-50/95 backdrop-blur-md">
+      <header className="pt-safe border-b border-cream-300/60 bg-cream-50/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link to="/" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
             <p className="font-display text-lg font-semibold text-ink-800">Famille Arbey</p>
