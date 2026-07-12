@@ -11,7 +11,8 @@ interface AuthState {
   error: string | null;
   initialized: boolean;
   init: () => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  sendMagicLink: (email: string) => Promise<void>;
+  verifyOtp: (email: string, token: string) => Promise<void>;
   logout: () => Promise<void>;
   syncMember: () => Promise<void>;
   setMember: (member: FamilyMember | null) => void;
@@ -67,10 +68,34 @@ export const useAuthStore = create<AuthState>((set, get) => {
       });
     },
 
-    login: async (email, password) => {
+    sendMagicLink: async (email: string) => {
       set({ loading: true, error: null });
       try {
-        const { data, error } = await requireSupabase().auth.signInWithPassword({ email, password });
+        const { error } = await requireSupabase().auth.signInWithOtp({
+          email,
+          options: { emailRedirectTo: window.location.origin },
+        });
+        if (error) throw error;
+        set({ loading: false });
+      } catch (err) {
+        const raw = (err as Error).message;
+        const friendly =
+          /email not confirmed|not confirmed/i.test(raw)
+            ? 'Ton compte n\'est pas encore validé par un administrateur.'
+            : raw;
+        set({ error: friendly, loading: false });
+        throw err;
+      }
+    },
+
+    verifyOtp: async (email: string, token: string) => {
+      set({ loading: true, error: null });
+      try {
+        const { data, error } = await requireSupabase().auth.verifyOtp({
+          email,
+          token,
+          type: 'email',
+        });
         if (error) throw error;
 
         set({ session: data.session });
@@ -78,10 +103,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
         set({ member, loading: false });
       } catch (err) {
         const raw = (err as Error).message;
-        const friendly =
-          /email not confirmed|not confirmed/i.test(raw)
-            ? 'Ton compte n\'est pas encore validé par un administrateur.'
-            : raw;
+        const friendly = /expired|invalid/i.test(raw)
+          ? 'Ce code est invalide ou expiré. Redemande un lien de connexion.'
+          : raw;
         set({ error: friendly, loading: false });
         throw err;
       }
