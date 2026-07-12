@@ -8,8 +8,6 @@ export function RequestAccessPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('Arbey');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,15 +15,6 @@ export function RequestAccessPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères.');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
-      return;
-    }
-
     setLoading(true);
     setError(null);
     try {
@@ -33,7 +22,6 @@ export function RequestAccessPage() {
         first_name: firstName,
         last_name: lastName,
         email,
-        password,
         message: message || undefined,
       });
       setSuccess(true);
@@ -53,7 +41,7 @@ export function RequestAccessPage() {
         <h1 className="font-display text-xl font-semibold text-ink-800">Demande envoyée</h1>
         <p className="text-sm leading-relaxed text-ink-500">
           Ton compte est prêt. Dès qu&apos;un administrateur aura validé ta demande, connecte-toi
-          avec l&apos;email et le mot de passe que tu viens de choisir.
+          avec ton email — tu recevras un lien de connexion, pas besoin de mot de passe.
         </p>
         <Link to="/login" className="btn-secondary inline-flex">
           Retour connexion
@@ -89,31 +77,6 @@ export function RequestAccessPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="input-field"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-ink-700">Mot de passe</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={8}
-            autoComplete="new-password"
-            className="input-field"
-          />
-          <p className="mt-1 text-xs text-ink-400">Au moins 8 caractères — tu l&apos;utiliseras pour te connecter.</p>
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-ink-700">Confirmer le mot de passe</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            minLength={8}
-            autoComplete="new-password"
             className="input-field"
           />
         </div>
