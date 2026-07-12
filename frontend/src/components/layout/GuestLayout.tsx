@@ -1,5 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import { Gift } from 'lucide-react';
+import { ThemeToggle } from '../ui/ThemeToggle';
 export function GuestLayout() {
   return (
     <div className="min-h-screen bg-cream-100">
@@ -10,13 +11,16 @@ export function GuestLayout() {
             <p className="text-xs text-ink-400">Espace invité</p>
           </Link>
 
-          <Link
-            to="/mes-invitations"
-            className="focus-ring inline-flex items-center gap-2 rounded-xl border border-cream-300 bg-white px-3 py-2 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
-          >
-            <Gift className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
-            Mes invitations
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <ThemeToggle />
+            <Link
+              to="/mes-invitations"
+              className="focus-ring inline-flex items-center gap-2 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
+            >
+              <Gift className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
+              Mes invitations
+            </Link>
+          </div>
         </div>
       </header>
 

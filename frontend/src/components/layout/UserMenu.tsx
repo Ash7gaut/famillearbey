@@ -9,10 +9,10 @@ interface UserMenuProps {
 }
 
 const floatingTriggerGuest =
-  'focus-ring inline-flex items-center gap-2 rounded-full bg-[#c66434] px-5 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.45)] ring-2 ring-white/80 transition hover:bg-[#a54f2d] active:scale-[0.98] focus-visible:ring-white/90 focus-visible:ring-offset-[#c66434]';
+  'focus-ring inline-flex items-center gap-2 rounded-full bg-warm-600 px-5 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.45)] ring-2 ring-white/80 transition hover:bg-warm-700 active:scale-[0.98] focus-visible:ring-white/90 focus-visible:ring-offset-warm-600';
 
 const floatingTriggerUser =
-  'focus-ring inline-flex items-center gap-2.5 rounded-full border-2 border-[#f2d8bd] bg-white py-1.5 pl-1.5 pr-4 text-base font-semibold text-[#2C2419] shadow-[0_4px_20px_-4px_rgba(44,36,25,0.15)] ring-1 ring-white transition hover:border-[#de9860] hover:shadow-[0_6px_24px_-4px_rgba(44,36,25,0.2)] active:scale-[0.98]';
+  'focus-ring inline-flex items-center gap-2.5 rounded-full border-2 border-warm-200 bg-cream-50 py-1.5 pl-1.5 pr-4 text-base font-semibold text-ink-800 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.15)] ring-1 ring-cream-50 transition hover:border-warm-400 hover:shadow-[0_6px_24px_-4px_rgba(44,36,25,0.2)] active:scale-[0.98]';
 
 const menuItemClass =
   'focus-ring flex w-full items-center gap-2 rounded-lg px-4 py-2.5 text-left text-sm transition focus-visible:ring-inset focus-visible:ring-offset-0';
@@ -41,7 +41,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
     : 'right-0 top-full mt-2';
 
   const sidebarTriggerGuest =
-    'focus-ring flex w-full items-center gap-2 rounded-xl bg-[#c66434] px-4 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.35)] transition hover:bg-[#a54f2d] active:scale-[0.98] focus-visible:ring-white/90 focus-visible:ring-offset-[#c66434]';
+    'focus-ring flex w-full items-center gap-2 rounded-xl bg-warm-600 px-4 py-2.5 text-base font-semibold text-white shadow-[0_4px_16px_-2px_rgba(198,100,52,0.35)] transition hover:bg-warm-700 active:scale-[0.98] focus-visible:ring-white/90 focus-visible:ring-offset-warm-600';
 
   const triggerClassGuest = isFloating
     ? floatingTriggerGuest
@@ -94,7 +94,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
   }
 
   const sidebarTriggerUser =
-    'focus-ring flex w-full items-center gap-2.5 rounded-xl border-2 border-[#f2d8bd] bg-white px-2 py-2 text-base font-semibold text-[#2C2419] shadow-[0_4px_16px_-4px_rgba(44,36,25,0.12)] transition hover:border-[#de9860] active:scale-[0.98]';
+    'focus-ring flex w-full items-center gap-2.5 rounded-xl border-2 border-warm-200 bg-cream-50 px-2 py-2 text-base font-semibold text-ink-800 shadow-[0_4px_16px_-4px_rgba(44,36,25,0.12)] transition hover:border-warm-400 active:scale-[0.98]';
 
   const triggerClassUser = isFloating
     ? floatingTriggerUser
@@ -114,7 +114,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
         <MemberAvatar
           member={member}
           size={isFloating || isSidebar ? 'lg' : 'xs'}
-          className="ring-2 ring-white"
+          className="ring-2 ring-cream-50"
         />
         <span
           className={

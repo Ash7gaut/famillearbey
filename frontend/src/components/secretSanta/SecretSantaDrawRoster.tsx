@@ -137,7 +137,7 @@ function DrawParticipantCard({
 
   const className = `flex items-start gap-3 rounded-2xl border p-4 transition ${
     isActive
-      ? 'border-cream-300/70 bg-white/80 hover:border-warm-200 hover:bg-warm-50/40'
+      ? 'border-cream-300/70 bg-cream-50/80 hover:border-warm-200 hover:bg-warm-50/40'
       : 'border-cream-300/50 bg-cream-50/60 opacity-90'
   }`;
 

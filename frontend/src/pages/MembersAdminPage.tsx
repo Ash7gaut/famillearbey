@@ -105,10 +105,10 @@ export function MembersAdminPage() {
           >
             <MemberAvatar member={m} size="lg" />
             <div className="min-w-0 flex-1">
-              <p className="truncate font-medium text-[#2C2419]">
+              <p className="truncate font-medium text-ink-800">
                 {m.first_name} {m.last_name}
               </p>
-              <p className="truncate text-xs text-[#7A6B5C]">
+              <p className="truncate text-xs text-ink-500">
                 {m.birth_date ? `Né(e) le ${formatDate(m.birth_date)}` : 'Date de naissance inconnue'}
                 {!m.is_alive && ' · Décédé(e)'}
                 {m.auth_user_id && ' · Compte lié'}
@@ -134,7 +134,7 @@ export function MembersAdminPage() {
           </li>
         ))}
         {filtered.length === 0 && (
-          <li className="py-8 text-center text-sm text-[#7A6B5C]">Aucun membre trouvé.</li>
+          <li className="py-8 text-center text-sm text-ink-500">Aucun membre trouvé.</li>
         )}
       </ul>
 

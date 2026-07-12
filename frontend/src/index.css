@@ -3,63 +3,150 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Valeurs en triplets RGB (sans virgules) pour permettre rgb(var(--x) / <alpha>) côté Tailwind */
+    --cream-50: 253 251 247;
+    --cream-100: 250 247 242;
+    --cream-200: 245 240 232;
+    --cream-300: 237 230 218;
+    --cream-400: 224 213 196;
+
+    --ink-400: 154 139 122;
+    --ink-500: 122 107 92;
+    --ink-600: 92 79 66;
+    --ink-700: 74 63 53;
+    --ink-800: 44 36 25;
+    --ink-900: 31 26 20;
+
+    --arbey-50: 246 247 244;
+    --arbey-100: 232 235 227;
+    --arbey-200: 210 216 200;
+    --arbey-300: 179 189 164;
+    --arbey-400: 148 163 130;
+    --arbey-500: 118 136 102;
+    --arbey-600: 92 109 80;
+    --arbey-700: 73 86 67;
+    --arbey-800: 60 70 56;
+    --arbey-900: 51 60 48;
+    --arbey-950: 26 31 23;
+
+    --warm-50: 253 248 243;
+    --warm-100: 249 237 224;
+    --warm-200: 242 216 189;
+    --warm-300: 233 188 145;
+    --warm-400: 222 152 96;
+    --warm-500: 212 123 63;
+    --warm-600: 198 100 52;
+    --warm-700: 165 79 45;
+    --warm-800: 132 65 42;
+    --warm-900: 107 55 37;
+
+    --body-bg: #faf7f2;
+    --body-glow-1: rgba(212, 123, 63, 0.04);
+    --body-glow-2: rgba(92, 109, 80, 0.05);
+  }
+
+  :root.dark {
+    /* Cream devient l'échelle des fonds sombres (50 = fond le plus clair du dark mode) */
+    --cream-50: 38 32 25;
+    --cream-100: 33 28 22;
+    --cream-200: 28 23 18;
+    --cream-300: 58 50 38;
+    --cream-400: 74 64 50;
+
+    /* Ink s'inverse : 800/900 (texte) redeviennent clairs */
+    --ink-400: 143 130 113;
+    --ink-500: 169 156 138;
+    --ink-600: 196 184 165;
+    --ink-700: 221 210 194;
+    --ink-800: 243 237 228;
+    --ink-900: 251 248 244;
+
+    --arbey-50: 35 40 33;
+    --arbey-100: 43 50 38;
+    --arbey-200: 60 70 54;
+    --arbey-300: 86 99 73;
+    --arbey-400: 116 133 95;
+    --arbey-500: 147 163 124;
+    --arbey-600: 174 187 153;
+    --arbey-700: 198 208 182;
+    --arbey-800: 222 229 211;
+    --arbey-900: 238 241 232;
+    --arbey-950: 247 249 244;
+
+    --warm-50: 43 32 25;
+    --warm-100: 58 39 27;
+    --warm-200: 99 56 31;
+    --warm-300: 138 75 38;
+    --warm-400: 194 106 52;
+    --warm-500: 221 129 68;
+    --warm-600: 230 147 91;
+    --warm-700: 238 172 126;
+    --warm-800: 244 198 165;
+    --warm-900: 249 223 200;
+
+    --body-bg: #1a1512;
+    --body-glow-1: rgba(226, 140, 77, 0.06);
+    --body-glow-2: rgba(116, 133, 95, 0.07);
+  }
+
   :focus:not(:focus-visible) {
     outline: none;
   }
 
   body {
-    @apply font-sans antialiased text-[#2C2419];
-    background-color: #faf7f2;
-    background-image: radial-gradient(ellipse at 20% 0%, rgba(212, 123, 63, 0.04) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 100%, rgba(92, 109, 80, 0.05) 0%, transparent 50%);
+    @apply font-sans antialiased text-ink-800 transition-colors duration-200;
+    background-color: var(--body-bg);
+    background-image: radial-gradient(ellipse at 20% 0%, var(--body-glow-1) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, var(--body-glow-2) 0%, transparent 50%);
   }
 
   h1,
   h2,
   h3 {
-    @apply font-display text-[#2C2419];
+    @apply font-display text-ink-800;
   }
 }
 
 @layer components {
   .focus-ring {
-    @apply outline-none focus-visible:ring-2 focus-visible:ring-[#c66434]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#faf7f2];
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-warm-600/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-100;
   }
 
   .btn-primary {
-    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-xl bg-[#c66434] px-4 py-2.5 text-sm font-semibold text-white no-underline shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] transition hover:bg-[#a54f2d] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#d4a088] disabled:opacity-100 focus-visible:ring-white/90 focus-visible:ring-offset-[#c66434];
+    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-xl bg-warm-600 px-4 py-2.5 text-sm font-semibold text-white no-underline shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] transition hover:bg-warm-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-warm-300 disabled:opacity-100 focus-visible:ring-white/90 focus-visible:ring-offset-warm-600;
   }
 
   .btn-secondary {
-    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-[#E0D5C4] bg-[#FDFBF7] px-4 py-2.5 text-sm font-medium text-[#4A3F35] no-underline transition hover:border-[#f2d8bd] hover:bg-[#fdf8f3] active:scale-[0.98];
+    @apply focus-ring inline-flex items-center justify-center gap-2 rounded-xl border border-cream-400 bg-cream-50 px-4 py-2.5 text-sm font-medium text-ink-700 no-underline transition hover:border-warm-200 hover:bg-warm-50 active:scale-[0.98];
   }
 
   .card {
-    @apply rounded-2xl border border-[#EDE6DA]/80 bg-[#FDFBF7]/90 p-5 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] backdrop-blur-sm;
+    @apply rounded-2xl border border-cream-300/80 bg-cream-50/90 p-5 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] backdrop-blur-sm;
   }
 
   .card-photo {
-    @apply overflow-hidden rounded-2xl bg-[#F5F0E8] shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] transition hover:shadow-[0_8px_30px_-6px_rgba(44,36,25,0.12)];
+    @apply overflow-hidden rounded-2xl bg-cream-200 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.08)] transition hover:shadow-[0_8px_30px_-6px_rgba(44,36,25,0.12)];
   }
 
   .input-field {
-    @apply w-full rounded-xl border border-[#E0D5C4] bg-white px-4 py-2.5 text-sm text-[#2C2419] placeholder:text-[#9A8B7A] focus:border-[#de9860] focus:outline-none focus:ring-2 focus:ring-[#f9ede0];
+    @apply w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-2.5 text-sm text-ink-800 placeholder:text-ink-400 focus:border-warm-400 focus:outline-none focus:ring-2 focus:ring-warm-100;
   }
 
   .page-title {
-    @apply font-display text-2xl font-semibold text-[#2C2419] sm:text-3xl;
+    @apply font-display text-2xl font-semibold text-ink-800 sm:text-3xl;
   }
 
   .page-subtitle {
-    @apply mt-1 text-sm leading-relaxed text-[#7A6B5C];
+    @apply mt-1 text-sm leading-relaxed text-ink-500;
   }
 
   .nav-link {
-    @apply focus-ring flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#5C4F42] transition hover:bg-[#F5F0E8]/80 hover:text-[#2C2419] focus-visible:ring-offset-[#FDFBF7];
+    @apply focus-ring flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-600 transition hover:bg-cream-200/80 hover:text-ink-800 focus-visible:ring-offset-cream-50;
   }
 
   .nav-link-active {
-    @apply bg-[#fdf8f3] text-[#84412a] ring-1 ring-[#f2d8bd]/60 focus-visible:ring-[#c66434]/50;
+    @apply bg-warm-50 text-warm-800 ring-1 ring-warm-200/60 focus-visible:ring-warm-600/50;
   }
 
   .family-chart-preview.f3 {
@@ -102,12 +189,13 @@
   .family-treejs-chart-host [data-bft-toolbar] button,
   .family-treejs-chart-host .bft-button {
     border-radius: 0.75rem !important;
-    border-color: rgb(224 213 196) !important;
-    color: rgb(44 36 25) !important;
+    border-color: rgb(var(--cream-400)) !important;
+    color: rgb(var(--ink-800)) !important;
+    background-color: rgb(var(--cream-50)) !important;
   }
 
   .family-treejs-chart-host [data-bft-toolbar] button:hover,
   .family-treejs-chart-host .bft-button:hover {
-    background-color: rgb(253 248 243) !important;
+    background-color: rgb(var(--cream-100)) !important;
   }
 }

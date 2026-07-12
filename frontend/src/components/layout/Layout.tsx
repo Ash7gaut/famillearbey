@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { Calendar, Gift, Home, Images, TreePine, BrainCircuit, Users } from 'lucide-react';
 import { UserMenu } from './UserMenu';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 const navItems: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/accueil', label: 'Accueil', icon: Home },
@@ -32,7 +33,7 @@ export function Layout() {
       {/* Sidebar desktop — fixe, toujours visible */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-cream-300/60 bg-cream-50/95 backdrop-blur-md lg:flex">
         <div className="flex h-full flex-col px-4 py-6">
-          <NavLink to="/accueil" className="focus-ring mb-8 block shrink-0 rounded-xl px-2 py-1 focus-visible:ring-offset-[#FDFBF7]">
+          <NavLink to="/accueil" className="focus-ring mb-8 block shrink-0 rounded-xl px-2 py-1 focus-visible:ring-offset-cream-50">
             <p className="font-display text-xl font-semibold leading-tight text-ink-800">
               Famille Arbey
             </p>
@@ -45,7 +46,8 @@ export function Layout() {
             ))}
           </nav>
 
-          <div className="mt-4 shrink-0 border-t border-cream-300/60 pt-4">
+          <div className="mt-4 shrink-0 border-t border-cream-300/60 pt-4 space-y-1">
+            <ThemeToggle variant="sidebar" />
             <UserMenu variant="sidebar" />
           </div>
         </div>
@@ -58,7 +60,10 @@ export function Layout() {
             <NavLink to="/accueil" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
               <p className="truncate font-display text-lg font-semibold text-ink-800">Famille Arbey</p>
             </NavLink>
-            <UserMenu variant="header" />
+            <div className="flex shrink-0 items-center gap-1">
+              <ThemeToggle />
+              <UserMenu variant="header" />
+            </div>
           </div>
         </header>
 

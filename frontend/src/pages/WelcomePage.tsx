@@ -89,7 +89,7 @@ export function WelcomePage() {
             </Link>
           </div>
 
-          <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-cream-300/80 bg-white/70 px-4 py-2 text-xs text-ink-500">
+          <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-cream-300/80 bg-cream-50/70 px-4 py-2 text-xs text-ink-500">
             <Lock className="h-3.5 w-3.5 text-arbey-500" strokeWidth={2} />
             Contenu visible uniquement après connexion
           </p>
@@ -131,7 +131,7 @@ export function WelcomePage() {
                 key={item.title}
                 className="rounded-2xl border border-cream-300/60 bg-cream-50/80 p-5 shadow-warm"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-warm-700 shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cream-50 text-warm-700 shadow-sm">
                   <Icon className="h-5 w-5" strokeWidth={1.75} />
                 </div>
                 <h3 className="mt-4 font-display text-lg font-semibold text-ink-800">{item.title}</h3>

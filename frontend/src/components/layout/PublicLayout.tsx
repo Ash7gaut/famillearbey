@@ -1,4 +1,5 @@
 import { Link, Outlet } from 'react-router-dom';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 export function PublicLayout() {
   return (
@@ -11,6 +12,7 @@ export function PublicLayout() {
           </Link>
 
           <div className="flex shrink-0 items-center gap-2">
+            <ThemeToggle />
             <Link to="/login" className="btn-secondary hidden px-3 py-2 sm:inline-flex">
               Connexion
             </Link>

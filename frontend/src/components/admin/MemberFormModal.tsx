@@ -82,16 +82,16 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
       onClick={onClose}
     >
       <div
-        className="my-8 w-full max-w-lg space-y-6 rounded-2xl border border-[#EDE6DA] bg-[#FDFBF7] p-6 shadow-xl"
+        className="my-8 w-full max-w-lg space-y-6 rounded-2xl border border-cream-300 bg-cream-50 p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between">
-          <h2 className="font-display text-xl font-semibold text-[#2C2419]">
+          <h2 className="font-display text-xl font-semibold text-ink-800">
             {isEdit ? `Modifier ${member?.first_name}` : 'Nouveau membre'}
           </h2>
           <button
             type="button"
-            className="focus-ring rounded-lg p-1 text-[#7A6B5C] hover:text-[#2C2419]"
+            className="focus-ring rounded-lg p-1 text-ink-500 hover:text-ink-800"
             onClick={onClose}
             aria-label="Fermer"
           >
@@ -109,7 +109,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-[#5C4F42]">Prénom *</span>
+              <span className="text-xs font-medium text-ink-600">Prénom *</span>
               <input
                 type="text"
                 required
@@ -119,7 +119,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
               />
             </label>
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-[#5C4F42]">Nom</span>
+              <span className="text-xs font-medium text-ink-600">Nom</span>
               <input
                 type="text"
                 value={form.last_name}
@@ -130,7 +130,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
           </div>
 
           <label className="block space-y-1">
-            <span className="text-xs font-medium text-[#5C4F42]">Genre</span>
+            <span className="text-xs font-medium text-ink-600">Genre</span>
             <select
               value={form.gender}
               onChange={(e) => update('gender', e.target.value as Gender)}
@@ -143,7 +143,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
 
           <div className="grid grid-cols-2 gap-3">
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-[#5C4F42]">Naissance</span>
+              <span className="text-xs font-medium text-ink-600">Naissance</span>
               <input
                 type="date"
                 value={form.birth_date}
@@ -152,7 +152,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
               />
             </label>
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-[#5C4F42]">Décès</span>
+              <span className="text-xs font-medium text-ink-600">Décès</span>
               <input
                 type="date"
                 value={form.death_date}
@@ -163,20 +163,20 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
           </div>
 
           {/* Statut déduit de la date de décès — pas de saisie manuelle. */}
-          <p className="text-xs text-[#7A6B5C]">
+          <p className="text-xs text-ink-500">
             Statut :{' '}
             {form.death_date ? (
-              <span className="font-medium text-[#84412a]">
+              <span className="font-medium text-warm-800">
                 Décédé(e){form.death_date && ` le ${form.death_date}`}
               </span>
             ) : (
-              <span className="font-medium text-[#4A3F35]">En vie</span>
+              <span className="font-medium text-ink-700">En vie</span>
             )}{' '}
             — renseigne une date de décès pour marquer la personne comme décédée.
           </p>
 
           <label className="block space-y-1">
-            <span className="text-xs font-medium text-[#5C4F42]">Bio</span>
+            <span className="text-xs font-medium text-ink-600">Bio</span>
             <textarea
               value={form.bio}
               onChange={(e) => update('bio', e.target.value)}
@@ -197,12 +197,12 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
 
         {/* Liens de parenté — uniquement en édition (le membre doit exister) */}
         {isEdit && member && (
-          <div className="border-t border-[#EDE6DA] pt-5">
+          <div className="border-t border-cream-300 pt-5">
             <MemberRelationsEditor member={member} allMembers={allMembers} />
           </div>
         )}
         {!isEdit && (
-          <p className="border-t border-[#EDE6DA] pt-4 text-xs text-[#7A6B5C]">
+          <p className="border-t border-cream-300 pt-4 text-xs text-ink-500">
             Les liens de parenté pourront être ajoutés après la création, en modifiant le membre.
           </p>
         )}

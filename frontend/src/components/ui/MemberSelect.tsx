@@ -110,16 +110,16 @@ export function MemberSelect({
         aria-expanded={open}
         className="input-field flex w-full items-center justify-between gap-2 text-left disabled:cursor-not-allowed disabled:opacity-60"
       >
-        <span className={`flex min-w-0 items-center gap-2 ${selected ? '' : 'text-[#9A8B7A]'}`}>
+        <span className={`flex min-w-0 items-center gap-2 ${selected ? '' : 'text-ink-400'}`}>
           {selected && <MemberAvatar member={selected} size="sm" />}
           <span className="truncate">{selected ? fullName(selected) : placeholder}</span>
         </span>
-        <span aria-hidden className="shrink-0 text-[#9A8B7A]">▾</span>
+        <span aria-hidden className="shrink-0 text-ink-400">▾</span>
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-[#E0D5C4] bg-white shadow-[0_8px_30px_-6px_rgba(44,36,25,0.15)]">
-          <div className="border-b border-[#EDE6DA] p-2">
+        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-cream-400 bg-cream-50 shadow-[0_8px_30px_-6px_rgba(44,36,25,0.15)]">
+          <div className="border-b border-cream-300 p-2">
             <input
               type="text"
               autoFocus
@@ -127,7 +127,7 @@ export function MemberSelect({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Rechercher…"
-              className="w-full rounded-lg border border-[#E0D5C4] px-3 py-2.5 text-base text-[#2C2419] placeholder:text-[#9A8B7A] focus:border-[#de9860] focus:outline-none focus:ring-2 focus:ring-[#f9ede0] sm:py-1.5 sm:text-sm"
+              className="w-full rounded-lg border border-cream-400 bg-cream-50 px-3 py-2.5 text-base text-ink-800 placeholder:text-ink-400 focus:border-warm-400 focus:outline-none focus:ring-2 focus:ring-warm-100 sm:py-1.5 sm:text-sm"
             />
           </div>
           <ul role="listbox" className="max-h-[50vh] overflow-y-auto overscroll-contain py-1 sm:max-h-56">
@@ -136,14 +136,14 @@ export function MemberSelect({
                 <button
                   type="button"
                   onClick={() => choose('')}
-                  className="flex min-h-[44px] w-full items-center px-3 py-2 text-left text-sm text-[#9A8B7A] hover:bg-[#F5F0E8]/60"
+                  className="flex min-h-[44px] w-full items-center px-3 py-2 text-left text-sm text-ink-400 hover:bg-cream-200/60"
                 >
                   Aucun
                 </button>
               </li>
             )}
             {filtered.length === 0 ? (
-              <li className="px-3 py-3 text-center text-sm text-[#9A8B7A]">Aucun membre trouvé.</li>
+              <li className="px-3 py-3 text-center text-sm text-ink-400">Aucun membre trouvé.</li>
             ) : (
               filtered.map((m, i) => (
                 <li key={m.id}>
@@ -154,8 +154,8 @@ export function MemberSelect({
                     onClick={() => choose(m.id)}
                     onMouseEnter={() => setActiveIndex(i)}
                     className={`flex min-h-[44px] w-full items-center gap-2 px-3 py-2 text-left text-sm transition ${
-                      i === activeIndex ? 'bg-[#F5F0E8]/80' : ''
-                    } ${m.id === value ? 'font-medium text-[#84412a]' : 'text-[#2C2419]'}`}
+                      i === activeIndex ? 'bg-cream-200/80' : ''
+                    } ${m.id === value ? 'font-medium text-warm-800' : 'text-ink-800'}`}
                   >
                     <MemberAvatar member={m} size="sm" />
                     <span className="truncate">{fullName(m)}</span>

@@ -117,7 +117,7 @@ export function RouletteWheel({ names, targetName, onComplete }: RouletteWheelPr
               );
             })}
 
-            <div className="absolute inset-[28%] z-10 flex items-center justify-center rounded-full border-4 border-white bg-white shadow-inner">
+            <div className="absolute inset-[28%] z-10 flex items-center justify-center rounded-full border-4 border-cream-50 bg-cream-50 shadow-inner">
               <span
                 className={`px-2 text-center font-display text-lg font-bold text-arbey-900 transition-opacity sm:text-xl ${
                   done ? 'opacity-100' : 'opacity-90'

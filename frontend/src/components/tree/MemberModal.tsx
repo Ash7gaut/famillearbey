@@ -26,7 +26,7 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-2xl bg-cream-50 p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">

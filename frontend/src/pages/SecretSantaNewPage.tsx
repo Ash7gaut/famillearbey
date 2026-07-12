@@ -47,7 +47,7 @@ export function SecretSantaNewPage() {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ex. Noël chez Eric"
+            placeholder="Ex. Noël 2026 - tribu Gautier"
             required
             className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
           />
