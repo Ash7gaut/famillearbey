@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../services/api';
-import type { FamilyMember, Gender } from '../../types';
+import type { FamilyMember, Gender, Tribu } from '../../types';
 import { MemberRelationsEditor } from './MemberRelationsEditor';
 
 interface MemberFormModalProps {
@@ -15,6 +15,7 @@ interface FormState {
   first_name: string;
   last_name: string;
   gender: Gender;
+  tribu_id: string;
   birth_date: string;
   death_date: string;
   bio: string;
@@ -25,6 +26,7 @@ function toForm(member: FamilyMember | null): FormState {
     first_name: member?.first_name ?? '',
     last_name: member?.last_name ?? 'Arbey',
     gender: member?.gender ?? 'male',
+    tribu_id: member?.tribu_id ?? '',
     birth_date: member?.birth_date ?? '',
     death_date: member?.death_date ?? '',
     bio: member?.bio ?? '',
@@ -34,12 +36,17 @@ function toForm(member: FamilyMember | null): FormState {
 export function MemberFormModal({ member, allMembers, onClose, onSaved }: MemberFormModalProps) {
   const isEdit = Boolean(member);
   const [form, setForm] = useState<FormState>(() => toForm(member));
+  const [tribus, setTribus] = useState<Tribu[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setForm(toForm(member));
   }, [member]);
+
+  useEffect(() => {
+    api.get<Tribu[]>('/tribus').then(setTribus).catch(() => setTribus([]));
+  }, []);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -55,6 +62,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
       // Nom de famille toujours en MAJUSCULES (le backend le garantit aussi).
       last_name: (form.last_name.trim() || 'Arbey').toLocaleUpperCase('fr-FR'),
       gender: form.gender,
+      tribu_id: form.tribu_id || null,
       birth_date: form.birth_date || null,
       death_date: form.death_date || null,
       // Déduit : une date de décès renseignée ⇒ la personne n'est plus en vie.
@@ -129,17 +137,34 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
             </label>
           </div>
 
-          <label className="block space-y-1">
-            <span className="text-xs font-medium text-ink-600">Genre</span>
-            <select
-              value={form.gender}
-              onChange={(e) => update('gender', e.target.value as Gender)}
-              className="input-field"
-            >
-              <option value="male">Homme</option>
-              <option value="female">Femme</option>
-            </select>
-          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block space-y-1">
+              <span className="text-xs font-medium text-ink-600">Genre</span>
+              <select
+                value={form.gender}
+                onChange={(e) => update('gender', e.target.value as Gender)}
+                className="input-field"
+              >
+                <option value="male">Homme</option>
+                <option value="female">Femme</option>
+              </select>
+            </label>
+            <label className="block space-y-1">
+              <span className="text-xs font-medium text-ink-600">Tribu</span>
+              <select
+                value={form.tribu_id}
+                onChange={(e) => update('tribu_id', e.target.value)}
+                className="input-field"
+              >
+                <option value="">Aucune</option>
+                {tribus.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
 
           <div className="grid grid-cols-2 gap-3">
             <label className="block space-y-1">

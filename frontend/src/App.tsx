@@ -14,6 +14,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RequestAccessPage } from './pages/RequestAccessPage';
 import { AdminPage } from './pages/AdminPage';
 import { MembersAdminPage } from './pages/MembersAdminPage';
+import { TribusAdminPage } from './pages/TribusAdminPage';
 import { SecretSantaPage } from './pages/SecretSantaPage';
 import { SecretSantaNewPage } from './pages/SecretSantaNewPage';
 import { SecretSantaDetailPage } from './pages/SecretSantaDetailPage';
@@ -65,6 +66,7 @@ export default function App() {
               <Route path="profil/:id" element={<ProfilePage />} />
               <Route path="admin" element={<AdminPage />} />
               <Route path="admin/membres" element={<MembersAdminPage />} />
+              <Route path="admin/tribus" element={<TribusAdminPage />} />
             </Route>
           </Route>
 

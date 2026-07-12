@@ -11,6 +11,7 @@ import secretSantaRoutes from './secretSantaRoutes.js';
 import calendarRoutes from './calendarRoutes.js';
 import eventRoutes from './eventRoutes.js';
 import commentRoutes from './commentRoutes.js';
+import tribuRoutes from './tribuRoutes.js';
 
 const router = Router();
 
@@ -26,6 +27,7 @@ router.use('/secret-santa', secretSantaRoutes);
 router.use('/calendar', calendarRoutes);
 router.use('/events', eventRoutes);
 router.use('/comments', commentRoutes);
+router.use('/tribus', tribuRoutes);
 
 router.get('/health', (_req, res) => {
   res.json({ data: { status: 'ok', app: 'FamilyHub – Famille Arbey' } });
