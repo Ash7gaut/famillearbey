@@ -55,7 +55,7 @@ export function Layout() {
 
       {/* Contenu principal — décalé pour la sidebar sur desktop */}
       <div className="flex min-h-screen flex-col lg:ml-60">
-        <header className="sticky top-0 z-30 border-b border-cream-300/60 bg-cream-50/90 backdrop-blur-md lg:hidden">
+        <header className="pt-safe sticky top-0 z-30 border-b border-cream-300/60 bg-cream-50/90 backdrop-blur-md lg:hidden">
           <div className="flex h-16 items-center justify-between gap-3 px-4">
             <NavLink to="/accueil" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
               <p className="truncate font-display text-lg font-semibold text-ink-800">Famille Arbey</p>
