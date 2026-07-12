@@ -52,7 +52,8 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
 
     const payload = {
       first_name: form.first_name.trim(),
-      last_name: form.last_name.trim() || 'Arbey',
+      // Nom de famille toujours en MAJUSCULES (le backend le garantit aussi).
+      last_name: (form.last_name.trim() || 'Arbey').toLocaleUpperCase('fr-FR'),
       gender: form.gender,
       birth_date: form.birth_date || null,
       death_date: form.death_date || null,
@@ -123,7 +124,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
                 type="text"
                 value={form.last_name}
                 onChange={(e) => update('last_name', e.target.value)}
-                className="input-field"
+                className="input-field uppercase"
               />
             </label>
           </div>
