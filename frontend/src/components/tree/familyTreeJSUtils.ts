@@ -20,7 +20,7 @@ export function buildFamilyTreeJSNodes(
   members: FamilyMember[],
   relationships: Relationship[],
 ): FamilyTreeJSNode[] {
-  const genders = inferGenders(members, relationships);
+  const genders = inferGenders(members);
   const { parents, spouses } = buildRelationshipMaps(relationships);
 
   return members.map((member) => {

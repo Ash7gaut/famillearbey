@@ -4,7 +4,7 @@
 -- compte au rejet. Colonne attendue par authService mais jamais migrée.
 
 ALTER TABLE access_requests
-  ADD COLUMN auth_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+  ADD COLUMN IF NOT EXISTS auth_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
 
-CREATE INDEX idx_access_requests_auth_user ON access_requests (auth_user_id)
+CREATE INDEX IF NOT EXISTS idx_access_requests_auth_user ON access_requests (auth_user_id)
   WHERE auth_user_id IS NOT NULL;

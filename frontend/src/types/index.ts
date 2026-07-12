@@ -20,6 +20,8 @@ export interface MemberProfile {
 
 export type BirthDateDisplay = 'day_month' | 'full';
 
+export type Gender = 'male' | 'female';
+
 export interface UpdateOwnProfileInput {
   bio?: string | null;
   birth_date?: string | null;
@@ -33,6 +35,7 @@ export interface FamilyMember {
   is_admin: boolean;
   first_name: string;
   last_name: string;
+  gender: Gender;
   photo_url: string | null;
   birth_date: string | null;
   birth_date_display?: BirthDateDisplay;

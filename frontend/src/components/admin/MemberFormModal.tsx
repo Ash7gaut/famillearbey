@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../services/api';
-import type { FamilyMember } from '../../types';
+import type { FamilyMember, Gender } from '../../types';
 import { MemberRelationsEditor } from './MemberRelationsEditor';
 
 interface MemberFormModalProps {
@@ -14,6 +14,7 @@ interface MemberFormModalProps {
 interface FormState {
   first_name: string;
   last_name: string;
+  gender: Gender;
   birth_date: string;
   death_date: string;
   bio: string;
@@ -23,6 +24,7 @@ function toForm(member: FamilyMember | null): FormState {
   return {
     first_name: member?.first_name ?? '',
     last_name: member?.last_name ?? 'Arbey',
+    gender: member?.gender ?? 'male',
     birth_date: member?.birth_date ?? '',
     death_date: member?.death_date ?? '',
     bio: member?.bio ?? '',
@@ -51,6 +53,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
     const payload = {
       first_name: form.first_name.trim(),
       last_name: form.last_name.trim() || 'Arbey',
+      gender: form.gender,
       birth_date: form.birth_date || null,
       death_date: form.death_date || null,
       // Déduit : une date de décès renseignée ⇒ la personne n'est plus en vie.
@@ -124,6 +127,18 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
               />
             </label>
           </div>
+
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-[#5C4F42]">Genre</span>
+            <select
+              value={form.gender}
+              onChange={(e) => update('gender', e.target.value as Gender)}
+              className="input-field"
+            >
+              <option value="male">Homme</option>
+              <option value="female">Femme</option>
+            </select>
+          </label>
 
           <div className="grid grid-cols-2 gap-3">
             <label className="block space-y-1">

@@ -34,6 +34,7 @@ export const familyMemberService = {
       .insert({
         first_name: input.first_name,
         last_name: input.last_name ?? 'Arbey',
+        gender: input.gender ?? 'male',
         photo_url: input.photo_url,
         birth_date: input.birth_date,
         death_date: input.death_date,
@@ -53,6 +54,7 @@ export const familyMemberService = {
       .update({
         first_name: input.first_name,
         last_name: input.last_name,
+        gender: input.gender,
         photo_url: input.photo_url,
         birth_date: input.birth_date,
         death_date: input.death_date,
