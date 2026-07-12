@@ -36,7 +36,7 @@ export function LoginPage() {
 
   if (sent) {
     return (
-      <div className="mx-auto max-w-sm space-y-8 py-4">
+      <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center space-y-8 py-4">
         <BackLink to="/" label="Accueil" />
         <div>
           <p className="text-sm font-medium uppercase tracking-widest text-warm-600">Espace privé</p>
