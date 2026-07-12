@@ -36,6 +36,7 @@ export interface FamilyMember {
   first_name: string;
   last_name: string;
   gender: Gender;
+  is_mamie: boolean;
   photo_url: string | null;
   birth_date: string | null;
   birth_date_display?: BirthDateDisplay;
