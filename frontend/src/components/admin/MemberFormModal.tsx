@@ -16,7 +16,6 @@ interface FormState {
   last_name: string;
   birth_date: string;
   death_date: string;
-  is_alive: boolean;
   bio: string;
 }
 
@@ -26,7 +25,6 @@ function toForm(member: FamilyMember | null): FormState {
     last_name: member?.last_name ?? 'Arbey',
     birth_date: member?.birth_date ?? '',
     death_date: member?.death_date ?? '',
-    is_alive: member?.is_alive ?? true,
     bio: member?.bio ?? '',
   };
 }
@@ -55,7 +53,8 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
       last_name: form.last_name.trim() || 'Arbey',
       birth_date: form.birth_date || null,
       death_date: form.death_date || null,
-      is_alive: form.is_alive,
+      // Déduit : une date de décès renseignée ⇒ la personne n'est plus en vie.
+      is_alive: !form.death_date,
       bio: form.bio.trim() || null,
     };
 
@@ -147,15 +146,18 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
             </label>
           </div>
 
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={form.is_alive}
-              onChange={(e) => update('is_alive', e.target.checked)}
-              className="h-4 w-4 rounded border-[#E0D5C4] text-[#c66434] focus:ring-[#f9ede0]"
-            />
-            <span className="text-sm text-[#4A3F35]">En vie</span>
-          </label>
+          {/* Statut déduit de la date de décès — pas de saisie manuelle. */}
+          <p className="text-xs text-[#7A6B5C]">
+            Statut :{' '}
+            {form.death_date ? (
+              <span className="font-medium text-[#84412a]">
+                Décédé(e){form.death_date && ` le ${form.death_date}`}
+              </span>
+            ) : (
+              <span className="font-medium text-[#4A3F35]">En vie</span>
+            )}{' '}
+            — renseigne une date de décès pour marquer la personne comme décédée.
+          </p>
 
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[#5C4F42]">Bio</span>
