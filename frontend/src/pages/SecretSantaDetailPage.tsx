@@ -10,6 +10,7 @@ import type {
   SecretSantaParticipantView,
 } from '../types/secretSanta';
 import { SecretSantaDrawRoster } from '../components/secretSanta/SecretSantaDrawRoster';
+import { MemberSelect } from '../components/ui/MemberSelect';
 import { MemberAvatar } from '../components/profile/MemberAvatar';
 import { avatarPersonFromDisplayName } from '../components/profile/memberUtils';
 import { BackLink } from '../components/ui/BackLink';
@@ -279,18 +280,13 @@ export function SecretSantaDetailPage() {
               Inviter un membre famille
             </h2>
             <div className="flex gap-2">
-              <select
+              <MemberSelect
+                members={availableMembers}
                 value={selectedMemberId}
-                onChange={(e) => setSelectedMemberId(e.target.value)}
-                className="flex-1 rounded-xl border border-arbey-200 px-3 py-2 text-sm"
-              >
-                <option value="">Choisir…</option>
-                {availableMembers.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.first_name} {m.last_name}
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedMemberId}
+                placeholder="Choisir…"
+                className="flex-1"
+              />
               <button
                 type="button"
                 disabled={!selectedMemberId || actionLoading}

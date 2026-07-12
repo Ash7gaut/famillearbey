@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../../services/api';
 import type { FamilyMember, Relationship, RelationshipType } from '../../types';
+import { MemberSelect } from '../ui/MemberSelect';
 
 interface MemberRelationsEditorProps {
   member: FamilyMember;
@@ -228,18 +229,12 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
         </label>
         <label className="min-w-[160px] flex-1 space-y-1">
           <span className="text-xs font-medium text-[#5C4F42]">Membre</span>
-          <select
+          <MemberSelect
+            members={candidates}
             value={otherId}
-            onChange={(e) => setOtherId(e.target.value)}
-            className="input-field !py-2"
-          >
-            <option value="">Choisir…</option>
-            {candidates.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.first_name} {m.last_name}
-              </option>
-            ))}
-          </select>
+            onChange={setOtherId}
+            placeholder="Choisir…"
+          />
         </label>
         <button
           type="button"

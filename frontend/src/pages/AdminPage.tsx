@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import type { FamilyMember } from '../types';
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+import { MemberSelect } from '../components/ui/MemberSelect';
 
 interface AccessRequest {
   id: string;
@@ -23,6 +24,8 @@ export function AdminPage() {
   const [inviteMemberId, setInviteMemberId] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  // Membre choisi pour lier chaque demande d'accès (clé = id de la demande).
+  const [linkChoice, setLinkChoice] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (member?.is_admin) loadData();
@@ -113,20 +116,12 @@ export function AdminPage() {
       <section className="card space-y-4">
         <h2 className="font-display font-semibold text-arbey-900">Inviter un membre</h2>
         <form onSubmit={handleInvite} className="space-y-3">
-          <select
+          <MemberSelect
+            members={unlinked}
             value={inviteMemberId}
-            onChange={(e) => setInviteMemberId(e.target.value)}
-            required
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
-          >
-            <option value="">Choisir un membre de l'arbre...</option>
-            {unlinked.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.first_name} {m.last_name}
-                {m.invite_email ? ` (invitation: ${m.invite_email})` : ''}
-              </option>
-            ))}
-          </select>
+            onChange={setInviteMemberId}
+            placeholder="Choisir un membre de l'arbre..."
+          />
           <input
             type="email"
             value={inviteEmail}
@@ -162,24 +157,19 @@ export function AdminPage() {
                 {req.message && <p className="text-sm text-arbey-500 mt-1">"{req.message}"</p>}
               </div>
               <div className="flex gap-2 flex-wrap">
-                <select
-                  id={`member-${req.id}`}
-                  className="flex-1 min-w-[160px] rounded-xl border border-arbey-200 px-3 py-2 text-sm"
-                  defaultValue=""
-                >
-                  <option value="" disabled>Lier à un membre...</option>
-                  {unlinked.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.first_name} {m.last_name}
-                    </option>
-                  ))}
-                </select>
+                <MemberSelect
+                  members={unlinked}
+                  value={linkChoice[req.id] ?? ''}
+                  onChange={(id) => setLinkChoice((prev) => ({ ...prev, [req.id]: id }))}
+                  placeholder="Lier à un membre..."
+                  className="flex-1 min-w-[160px]"
+                />
                 <button
                   type="button"
                   className="btn-primary"
                   onClick={() => {
-                    const select = document.getElementById(`member-${req.id}`) as HTMLSelectElement;
-                    if (select.value) handleApprove(req.id, select.value);
+                    const memberId = linkChoice[req.id];
+                    if (memberId) handleApprove(req.id, memberId);
                   }}
                 >
                   Approuver

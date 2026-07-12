@@ -63,8 +63,11 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
 
         registerArbeyFamilyTreeTemplates();
 
-        const hasMainMember =
-          Boolean(mainMemberId) && nodes.some((node) => node.id === mainMemberId);
+        // Racine de l'arbre : la mamie (grand-mère) en priorité ; sinon le
+        // membre demandé par la page ; sinon la racine calculée par la lib.
+        const mamie = members.find((m) => m.is_mamie);
+        const rootId = mamie?.id ?? mainMemberId;
+        const hasRoot = Boolean(rootId) && nodes.some((node) => node.id === rootId);
 
         containerRef.current.innerHTML = '';
 
@@ -90,7 +93,7 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
             field_1: 'birthYear',
             img_0: 'img',
           },
-          ...(hasMainMember ? { roots: [mainMemberId!] } : {}),
+          ...(hasRoot ? { roots: [rootId!] } : {}),
           nodes,
         });
 
