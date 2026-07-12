@@ -172,7 +172,7 @@ function BookmarkCard({
   return (
     <div className="card border-warm-200/80 bg-warm-50/40">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-warm-700 shadow-sm">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cream-50 text-warm-700 shadow-sm">
           <Bookmark className="h-5 w-5" strokeWidth={1.75} />
         </div>
         <div className="min-w-0 flex-1">

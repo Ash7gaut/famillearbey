@@ -215,7 +215,7 @@ export function ProfilePage() {
                   member={member}
                   size="hero"
                   shape="rounded"
-                  className="border-4 border-white font-display shadow-warm transition group-hover:shadow-[0_8px_28px_-6px_rgba(44,36,25,0.22)]"
+                  className="border-4 border-cream-50 font-display shadow-warm transition group-hover:shadow-[0_8px_28px_-6px_rgba(44,36,25,0.22)]"
                 />
               </button>
             ) : (
@@ -223,7 +223,7 @@ export function ProfilePage() {
                 member={member}
                 size="hero"
                 shape="rounded"
-                className="border-4 border-white font-display shadow-warm"
+                className="border-4 border-cream-50 font-display shadow-warm"
               />
             )}
             {isOwnProfile && (
@@ -232,7 +232,7 @@ export function ProfilePage() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingPhoto}
-                  className="focus-ring absolute -bottom-2 -right-2 inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-warm-600 text-white shadow-md transition hover:bg-warm-700 disabled:opacity-60"
+                  className="focus-ring absolute -bottom-2 -right-2 inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-cream-50 bg-warm-600 text-white shadow-md transition hover:bg-warm-700 disabled:opacity-60"
                   title="Changer la photo"
                 >
                   <Camera className="h-4 w-4" strokeWidth={2} />
@@ -464,7 +464,7 @@ export function ProfilePage() {
               <li>
                 <Link
                   to="/tree"
-                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-white px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
+                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
                 >
                   <TreePine className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
                   Voir l&apos;arbre généalogique
@@ -473,7 +473,7 @@ export function ProfilePage() {
               <li>
                 <Link
                   to="/famille"
-                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-white px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
+                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
                 >
                   <Users className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
                   Voir toute la famille
@@ -482,7 +482,7 @@ export function ProfilePage() {
               <li>
                 <Link
                   to="/albums"
-                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-white px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
+                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
                 >
                   <Camera className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
                   Parcourir les albums

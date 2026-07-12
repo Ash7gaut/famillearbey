@@ -101,7 +101,7 @@ export function AdminPage() {
       {/* Gérer les membres (CRUD) */}
       <Link
         to="/admin/membres"
-        className="card flex items-center justify-between gap-3 no-underline transition hover:border-[#f2d8bd]"
+        className="card flex items-center justify-between gap-3 no-underline transition hover:border-warm-200"
       >
         <div>
           <h2 className="font-display font-semibold text-arbey-900">Gérer les membres</h2>

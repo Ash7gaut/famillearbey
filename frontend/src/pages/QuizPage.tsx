@@ -45,7 +45,7 @@ export function QuizPage() {
       </div>
 
       {/* Score bar */}
-      <div className="flex items-center justify-between rounded-2xl border border-arbey-100 bg-white px-5 py-3 shadow-sm">
+      <div className="flex items-center justify-between rounded-2xl border border-arbey-100 bg-cream-50 px-5 py-3 shadow-sm">
         <div className="text-center">
           <p className="text-xs text-arbey-500">Score</p>
           <p className="font-display text-lg font-semibold text-arbey-900">

@@ -167,7 +167,7 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
 
   return (
     <div className="space-y-4">
-      <h3 className="font-display text-sm font-semibold text-[#2C2419]">Liens de parenté</h3>
+      <h3 className="font-display text-sm font-semibold text-ink-800">Liens de parenté</h3>
 
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800">
@@ -176,27 +176,27 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
       )}
 
       {loading ? (
-        <p className="text-xs text-[#7A6B5C]">Chargement des liens…</p>
+        <p className="text-xs text-ink-500">Chargement des liens…</p>
       ) : (
         <div className="space-y-3">
           {(Object.keys(CHOICE_LABELS) as RelationChoice[]).map((cat) => (
             <div key={cat}>
-              <p className="text-xs font-medium uppercase tracking-wide text-[#9A8B7A]">
+              <p className="text-xs font-medium uppercase tracking-wide text-ink-400">
                 {CHOICE_LABELS[cat]}
               </p>
               {grouped[cat].length === 0 ? (
-                <p className="text-xs text-[#B8A99A]">—</p>
+                <p className="text-xs text-ink-400">—</p>
               ) : (
                 <ul className="mt-1 flex flex-wrap gap-2">
                   {grouped[cat].map((row) => (
                     <li
                       key={row.relationshipId}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[#E0D5C4] bg-white px-3 py-1 text-sm text-[#4A3F35]"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-cream-400 bg-cream-50 px-3 py-1 text-sm text-ink-700"
                     >
                       {row.other.first_name} {row.other.last_name}
                       <button
                         type="button"
-                        className="text-[#B8A99A] transition hover:text-red-600"
+                        className="text-ink-400 transition hover:text-red-600"
                         onClick={() => handleRemove(row.relationshipId)}
                         aria-label={`Retirer le lien avec ${row.other.first_name}`}
                       >
@@ -212,9 +212,9 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
       )}
 
       {/* Ajouter un lien */}
-      <div className="flex flex-wrap items-end gap-2 rounded-xl border border-[#EDE6DA] bg-[#F5F0E8]/50 p-3">
+      <div className="flex flex-wrap items-end gap-2 rounded-xl border border-cream-300 bg-cream-200/50 p-3">
         <label className="space-y-1">
-          <span className="text-xs font-medium text-[#5C4F42]">Type</span>
+          <span className="text-xs font-medium text-ink-600">Type</span>
           <select
             value={choice}
             onChange={(e) => setChoice(e.target.value as RelationChoice)}
@@ -228,7 +228,7 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
           </select>
         </label>
         <label className="min-w-[160px] flex-1 space-y-1">
-          <span className="text-xs font-medium text-[#5C4F42]">Membre</span>
+          <span className="text-xs font-medium text-ink-600">Membre</span>
           <MemberSelect
             members={candidates}
             value={otherId}

@@ -76,7 +76,7 @@ export function HomePage() {
                 aria-hidden
               />
               <div className="relative">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/80 text-warm-700 shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cream-50/80 text-warm-700 shadow-sm">
                   <Icon className="h-5 w-5" strokeWidth={1.75} />
                 </div>
                 <h2 className="mt-4 font-display text-xl font-semibold text-ink-800">{feature.title}</h2>

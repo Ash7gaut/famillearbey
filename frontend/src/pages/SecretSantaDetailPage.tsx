@@ -393,7 +393,7 @@ function ParticipantRow({
   }
 
   return (
-    <li className="flex flex-wrap items-center gap-3 rounded-xl border border-[#EDE6DA] bg-white/60 px-3 py-2.5 sm:flex-nowrap">
+    <li className="flex flex-wrap items-center gap-3 rounded-xl border border-cream-300 bg-cream-50/60 px-3 py-2.5 sm:flex-nowrap">
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <MemberAvatar
           member={avatarPersonFromDisplayName(participant.display_name, participant.photo_url)}
@@ -401,18 +401,18 @@ function ParticipantRow({
           initialsTone={participant.status === 'accepted' ? 'warm' : 'muted'}
         />
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-[#2C2419]">
+          <p className="truncate text-sm font-medium text-ink-800">
             {participant.display_name}
           </p>
           {(participant.is_creator || participant.is_external) && (
             <div className="mt-0.5 flex flex-wrap gap-1">
               {participant.is_creator && (
-                <span className="rounded-md bg-[#f9ede0] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#a54f2d]">
+                <span className="rounded-md bg-warm-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warm-700">
                   Créateur
                 </span>
               )}
               {participant.is_external && (
-                <span className="rounded-md bg-[#F5F0E8] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#7A6B5C]">
+                <span className="rounded-md bg-cream-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-500">
                   Invité externe
                 </span>
               )}
@@ -423,15 +423,15 @@ function ParticipantRow({
 
       <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
         {hasActions && (
-          <div className="flex items-center rounded-lg border border-[#E0D5C4] bg-[#FDFBF7] p-0.5 shadow-sm">
+          <div className="flex items-center rounded-lg border border-cream-400 bg-cream-50 p-0.5 shadow-sm">
             {showCopyLink && (
               <button
                 type="button"
                 onClick={() => void handleCopy()}
                 className={`focus-ring inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition focus-visible:ring-inset focus-visible:ring-offset-0 ${
                   copied
-                    ? 'bg-[#e8f0e4] text-[#3d5235]'
-                    : 'text-[#4A3F35] hover:bg-[#F5F0E8]'
+                    ? 'bg-arbey-100 text-arbey-700'
+                    : 'text-ink-700 hover:bg-cream-200'
                 }`}
                 title="Copier le lien d'invitation"
               >
@@ -449,7 +449,7 @@ function ParticipantRow({
               </button>
             )}
             {showCopyLink && showRemove && (
-              <span className="mx-0.5 h-5 w-px bg-[#E0D5C4]" aria-hidden />
+              <span className="mx-0.5 h-5 w-px bg-cream-400" aria-hidden />
             )}
             {showRemove && (
               <button
