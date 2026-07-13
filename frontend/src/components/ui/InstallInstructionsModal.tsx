@@ -1,33 +1,66 @@
-import { useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { Ellipsis, Share, SquarePlus } from 'lucide-react';
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+import { Ellipsis, Share, SquarePlus } from "lucide-react";
 
 interface InstallInstructionsModalProps {
   onClose: () => void;
-  platform: 'ios' | 'generic';
+  platform: "ios" | "generic";
 }
 
 const steps = {
   ios: {
-    subtitle: 'Sur iPhone/iPad, l\'installation se fait depuis Safari.',
+    subtitle: "Sur iPhone/iPad, l'installation se fait depuis Safari.",
     items: [
-      { icon: Share, text: <>Appuie sur le bouton <strong>Partager</strong> dans la barre de Safari</> },
-      { icon: SquarePlus, text: <>Choisis <strong>« Sur l'écran d'accueil »</strong></> },
+      {
+        icon: Share,
+        text: (
+          <>
+            Appuie sur le bouton <strong>Partager</strong> dans la barre de
+            Safari
+          </>
+        ),
+      },
+      {
+        icon: SquarePlus,
+        text: (
+          <>
+            Choisis <strong>« Sur l'écran d'accueil »</strong>
+          </>
+        ),
+      },
     ],
   },
   generic: {
-    subtitle: 'L\'installation se fait depuis le menu de ton navigateur.',
+    subtitle: "L'installation se fait depuis le menu de ton navigateur.",
     items: [
-      { icon: Ellipsis, text: <>Ouvre le menu <strong>⋮</strong> en haut à droite du navigateur</> },
-      { icon: SquarePlus, text: <>Choisis <strong>« Installer et créer un raccourcie »</strong> puis <strong>« Installer »</strong></> },
+      {
+        icon: Ellipsis,
+        text: (
+          <>
+            Ouvre le menu <strong>⋮</strong> en haut à droite du navigateur
+          </>
+        ),
+      },
+      {
+        icon: SquarePlus,
+        text: (
+          <>
+            Choisis <strong>« Installer et créer un raccourci »</strong> puis{" "}
+            <strong>« Installer »</strong>
+          </>
+        ),
+      },
     ],
   },
 };
 
-export function InstallInstructionsModal({ onClose, platform }: InstallInstructionsModalProps) {
+export function InstallInstructionsModal({
+  onClose,
+  platform,
+}: InstallInstructionsModalProps) {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
     };
@@ -40,7 +73,10 @@ export function InstallInstructionsModal({ onClose, platform }: InstallInstructi
       className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center"
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-ink-900/55 backdrop-blur-md" aria-hidden />
+      <div
+        className="absolute inset-0 bg-ink-900/55 backdrop-blur-md"
+        aria-hidden
+      />
 
       <div
         className="relative z-10 w-full max-w-sm overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 shadow-[0_16px_48px_-12px_rgba(44,36,25,0.35)]"
@@ -50,7 +86,10 @@ export function InstallInstructionsModal({ onClose, platform }: InstallInstructi
         aria-labelledby="install-instructions-title"
       >
         <div className="border-b border-cream-300/60 px-5 py-4">
-          <h2 id="install-instructions-title" className="font-display text-lg font-semibold text-ink-800">
+          <h2
+            id="install-instructions-title"
+            className="font-display text-lg font-semibold text-ink-800"
+          >
             Installer l'app
           </h2>
           <p className="mt-1 text-sm text-ink-500">{subtitle}</p>
