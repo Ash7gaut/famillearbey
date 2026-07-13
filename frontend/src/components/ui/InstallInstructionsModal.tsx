@@ -19,7 +19,7 @@ const steps = {
     subtitle: 'L\'installation se fait depuis le menu de ton navigateur.',
     items: [
       { icon: Ellipsis, text: <>Ouvre le menu <strong>⋮</strong> en haut à droite du navigateur</> },
-      { icon: SquarePlus, text: <>Choisis <strong>« Installer l'application »</strong> ou <strong>« Ajouter à l'écran d'accueil »</strong></> },
+      { icon: SquarePlus, text: <>Choisis <strong>« Installer et créer un raccourcie »</strong> puis <strong>« Installer »</strong></> },
     ],
   },
 };
