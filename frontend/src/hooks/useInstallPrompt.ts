@@ -38,7 +38,6 @@ export function useInstallPrompt() {
   }, []);
 
   const canPromptNative = deferredPrompt !== null;
-  const canShowIosInstructions = isIos() && !standalone;
 
   async function promptInstall() {
     if (!deferredPrompt) return;
@@ -48,9 +47,13 @@ export function useInstallPrompt() {
   }
 
   return {
-    isVisible: !standalone && (canPromptNative || canShowIosInstructions),
+    // Toujours visible tant que l'app n'est pas déjà installée : si Chrome ne
+    // fournit pas beforeinstallprompt (déjà proposé par le passé, heuristique
+    // navigateur, etc.), on retombe sur des instructions manuelles plutôt que
+    // de cacher le bouton.
+    isVisible: !standalone,
     canPromptNative,
-    isIos: canShowIosInstructions,
+    isIos: isIos(),
     promptInstall,
   };
 }
