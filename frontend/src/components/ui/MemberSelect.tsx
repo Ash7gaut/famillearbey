@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { FamilyMember } from '../../types';
 import { MemberAvatar } from '../profile/MemberAvatar';
 
@@ -45,6 +46,10 @@ export function MemberSelect({
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  // Position calculée du menu (rendu dans un portail pour passer au-dessus de tout).
+  const [menuPos, setMenuPos] = useState<{ left: number; top: number; width: number } | null>(null);
 
   const sorted = useMemo(() => sortMembers(members), [members]);
   const selected = useMemo(() => sorted.find((m) => m.id === value) ?? null, [sorted, value]);
@@ -55,16 +60,39 @@ export function MemberSelect({
     return sorted.filter((m) => fullName(m).toLowerCase().includes(q));
   }, [sorted, query]);
 
-  // Fermeture au clic extérieur.
+  // Fermeture au clic extérieur (le menu est porté ailleurs dans le DOM :
+  // on vérifie donc le bouton ET le menu).
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        rootRef.current && !rootRef.current.contains(target) &&
+        menuRef.current && !menuRef.current.contains(target)
+      ) {
         setOpen(false);
         setQuery('');
       }
     }
     if (open) document.addEventListener('mousedown', onClickOutside);
     return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [open]);
+
+  // Positionne le menu sous le bouton, et recalcule au scroll / resize.
+  useLayoutEffect(() => {
+    if (!open) return;
+    function updatePosition() {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (rect) {
+        setMenuPos({ left: rect.left, top: rect.bottom + 4, width: rect.width });
+      }
+    }
+    updatePosition();
+    window.addEventListener('scroll', updatePosition, true);
+    window.addEventListener('resize', updatePosition);
+    return () => {
+      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener('resize', updatePosition);
+    };
   }, [open]);
 
   useEffect(() => {
@@ -101,6 +129,7 @@ export function MemberSelect({
   return (
     <div ref={rootRef} className={`relative ${className}`}>
       <button
+        ref={buttonRef}
         type="button"
         id={id}
         disabled={disabled}
@@ -117,8 +146,18 @@ export function MemberSelect({
         <span aria-hidden className="shrink-0 text-ink-400">▾</span>
       </button>
 
-      {open && (
-        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-cream-400 bg-cream-50 shadow-[0_8px_30px_-6px_rgba(44,36,25,0.15)]">
+      {open && menuPos &&
+        createPortal(
+          <div
+            ref={menuRef}
+            style={{
+              position: 'fixed',
+              left: menuPos.left,
+              top: menuPos.top,
+              width: menuPos.width,
+            }}
+            className="z-[100] overflow-hidden rounded-xl border border-cream-400 bg-cream-50 shadow-[0_8px_30px_-6px_rgba(44,36,25,0.15)]"
+          >
           <div className="border-b border-cream-300 p-2">
             <input
               type="text"
@@ -164,8 +203,9 @@ export function MemberSelect({
               ))
             )}
           </ul>
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </div>
   );
 }
