@@ -22,9 +22,9 @@ const menuItemClass =
 export function UserMenu({ variant = 'header' }: UserMenuProps) {
   const { member, session, logout } = useAuthStore();
   const [open, setOpen] = useState(false);
-  const [showIosInstructions, setShowIosInstructions] = useState(false);
+  const [showInstallInstructions, setShowInstallInstructions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { isVisible: showInstallItem, isIos, promptInstall } = useInstallPrompt();
+  const { isVisible: showInstallItem, canPromptNative, isIos, promptInstall } = useInstallPrompt();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -165,10 +165,10 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
               role="menuitem"
               onClick={() => {
                 setOpen(false);
-                if (isIos) {
-                  setShowIosInstructions(true);
-                } else {
+                if (canPromptNative) {
                   void promptInstall();
+                } else {
+                  setShowInstallInstructions(true);
                 }
               }}
               className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
@@ -205,8 +205,11 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
         </div>
       )}
 
-      {showIosInstructions && (
-        <InstallInstructionsModal onClose={() => setShowIosInstructions(false)} />
+      {showInstallInstructions && (
+        <InstallInstructionsModal
+          platform={isIos ? 'ios' : 'generic'}
+          onClose={() => setShowInstallInstructions(false)}
+        />
       )}
     </div>
   );
