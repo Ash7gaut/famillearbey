@@ -4,6 +4,54 @@ import { AppError } from '../middleware/errorHandler.js';
 import type { FamilyMember } from '../types/index.js';
 import type { AccessRequest } from '../types/auth.js';
 
+async function authUserExists(userId: string): Promise<boolean> {
+  const { data, error } = await supabase.auth.admin.getUserById(userId);
+  return !error && Boolean(data.user);
+}
+
+async function authUserExistsByEmail(email: string): Promise<boolean> {
+  const { data, error } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  if (error) return false;
+  return data.users.some((user) => user.email?.toLowerCase() === email);
+}
+
+/** Nettoie les états orphelins après suppression manuelle d'un user dans Supabase. */
+async function cleanupStaleAccessRequestState(email: string): Promise<void> {
+  const { data: pendingRequests } = await supabase
+    .from('access_requests')
+    .select('id, auth_user_id')
+    .eq('email', email)
+    .eq('status', 'pending');
+
+  for (const request of pendingRequests ?? []) {
+    if (!request.auth_user_id || !(await authUserExists(request.auth_user_id))) {
+      await supabase.from('access_requests').delete().eq('id', request.id);
+    }
+  }
+
+  const { data: invitedMember } = await supabase
+    .from('family_members')
+    .select('id, auth_user_id')
+    .eq('invite_email', email)
+    .maybeSingle();
+
+  if (!invitedMember) return;
+
+  const linkedUserMissing =
+    Boolean(invitedMember.auth_user_id) && !(await authUserExists(invitedMember.auth_user_id));
+  const inviteWithoutAuthUser = !(await authUserExistsByEmail(email));
+
+  if (linkedUserMissing || inviteWithoutAuthUser) {
+    await supabase
+      .from('family_members')
+      .update({
+        invite_email: null,
+        ...(linkedUserMissing ? { auth_user_id: null } : {}),
+      })
+      .eq('id', invitedMember.id);
+  }
+}
+
 export const authService = {
   /** Lie auth.users → family_members après connexion */
   async syncMember(userId: string, email: string, metadata?: Record<string, unknown>): Promise<FamilyMember> {
@@ -138,6 +186,8 @@ export const authService = {
     message?: string;
   }): Promise<AccessRequest> {
     const email = input.email.toLowerCase().trim();
+
+    await cleanupStaleAccessRequestState(email);
 
     const { data: alreadyInvited } = await supabase
       .from('family_members')
