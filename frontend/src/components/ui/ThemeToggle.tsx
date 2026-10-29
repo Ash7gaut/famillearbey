@@ -16,6 +16,7 @@ export function ThemeToggle({ variant = 'icon' }: ThemeToggleProps) {
         onClick={toggleTheme}
         className="focus-ring flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-600 transition hover:bg-cream-200/80 hover:text-ink-800"
         aria-pressed={isDark}
+        data-testid="theme-toggle-sidebar-button"
       >
         {isDark ? <Sun className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} /> : <Moon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />}
         <span>{isDark ? 'Mode clair' : 'Mode sombre'}</span>
@@ -30,6 +31,7 @@ export function ThemeToggle({ variant = 'icon' }: ThemeToggleProps) {
       className="focus-ring inline-flex h-9 w-9 items-center justify-center rounded-full text-ink-600 transition hover:bg-cream-200/80 hover:text-ink-800"
       aria-label={isDark ? 'Activer le mode clair' : 'Activer le mode sombre'}
       aria-pressed={isDark}
+      data-testid="theme-toggle-button"
     >
       {isDark ? <Sun className="h-[18px] w-[18px]" strokeWidth={1.75} /> : <Moon className="h-[18px] w-[18px]" strokeWidth={1.75} />}
     </button>

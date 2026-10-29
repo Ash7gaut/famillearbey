@@ -1,0 +1,277 @@
+# ============================================================
+# Stack de développement LOCAL — Docker uniquement
+# ------------------------------------------------------------
+# Versionne dans le repo. Il n'interfere pas avec le build railpack / le
+# deploiement : railpack ne detecte que `Dockerfile` / `railpack.json`, pas ce compose.
+#
+# Lancement :   docker compose -f docker-compose.dev.yml up --build
+# Arrêt :       docker compose -f docker-compose.dev.yml down
+# Reset total : docker compose -f docker-compose.dev.yml down -v
+#
+# Services :
+#   db        Postgres 15 (données Supabase + auth)
+#   auth      GoTrue (authentification Supabase)
+#   rest      PostgREST (API REST auto sur les tables)
+#   realtime  Supabase Realtime (websocket, écoute des nouveaux messages)
+#   kong      Passerelle = l'URL "Supabase" unique (http://localhost:8000)
+#   backend   API Express (npm run dev, hot-reload)
+#   frontend  Vite (npm run dev, hot-reload)
+# ============================================================
+
+name: famillearbey-dev
+
+services:
+  # ---------- Postgres ----------
+  db:
+    # postgres:15 + wal2json (requis par Realtime), cf. docker/Dockerfile.db.dev
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.db.dev
+    image: famillearbey-dev-db:15-wal2json
+    restart: unless-stopped
+    # wal_level=logical : requis par Supabase Realtime (réplication logique
+    # des changements Postgres vers le websocket écouté par le front).
+    command: ["postgres", "-c", "wal_level=logical", "-c", "output_plugin_libraries=pgoutput,test_decoding,wal2json"]
+    ports:
+      - "54322:5432" # accès direct à la DB si besoin (psql, GUI)
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # Scripts d'init (exécutés UNE fois, au premier démarrage du volume) :
+      # créent uniquement les rôles/schemas Supabase. Les migrations du projet
+      # sont appliquées ensuite par le service "migrate" (après GoTrue).
+      - ./docker/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ---------- Mailpit (serveur mail factice pour le dev) ----------
+  # Capture tous les emails envoyés par GoTrue (magic link, invitations...)
+  # sans jamais les envoyer pour de vrai. Interface web : http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025" # interface web pour lire les emails reçus
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "1"
+
+  # ---------- GoTrue (Auth) ----------
+  auth:
+    image: supabase/gotrue:v2.174.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://localhost:8000/auth/v1
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD:-postgres}@db:5432/postgres
+      GOTRUE_SITE_URL: ${APP_URL:-http://localhost:5173}
+      GOTRUE_URI_ALLOW_LIST: "*"
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      # Magic link : en dev, les emails partent vers Mailpit (serveur SMTP
+      # factice ci-dessous) au lieu d'un vrai fournisseur. Interface web pour
+      # lire les emails (donc le lien magique) : http://localhost:8025
+      GOTRUE_MAILER_AUTOCONFIRM: "false"
+      GOTRUE_SMTP_ADMIN_EMAIL: dev@famillearbey.local
+      GOTRUE_SMTP_HOST: mailpit
+      GOTRUE_SMTP_PORT: 1025
+      # NB : en dev on garde le template GoTrue par défaut (qui contient déjà le
+      # code ET le lien). Le joli template stylé — docker/email-templates/
+      # magic_link.html — est destiné à la PROD : à coller dans le dashboard
+      # Supabase (Auth â†’ Emails â†’ Magic Link). GoTrue self-hosted ne sait charger
+      # un template que via URL HTTP, pas via fichier, donc on ne le monte pas ici.
+      # Pas d'user/pass : Mailpit n'exige pas d'auth, et GoTrue refuse
+      # d'envoyer des identifiants SMTP sur une connexion non chiffrée
+      # (sans user/pass, cette vérification est court-circuitée).
+
+  # ---------- Migrations du projet ----------
+  # Attend que GoTrue ait créé auth.users, puis applique supabase/migrations/*.
+  # S'exécute une fois puis s'arrête (service one-shot).
+  migrate:
+    image: postgres:15
+    depends_on:
+      db:
+        condition: service_healthy
+      auth:
+        condition: service_started
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - ./supabase/migrations:/migrations:ro
+      - ./docker/apply-migrations.sh:/apply-migrations.sh:ro
+    entrypoint: ["sh", "/apply-migrations.sh"]
+    restart: "no"
+
+  # ---------- Seed admin ----------
+  # Crée le compte admin par défaut (admin@admin / admin) après migrate + auth.
+  # Idempotent, one-shot.
+  seed:
+    image: postgres:15
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      auth:
+        condition: service_started
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+    volumes:
+      - ./docker/seed-admin.sh:/seed-admin.sh:ro
+    entrypoint: ["sh", "/seed-admin.sh"]
+    restart: "no"
+
+  # ---------- PostgREST ----------
+  rest:
+    image: postgrest/postgrest:v12.2.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD:-postgres}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+
+  # ---------- Realtime (websocket : écoute des nouveaux messages) ----------
+  realtime:
+    image: supabase/realtime:v2.30.34
+    restart: unless-stopped
+    # Alias = tenant Realtime : le tenant est déduit du hostname de la requête, et SEED_SELF_HOST seed "realtime-dev".
+    networks:
+      default:
+        aliases:
+          - realtime-dev
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: supabase_realtime_admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_AFTER_CONNECT_QUERY: "SET search_path TO realtime"
+      DB_ENC_KEY: supabaserealtim3
+      API_JWT_SECRET: ${JWT_SECRET}
+      SECRET_KEY_BASE: ${JWT_SECRET}UnRealtimeSecretKeyBaseAtLeast64CharsLongForPhoenix
+      ERL_AFLAGS: -proto_dist inet_tcp
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: "10000"
+      APP_NAME: realtime
+      SEED_SELF_HOST: "true"
+
+  # ---------- Kong (passerelle = URL Supabase unique) ----------
+  kong:
+    image: kong:2.8.1
+    restart: unless-stopped
+    depends_on:
+      - auth
+      - rest
+      - realtime
+    ports:
+      - "8000:8000" # http://localhost:8000  <-- SUPABASE_URL
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors
+    volumes:
+      - ./docker/kong.yml:/home/kong/kong.yml:ro
+
+  # ---------- Backend (Express) ----------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.node.dev
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      NODE_ENV: development
+      # Hot-reload fiable à travers le volume monté (Docker/Windows) :
+      # sans polling, tsx watch ne voit pas les changements de fichiers.
+      CHOKIDAR_USEPOLLING: "true"
+      CORS_ORIGIN: http://localhost:5173
+      APP_URL: ${APP_URL:-http://localhost:5173}
+      # Le backend parle à Kong via le réseau Docker interne
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      ADMIN_SECRET: ${ADMIN_SECRET:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-Famille Arbey <onboarding@resend.dev>}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:dev@famillearbey.local}
+    volumes:
+      - ./backend/src:/app/src:ro
+      - ./backend/package.json:/app/package.json:ro
+      - ./backend/tsconfig.json:/app/tsconfig.json:ro
+    command: npm run dev
+
+  # ---------- Frontend (Vite) ----------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.node.dev
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    environment:
+      # Hot-reload fiable à travers le volume monté (Docker/Windows).
+      CHOKIDAR_USEPOLLING: "true"
+      # Le navigateur (hôte) appelle Kong via localhost, pas le nom Docker
+      VITE_SUPABASE_URL: http://localhost:8000
+      VITE_SUPABASE_ANON_KEY: ${ANON_KEY}
+      VITE_API_URL: http://localhost:3001/api/v1
+    volumes:
+      - ./frontend/src:/app/src:ro
+      - ./frontend/index.html:/app/index.html:ro
+      - ./frontend/package.json:/app/package.json:ro
+      - ./frontend/vite.config.ts:/app/vite.config.ts:ro
+      - ./frontend/tsconfig.json:/app/tsconfig.json:ro
+      - ./frontend/tsconfig.app.json:/app/tsconfig.app.json:ro
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js:ro
+      - ./frontend/postcss.config.js:/app/postcss.config.js:ro
+    # --host expose Vite hors du conteneur
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  db-data:

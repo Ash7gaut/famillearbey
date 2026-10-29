@@ -20,4 +20,7 @@ export const env = {
   appUrl: process.env.APP_URL ?? 'http://localhost:5173',
   resendApiKey: process.env.RESEND_API_KEY ?? '',
   emailFrom: process.env.EMAIL_FROM ?? 'Famille Arbey <onboarding@resend.dev>',
+  vapidPublicKey: process.env.VAPID_PUBLIC_KEY ?? '',
+  vapidPrivateKey: process.env.VAPID_PRIVATE_KEY ?? '',
+  vapidSubject: process.env.VAPID_SUBJECT ?? 'mailto:dev@famillearbey.local',
 };

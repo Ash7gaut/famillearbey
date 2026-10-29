@@ -20,10 +20,11 @@ export function FamilyRelationsCard({ profile, compact = false }: FamilyRelation
     profile.siblings.length > 0;
 
   return (
-    <article className="card">
+    <article className="card" data-testid={`family-card-${member.id}`}>
       <div className="flex items-start justify-between gap-3">
         <Link
           to={`/profil/${member.id}`}
+          data-testid={`family-card-profile-link-${member.id}`}
           className="focus-ring flex min-w-0 items-center gap-3 rounded-xl transition hover:opacity-90"
         >
           <MemberAvatar member={member} size={compact ? 'md' : 'lg'} />
@@ -38,6 +39,7 @@ export function FamilyRelationsCard({ profile, compact = false }: FamilyRelation
         </Link>
         <Link
           to={`/profil/${member.id}`}
+          data-testid={`family-card-open-button-${member.id}`}
           className="focus-ring shrink-0 rounded-lg p-1 text-ink-400 transition hover:bg-cream-200/60 hover:text-warm-700"
           title="Voir le profil"
         >
@@ -47,13 +49,13 @@ export function FamilyRelationsCard({ profile, compact = false }: FamilyRelation
 
       {hasRelations ? (
         <div className={`space-y-4 ${compact ? 'mt-4' : 'mt-5'}`}>
-          <RelationGroup label="Parents" members={profile.parents} />
-          <RelationGroup label="Conjoint(e)s" members={profile.spouses} />
-          <RelationGroup label="Enfants" members={profile.children} />
-          <RelationGroup label="Frères et sœurs" members={profile.siblings} />
+          <RelationGroup label="Parents" members={profile.parents} data-testid={`family-card-parents-${member.id}`} />
+          <RelationGroup label="Conjoint(e)s" members={profile.spouses} data-testid={`family-card-spouses-${member.id}`} />
+          <RelationGroup label="Enfants" members={profile.children} data-testid={`family-card-children-${member.id}`} />
+          <RelationGroup label="Frères et sœurs" members={profile.siblings} data-testid={`family-card-siblings-${member.id}`} />
         </div>
       ) : (
-        <p className="mt-4 text-sm italic text-ink-400">
+        <p className="mt-4 text-sm italic text-ink-400" data-testid={`family-card-no-relations-${member.id}`}>
           Aucun lien de parenté renseigné pour l&apos;instant.
         </p>
       )}

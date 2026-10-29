@@ -20,7 +20,7 @@ export function AlbumCreatorLine({
 }: AlbumCreatorLineProps) {
   if (!creator) {
     return (
-      <p className={`text-xs text-ink-400 ${className}`}>Créé par un membre de la famille</p>
+      <p className={`text-xs text-ink-400 ${className}`} data-testid="album-creator-line">Créé par un membre de la famille</p>
     );
   }
 
@@ -28,10 +28,11 @@ export function AlbumCreatorLine({
 
   if (linkToProfile) {
     return (
-      <p className={`text-xs text-ink-400 ${className}`}>
+      <p className={`text-xs text-ink-400 ${className}`} data-testid="album-creator-line">
         Créé par{' '}
         <Link
           to={`/profil/${creator.id}`}
+          data-testid={`album-creator-link-${creator.id}`}
           onClick={(e) => e.stopPropagation()}
           className="font-medium text-ink-600 underline decoration-ink-300/60 underline-offset-2 transition hover:text-warm-700"
         >
@@ -41,5 +42,5 @@ export function AlbumCreatorLine({
     );
   }
 
-  return <p className={`text-xs text-ink-400 ${className}`}>{label}</p>;
+  return <p className={`text-xs text-ink-400 ${className}`} data-testid="album-creator-line">{label}</p>;
 }

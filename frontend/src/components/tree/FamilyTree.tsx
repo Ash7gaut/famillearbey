@@ -176,7 +176,8 @@ function AncestorsSection({
   onSelect: (member: FamilyMember) => void;
 }) {
   return (
-    <div className="flex flex-col items-center border-b border-arbey-100 bg-gradient-to-b from-arbey-50/80 to-white px-6 py-5">
+    <div className="flex flex-col items-center border-b border-arbey-100 bg-gradient-to-b from-arbey-50/80 to-white px-6 py-5" data-testid="tree-ancestors">
+
       <GenerationLabel>Aïeuls</GenerationLabel>
       <div className="mt-3">
         <CoupleUnit node={root} onSelect={onSelect} depth={0} compact={false} />
@@ -205,6 +206,7 @@ function BranchPanel({
 
   return (
     <article
+      data-testid={`tree-branch-${node.member.id}`}
       className={`isolate flex w-max shrink-0 flex-col rounded-2xl border border-arbey-200/80 border-t-4 shadow-md ${accent}`}
     >
       <header className="border-b border-arbey-100/80 px-5 py-3 text-center">
@@ -285,7 +287,7 @@ export function FamilyTree({ tree }: FamilyTreeProps) {
 
   if (tree.length === 0) {
     return (
-      <div className="card text-center py-12">
+      <div className="card text-center py-12" data-testid="tree-empty">
         <p className="text-4xl mb-3">🌳</p>
         <p className="text-arbey-600">Aucun membre dans l'arbre généalogique.</p>
       </div>
@@ -296,7 +298,7 @@ export function FamilyTree({ tree }: FamilyTreeProps) {
 
   return (
     <>
-      <div className="card overflow-hidden p-0">
+      <div className="card overflow-hidden p-0" data-testid="family-tree">
         <div className="border-b border-arbey-100 bg-arbey-50/50 px-4 py-2.5 sm:px-6">
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-arbey-600">
             <span>

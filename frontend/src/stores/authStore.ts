@@ -36,8 +36,10 @@ export const useAuthStore = create<AuthState>((set, get) => {
 
       const sb = requireSupabase();
       const { data } = await sb.auth.getSession();
-      set({ session: data.session, initialized: true });
+      set({ session: data.session });
 
+      // `initialized` n'est posé qu'une fois le membre chargé : sinon RequireAuth
+      // voit session && !member et redirige (rechargement de /messagerie → /accueil).
       if (data.session) {
         try {
           const member = await api.get<FamilyMember | null>('/auth/me');
@@ -46,6 +48,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
           // Pas encore lié — sync tentera après login
         }
       }
+      set({ initialized: true });
 
       sb.auth.onAuthStateChange(async (event, session) => {
         set({ session });

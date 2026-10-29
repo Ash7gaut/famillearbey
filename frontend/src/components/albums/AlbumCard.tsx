@@ -19,7 +19,7 @@ function formatDate(date: string | null) {
 
 export function AlbumCard({ album }: AlbumCardProps) {
   return (
-    <Link to={`/albums/${album.id}`} className="card-photo group block">
+    <Link to={`/albums/${album.id}`} className="card-photo group block" data-testid={`album-card-${album.id}`}>
       <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-cream-200 to-warm-100">
         {album.cover_url ? (
           <img
@@ -39,7 +39,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
         )}
       </div>
       <div className="border-t border-cream-300/50 bg-cream-50 px-4 py-3.5">
-        <h3 className="font-display font-semibold text-ink-800">{album.title}</h3>
+        <h3 className="font-display font-semibold text-ink-800" data-testid={`album-card-title-${album.id}`}>{album.title}</h3>
         <AlbumCreatorLine creator={album.creator} className="mt-1" />
         {album.event_date && (
           <p className="mt-1 text-xs text-ink-400">{formatDate(album.event_date)}</p>

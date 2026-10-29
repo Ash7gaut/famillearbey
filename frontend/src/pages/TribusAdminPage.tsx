@@ -72,43 +72,43 @@ export function TribusAdminPage() {
     loadData();
   }
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner data-testid="tribes-admin-loading-spinner" />;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <BackLink to="/admin" label="Administration" />
+    <div className="mx-auto max-w-3xl space-y-6" data-testid="tribes-admin-page">
+      <BackLink to="/admin" label="Administration" data-testid="tribes-admin-back-link" />
 
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="page-title">Gérer les tribus</h1>
+          <h1 className="page-title" data-testid="tribes-admin-title">Gérer les tribus</h1>
           <p className="page-subtitle">
             {tribus.length} tribu{tribus.length > 1 ? 's' : ''} — regroupe des membres par tribu.
           </p>
         </div>
-        <button type="button" className="btn-primary" onClick={() => setCreating(true)}>
+        <button type="button" className="btn-primary" onClick={() => setCreating(true)} data-testid="tribes-admin-add-button">
           + Nouvelle tribu
         </button>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" data-testid="tribes-admin-error">
           {error}
         </div>
       )}
 
-      <ul className="space-y-2">
+      <ul className="space-y-2" data-testid="tribes-admin-list">
         {tribus.map((t) => {
           const count = membersByTribu.get(t.id)?.length ?? 0;
           return (
-            <li key={t.id} className="card flex items-center gap-3 !p-3">
+            <li key={t.id} data-testid={`tribe-row-${t.id}`} className="card flex items-center gap-3 !p-3">
               <span
                 className="h-8 w-8 shrink-0 rounded-full border border-cream-300"
                 style={{ backgroundColor: t.color ?? '#E0D5C4' }}
                 aria-hidden
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-ink-800">{t.name}</p>
-                <p className="truncate text-xs text-ink-500">
+                <p className="truncate font-medium text-ink-800" data-testid={`tribe-row-name-${t.id}`}>{t.name}</p>
+                <p className="truncate text-xs text-ink-500" data-testid={`tribe-row-details-${t.id}`}>
                   {count} membre{count > 1 ? 's' : ''}
                   {t.description ? ` · ${t.description}` : ''}
                 </p>
@@ -118,6 +118,7 @@ export function TribusAdminPage() {
                   type="button"
                   className="btn-secondary !px-3 !py-2"
                   onClick={() => setEditing(t)}
+                  data-testid={`tribe-edit-button-${t.id}`}
                 >
                   Modifier
                 </button>
@@ -125,6 +126,7 @@ export function TribusAdminPage() {
                   type="button"
                   className="focus-ring inline-flex items-center rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100 active:scale-[0.98]"
                   onClick={() => handleDelete(t)}
+                  data-testid={`tribe-delete-button-${t.id}`}
                 >
                   Supprimer
                 </button>
@@ -133,7 +135,7 @@ export function TribusAdminPage() {
           );
         })}
         {tribus.length === 0 && (
-          <li className="py-8 text-center text-sm text-ink-500">
+          <li className="py-8 text-center text-sm text-ink-500" data-testid="tribes-admin-empty">
             Aucune tribu pour l'instant. Crée la première !
           </li>
         )}

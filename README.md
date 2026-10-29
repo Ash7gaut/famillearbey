@@ -189,13 +189,28 @@ App disponible sur `http://localhost:5173`
 | GET     | `/api/v1/photos/album/:id`      | Photos d'un album        |
 | POST    | `/api/v1/photos/album/:id`      | Upload photo (multipart) |
 
+### Messagerie et notifications push (branche `feature/chat`)
+
+Toutes les routes exigent d'être connecté. Migration : `supabase/migrations/011_messaging.sql`.
+
+| Méthode | Endpoint                                  | Description                                  |
+|---------|-------------------------------------------|----------------------------------------------|
+| GET     | `/api/v1/conversations`                   | Mes conversations                            |
+| POST    | `/api/v1/conversations`                   | Créer une conversation (admin)               |
+| GET     | `/api/v1/conversations/:id/messages`      | Messages                                     |
+| POST    | `/api/v1/conversations/:id/messages`      | Envoyer un message                           |
+| PUT     | `/api/v1/conversations/:id/members/:mid`  | Ajouter un membre                            |
+| DELETE  | `/api/v1/conversations/:id/members/:mid`  | Retirer un membre                            |
+| PATCH   | `/api/v1/conversations/:id/muted`         | Couper / réactiver les notifications         |
+| POST    | `/api/v1/conversations/:id/read`          | Marquer comme lu                             |
+| GET     | `/api/v1/push/public-key`                 | Clé publique VAPID                           |
+| POST    | `/api/v1/push/subscribe`                  | Abonner l'appareil aux notifications push    |
+| POST    | `/api/v1/push/unsubscribe`                | Désabonner l'appareil                        |
+
+Variables d'environnement backend : `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
+
 ## Roadmap
 
-- [x] Architecture + schéma DB
-- [x] MVP : arbre généalogique + albums photos
-- [ ] Mur familial
-- [ ] Événements + RSVP
-- [ ] Secret Santa
-- [ ] Mémoire familiale
-- [ ] Family Arbey Wrapped
+Voir [ROADMAP.md](ROADMAP.md) et [CHANGELOG.md](CHANGELOG.md).
+
 # famillearbey

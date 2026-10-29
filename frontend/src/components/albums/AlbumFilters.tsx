@@ -56,7 +56,7 @@ export function AlbumFilters({
   const hasMine = !!currentMemberId && albums.some((album) => album.created_by === currentMemberId);
 
   return (
-    <div className="card flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
+    <div className="card flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end" data-testid="album-filters">
       <div className="flex items-center gap-2 text-sm font-medium text-ink-600">
         <Filter className="h-4 w-4 text-ink-400" strokeWidth={2} />
         Filtres
@@ -69,6 +69,7 @@ export function AlbumFilters({
           </label>
           <select
             id="album-visibility-filter"
+            data-testid="album-visibility-filter-select"
             value={visibilityFilter}
             onChange={(e) => onVisibilityChange(e.target.value as AlbumVisibilityFilter)}
             className="w-full rounded-xl border border-cream-300 bg-cream-50 px-3 py-2 text-sm text-ink-800 focus:border-warm-400 focus:outline-none focus:ring-2 focus:ring-warm-100"
@@ -85,6 +86,7 @@ export function AlbumFilters({
           </label>
           <select
             id="album-creator-filter"
+            data-testid="album-creator-filter-select"
             value={creatorFilter}
             onChange={(e) => onCreatorChange(e.target.value as AlbumCreatorFilter)}
             className="w-full rounded-xl border border-cream-300 bg-cream-50 px-3 py-2 text-sm text-ink-800 focus:border-warm-400 focus:outline-none focus:ring-2 focus:ring-warm-100"

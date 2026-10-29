@@ -20,6 +20,7 @@ export function MemberCard({ member, onClick, size = 'md' }: MemberCardProps) {
     <button
       type="button"
       onClick={onClick}
+      data-testid={`tree-member-card-${member.id}`}
       className={`tree-member-card group flex flex-col items-center gap-2 rounded-2xl border border-cream-300/80 bg-cream-50 p-3 shadow-warm transition hover:border-warm-300 hover:shadow-warm-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-400 ${
         isSmall ? 'w-24' : 'w-28'
       }`}

@@ -13,10 +13,14 @@ coverage/
 *.tsbuildinfo
 
 # Docker (local)
-docker-compose.dev.yml
 .dockerignore
-docker/
 docker-data/
 
 # Claude Code (notes locales)
 CLAUDE.local.md
+
+# E2E Playwright (local)
+e2e/.auth/
+e2e/test-results/
+e2e/playwright-report/
+

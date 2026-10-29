@@ -29,10 +29,10 @@ export function SecretSantaNewPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-6">
+    <div className="mx-auto max-w-md space-y-6" data-testid="secret-santa-new-page">
       <div>
-        <BackLink to="/secret-santa" label="Secret Santa" />
-        <h1 className="page-title">
+        <BackLink to="/secret-santa" label="Secret Santa" data-testid="secret-santa-new-back-link" />
+        <h1 className="page-title" data-testid="secret-santa-new-title">
           Nouveau Secret Santa
         </h1>
         <p className="mt-1 text-sm text-arbey-600">
@@ -41,12 +41,13 @@ export function SecretSantaNewPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card space-y-4">
+      <form onSubmit={handleSubmit} className="card space-y-4" data-testid="secret-santa-new-form">
         <div>
           <label className="block text-sm font-medium text-arbey-700 mb-1">Titre</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            data-testid="secret-santa-new-title-input"
             placeholder="Ex. Noël 2026 - tribu Gautier"
             required
             className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
@@ -59,12 +60,13 @@ export function SecretSantaNewPage() {
           <input
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
+            data-testid="secret-santa-new-budget-input"
             placeholder="Ex. 25 €"
             className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
           />
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button type="submit" disabled={loading} className="btn-primary w-full">
+        {error && <p className="text-sm text-red-600" data-testid="secret-santa-new-error">{error}</p>}
+        <button type="submit" disabled={loading} className="btn-primary w-full" data-testid="secret-santa-new-submit-button">
           {loading ? 'Création…' : 'Créer le tirage'}
         </button>
       </form>

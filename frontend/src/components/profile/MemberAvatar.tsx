@@ -12,6 +12,7 @@ interface MemberAvatarProps {
   /** Couleur du cercle quand il n'y a pas de photo. */
   initialsTone?: InitialsTone;
   className?: string;
+  'data-testid'?: string;
 }
 
 const initialsToneClasses: Record<InitialsTone, string> = {
@@ -42,11 +43,13 @@ export function MemberAvatar({
   shape = 'circle',
   initialsTone = 'cream',
   className = '',
+  'data-testid': testId = 'member-avatar',
 }: MemberAvatarProps) {
   const hasPhoto = Boolean(member.photo_url);
 
   return (
     <span
+      data-testid={testId}
       className={`flex shrink-0 items-center justify-center overflow-hidden font-semibold ${shapeClasses[shape]} ${sizeClasses[size]} ${
         hasPhoto ? 'bg-cream-200 text-ink-600' : initialsToneClasses[initialsTone]
       } ${className}`}

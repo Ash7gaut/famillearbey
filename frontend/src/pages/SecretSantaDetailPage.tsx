@@ -66,13 +66,13 @@ export function SecretSantaDetailPage() {
       .finally(() => setLoading(false));
   }, [load, initialized, isAuthenticated]);
 
-  if (!initialized || loading) return <LoadingSpinner />;
+  if (!initialized || loading) return <LoadingSpinner data-testid="secret-santa-detail-loading-spinner" />;
 
   if (!isAuthenticated) {
     return (
-      <div className="card mx-auto max-w-md text-center py-12">
+      <div className="card mx-auto max-w-md text-center py-12" data-testid="secret-santa-detail-login-prompt">
         <p className="text-sm text-arbey-600">Connecte-toi pour voir ce Secret Santa.</p>
-        <Link to="/login" className="btn-primary mt-4 inline-flex">
+        <Link to="/login" className="btn-primary mt-4 inline-flex" data-testid="secret-santa-detail-login-link">
           Se connecter
         </Link>
       </div>
@@ -200,20 +200,21 @@ export function SecretSantaDetailPage() {
   if (error || !group) return <ErrorMessage message={error ?? 'Introuvable'} />;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6" data-testid="secret-santa-detail-page">
       <div>
-        <BackLink to="/secret-santa" label="Secret Santa" />
-        <h1 className="page-title">{group.title}</h1>
-        {group.budget && <p className="text-sm text-arbey-600">Budget : {group.budget}</p>}
+        <BackLink to="/secret-santa" label="Secret Santa" data-testid="secret-santa-detail-back-link" />
+        <h1 className="page-title" data-testid="secret-santa-detail-title">{group.title}</h1>
+        {group.budget && <p className="text-sm text-arbey-600" data-testid="secret-santa-detail-budget">Budget : {group.budget}</p>}
       </div>
 
       {group.my_status === 'invited' && group.status === 'open' && (
-        <div className="card flex flex-wrap gap-3 border-warm-200 bg-warm-50/50">
+        <div className="card flex flex-wrap gap-3 border-warm-200 bg-warm-50/50" data-testid="secret-santa-invitation-banner">
           <p className="w-full text-sm text-arbey-700">Tu es invité à ce Secret Santa.</p>
           <button
             type="button"
             disabled={actionLoading}
             onClick={() => respond('accepted')}
+            data-testid="secret-santa-accept-button"
             className="btn-primary"
           >
             Accepter
@@ -222,6 +223,7 @@ export function SecretSantaDetailPage() {
             type="button"
             disabled={actionLoading}
             onClick={() => respond('declined')}
+            data-testid="secret-santa-decline-button"
             className="btn-secondary"
           >
             Décliner
@@ -230,7 +232,7 @@ export function SecretSantaDetailPage() {
       )}
 
       {feedback && (
-        <div className="rounded-xl border border-arbey-200 bg-arbey-50 px-4 py-3 text-sm text-arbey-700">
+        <div className="rounded-xl border border-arbey-200 bg-arbey-50 px-4 py-3 text-sm text-arbey-700" data-testid="secret-santa-feedback">
           {feedback}
         </div>
       )}
@@ -239,6 +241,7 @@ export function SecretSantaDetailPage() {
         <button
           type="button"
           onClick={() => navigate(`/secret-santa/${group.id}/reveal`)}
+          data-testid="secret-santa-reveal-button"
           className="btn-primary w-full text-base py-3"
         >
           🎰 Découvrir mon tirage
@@ -253,12 +256,12 @@ export function SecretSantaDetailPage() {
           drawnAt={group.drawn_at}
         />
       ) : (
-        <div className="card">
+        <div className="card" data-testid="secret-santa-participants">
           <h2 className="font-display font-semibold text-arbey-900">Participants</h2>
-          <p className="mt-1 text-xs text-arbey-500">
+          <p className="mt-1 text-xs text-arbey-500" data-testid="secret-santa-accepted-count">
             {acceptedCount} confirmé{acceptedCount > 1 ? 's' : ''} · minimum 3 pour tirer
           </p>
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-4 space-y-2" data-testid="secret-santa-participant-list">
             {group.participants.map((p) => (
               <ParticipantRow
                 key={p.id}
@@ -275,7 +278,7 @@ export function SecretSantaDetailPage() {
 
       {group.is_creator && group.status === 'open' && (
         <>
-          <div className="card space-y-3">
+          <div className="card space-y-3" data-testid="secret-santa-invite-member-card">
             <h2 className="font-display font-semibold text-arbey-900">
               Inviter un membre famille
             </h2>
@@ -286,11 +289,13 @@ export function SecretSantaDetailPage() {
                 onChange={setSelectedMemberId}
                 placeholder="Choisir…"
                 className="flex-1"
+                data-testid="secret-santa-member-select"
               />
               <button
                 type="button"
                 disabled={!selectedMemberId || actionLoading}
                 onClick={inviteMember}
+                data-testid="secret-santa-invite-member-button"
                 className="btn-primary shrink-0"
               >
                 Inviter
@@ -298,7 +303,7 @@ export function SecretSantaDetailPage() {
             </div>
           </div>
 
-          <div className="card space-y-3">
+          <div className="card space-y-3" data-testid="secret-santa-invite-guest-card">
             <h2 className="font-display font-semibold text-arbey-900">
               Inviter quelqu'un hors famille
             </h2>
@@ -308,6 +313,7 @@ export function SecretSantaDetailPage() {
             <input
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
+              data-testid="secret-santa-guest-name-input"
               placeholder="Prénom (ex. Léa)"
               className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
             />
@@ -315,6 +321,7 @@ export function SecretSantaDetailPage() {
               type="email"
               value={guestEmail}
               onChange={(e) => setGuestEmail(e.target.value)}
+              data-testid="secret-santa-guest-email-input"
               placeholder="email@exemple.com"
               className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
             />
@@ -322,12 +329,13 @@ export function SecretSantaDetailPage() {
               type="button"
               disabled={!guestEmail || !guestName || actionLoading}
               onClick={inviteGuest}
+              data-testid="secret-santa-invite-guest-button"
               className="btn-secondary w-full"
             >
               Créer l'invitation
             </button>
             {lastInviteLink && (
-              <div className="rounded-xl bg-arbey-50 p-3 text-xs break-all text-arbey-700">
+              <div className="rounded-xl bg-arbey-50 p-3 text-xs break-all text-arbey-700" data-testid="secret-santa-invite-link">
                 <p className="font-medium mb-1">Lien à partager :</p>
                 {lastInviteLink}
               </div>
@@ -338,6 +346,7 @@ export function SecretSantaDetailPage() {
             type="button"
             disabled={acceptedCount < 3 || actionLoading}
             onClick={launchDraw}
+            data-testid="secret-santa-draw-button"
             className="btn-primary w-full text-base py-3"
           >
             🎰 Lancer la roulette ({acceptedCount}/3 min.)
@@ -346,7 +355,7 @@ export function SecretSantaDetailPage() {
       )}
 
       {group.is_creator && (
-        <div className="card border-red-100">
+        <div className="card border-red-100" data-testid="secret-santa-settings-card">
           <h2 className="font-display font-semibold text-arbey-900">Paramètres</h2>
           <p className="mt-1 text-xs text-arbey-500">
             {group.status === 'open'
@@ -357,6 +366,7 @@ export function SecretSantaDetailPage() {
             type="button"
             disabled={actionLoading}
             onClick={deleteGroup}
+            data-testid="secret-santa-delete-button"
             className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-100"
           >
             Supprimer ce Secret Santa
@@ -393,7 +403,7 @@ function ParticipantRow({
   }
 
   return (
-    <li className="flex flex-wrap items-center gap-3 rounded-xl border border-cream-300 bg-cream-50/60 px-3 py-2.5 sm:flex-nowrap">
+    <li data-testid={`participant-${participant.id}`} className="flex flex-wrap items-center gap-3 rounded-xl border border-cream-300 bg-cream-50/60 px-3 py-2.5 sm:flex-nowrap">
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <MemberAvatar
           member={avatarPersonFromDisplayName(participant.display_name, participant.photo_url)}
@@ -401,7 +411,7 @@ function ParticipantRow({
           initialsTone={participant.status === 'accepted' ? 'warm' : 'muted'}
         />
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-ink-800">
+          <p className="truncate text-sm font-medium text-ink-800" data-testid={`participant-name-${participant.id}`}>
             {participant.display_name}
           </p>
           {(participant.is_creator || participant.is_external) && (
@@ -428,6 +438,7 @@ function ParticipantRow({
               <button
                 type="button"
                 onClick={() => void handleCopy()}
+                data-testid={`participant-copy-link-button-${participant.id}`}
                 className={`focus-ring inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition focus-visible:ring-inset focus-visible:ring-offset-0 ${
                   copied
                     ? 'bg-arbey-100 text-arbey-700'
@@ -455,6 +466,7 @@ function ParticipantRow({
               <button
                 type="button"
                 onClick={onRemove}
+                data-testid={`participant-remove-button-${participant.id}`}
                 className="focus-ring inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#9A4A42] transition hover:bg-red-50 hover:text-red-700 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-red-300/60"
                 title="Retirer ce participant"
               >
@@ -465,6 +477,7 @@ function ParticipantRow({
           </div>
         )}
         <span
+          data-testid={`participant-status-${participant.id}`}
           className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${statusBadge[participant.status]}`}
         >
           {statusLabel[participant.status]}

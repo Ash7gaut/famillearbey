@@ -83,7 +83,7 @@ export function ProfilePage() {
     void loadProfile();
   }, [initialized, profileId, loadProfile]);
 
-  if (!initialized) return <LoadingSpinner />;
+  if (!initialized) return <LoadingSpinner data-testid="profile-init-spinner" />;
 
   if (!id && !isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -163,7 +163,7 @@ export function ProfilePage() {
     setEditing(false);
   }
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner data-testid="profile-loading-spinner" />;
   if (error || !profile) {
     return <ErrorMessage message={error ?? 'Profil introuvable.'} onRetry={loadProfile} />;
   }
@@ -180,7 +180,7 @@ export function ProfilePage() {
     profile.siblings.length > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="profile-page">
       {cropImageSrc && (
         <ProfilePhotoCropModal
           imageSrc={cropImageSrc}
@@ -198,9 +198,9 @@ export function ProfilePage() {
         />
       )}
 
-      <BackLink to="/accueil" label="Accueil" />
+      <BackLink to="/accueil" label="Accueil" data-testid="profile-back-link" />
 
-      <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/90 p-6 shadow-warm sm:p-8">
+      <section data-testid="profile-header" className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/90 p-6 shadow-warm sm:p-8">
         <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-warm-200/25 blur-2xl" aria-hidden />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start">
           <div className="relative shrink-0">
@@ -208,6 +208,7 @@ export function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setPhotoLightboxOpen(true)}
+                data-testid="profile-photo-button"
                 className="focus-ring group block cursor-zoom-in rounded-2xl transition hover:brightness-[0.97]"
                 title="Agrandir la photo"
               >
@@ -231,6 +232,7 @@ export function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
+                  data-testid="profile-photo-change-button"
                   disabled={uploadingPhoto}
                   className="focus-ring absolute -bottom-2 -right-2 inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-cream-50 bg-warm-600 text-white shadow-md transition hover:bg-warm-700 disabled:opacity-60"
                   title="Changer la photo"
@@ -242,6 +244,7 @@ export function ProfilePage() {
                   type="file"
                   accept="image/*"
                   className="hidden"
+                  data-testid="profile-photo-input"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) openCropModal(file);
@@ -255,10 +258,10 @@ export function ProfilePage() {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-medium uppercase tracking-widest text-warm-600">
+                <p className="text-sm font-medium uppercase tracking-widest text-warm-600" data-testid="profile-kind-label">
                   {isOwnProfile ? 'Mon profil' : 'Profil famille'}
                 </p>
-                <h1 className="mt-1 font-display text-3xl font-semibold text-ink-800">
+                <h1 className="mt-1 font-display text-3xl font-semibold text-ink-800" data-testid="profile-name">
                   {member.first_name} {member.last_name}
                 </h1>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -266,12 +269,12 @@ export function ProfilePage() {
                     Membre Arbey
                   </span>
                   {member.is_admin && (
-                    <span className="rounded-full bg-warm-100 px-2.5 py-1 text-xs font-medium text-warm-700">
+                    <span data-testid="profile-admin-badge" className="rounded-full bg-warm-100 px-2.5 py-1 text-xs font-medium text-warm-700">
                       Administrateur
                     </span>
                   )}
                   {member.auth_user_id && (
-                    <span className="rounded-full bg-arbey-100 px-2.5 py-1 text-xs font-medium text-arbey-700">
+                    <span data-testid="profile-account-badge" className="rounded-full bg-arbey-100 px-2.5 py-1 text-xs font-medium text-arbey-700">
                       Compte connecté
                     </span>
                   )}
@@ -282,6 +285,7 @@ export function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setEditing(true)}
+                  data-testid="profile-edit-button"
                   className="btn-secondary"
                 >
                   <Pencil className="h-4 w-4" strokeWidth={2} />
@@ -292,7 +296,7 @@ export function ProfilePage() {
 
             <div className="mt-4 flex flex-wrap gap-4 text-sm text-ink-500">
               {birthDateInfo && (
-                <p>
+                <p data-testid="profile-birth-date">
                   Né(e) le{' '}
                   <span className="font-medium text-ink-700">{birthDateInfo.label}</span>
                   {birthDateInfo.age !== null && (
@@ -301,7 +305,7 @@ export function ProfilePage() {
                 </p>
               )}
               {!member.is_alive && member.death_date && (
-                <p>
+                <p data-testid="profile-death-date">
                   Décédé(e) le{' '}
                   <span className="font-medium text-ink-700">{formatDate(member.death_date)}</span>
                 </p>
@@ -312,14 +316,14 @@ export function ProfilePage() {
       </section>
 
       {feedback && (
-        <div className="rounded-xl border border-warm-200 bg-warm-50 px-4 py-3 text-sm text-warm-800">
+        <div className="rounded-xl border border-warm-200 bg-warm-50 px-4 py-3 text-sm text-warm-800" data-testid="profile-feedback">
           {feedback}
         </div>
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <div className="card">
+          <div className="card" data-testid="profile-about-card">
             <div className="flex items-center gap-2">
               <Heart className="h-5 w-5 text-warm-600" strokeWidth={1.75} />
               <h2 className="font-display text-lg font-semibold text-ink-800">
@@ -340,6 +344,7 @@ export function ProfilePage() {
                   </label>
                   <textarea
                     id="profile-bio"
+                    data-testid="profile-bio-input"
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     rows={5}
@@ -353,6 +358,7 @@ export function ProfilePage() {
                   </label>
                   <input
                     id="profile-birth"
+                    data-testid="profile-birth-date-input"
                     type="date"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
@@ -377,6 +383,7 @@ export function ProfilePage() {
                         value="day_month"
                         checked={birthDateDisplay === 'day_month'}
                         onChange={() => setBirthDateDisplay('day_month')}
+                        data-testid="profile-birth-display-day-month-radio"
                         className="mt-1 accent-warm-600"
                       />
                       <span className="text-sm text-ink-700">
@@ -399,6 +406,7 @@ export function ProfilePage() {
                         value="full"
                         checked={birthDateDisplay === 'full'}
                         onChange={() => setBirthDateDisplay('full')}
+                        data-testid="profile-birth-display-full-radio"
                         className="mt-1 accent-warm-600"
                       />
                       <span className="text-sm text-ink-700">
@@ -418,21 +426,22 @@ export function ProfilePage() {
                     onClick={() => void handleSave()}
                     disabled={saving}
                     className="btn-primary"
+                    data-testid="profile-save-button"
                   >
                     {saving ? 'Enregistrement…' : 'Enregistrer'}
                   </button>
-                  <button type="button" onClick={cancelEdit} className="btn-secondary">
+                  <button type="button" onClick={cancelEdit} className="btn-secondary" data-testid="profile-cancel-button">
                     <X className="h-4 w-4" />
                     Annuler
                   </button>
                 </div>
               </div>
             ) : displayBio ? (
-              <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-ink-600">
+              <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-ink-600" data-testid="profile-bio">
                 {displayBio}
               </p>
             ) : (
-              <p className="mt-4 text-sm italic text-ink-400">
+              <p className="mt-4 text-sm italic text-ink-400" data-testid="profile-bio-empty">
                 {isOwnProfile
                   ? 'Pas encore de bio — ajoute quelques mots pour te présenter à la famille.'
                   : `${member.first_name} n'a pas encore rédigé sa bio.`}
@@ -441,17 +450,17 @@ export function ProfilePage() {
           </div>
 
           {hasRelations && (
-            <div className="card">
+            <div className="card" data-testid="profile-relations-card">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-warm-600" strokeWidth={1.75} />
                 <h2 className="font-display text-lg font-semibold text-ink-800">Dans la famille</h2>
               </div>
               <p className="mt-1 text-sm text-ink-400">Liens de parenté connus dans l&apos;arbre.</p>
               <div className="mt-5 space-y-4">
-                <RelationGroup label="Parents" members={profile.parents} />
-                <RelationGroup label="Conjoint(e)s" members={profile.spouses} />
-                <RelationGroup label="Enfants" members={profile.children} />
-                <RelationGroup label="Frères et sœurs" members={profile.siblings} />
+                <RelationGroup label="Parents" members={profile.parents} data-testid="profile-parents" />
+                <RelationGroup label="Conjoint(e)s" members={profile.spouses} data-testid="profile-spouses" />
+                <RelationGroup label="Enfants" members={profile.children} data-testid="profile-children" />
+                <RelationGroup label="Frères et sœurs" members={profile.siblings} data-testid="profile-siblings" />
               </div>
             </div>
           )}
@@ -464,6 +473,7 @@ export function ProfilePage() {
               <li>
                 <Link
                   to="/tree"
+                  data-testid="profile-shortcut-tree-link"
                   className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
                 >
                   <TreePine className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
@@ -473,6 +483,7 @@ export function ProfilePage() {
               <li>
                 <Link
                   to="/famille"
+                  data-testid="profile-shortcut-family-link"
                   className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
                 >
                   <Users className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
@@ -482,6 +493,7 @@ export function ProfilePage() {
               <li>
                 <Link
                   to="/albums"
+                  data-testid="profile-shortcut-albums-link"
                   className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
                 >
                   <Camera className="h-4 w-4 text-warm-600" strokeWidth={1.75} />

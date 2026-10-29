@@ -64,27 +64,27 @@ export function MembersAdminPage() {
     loadMembers();
   }
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner data-testid="members-admin-loading-spinner" />;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <BackLink to="/admin" label="Administration" />
+    <div className="mx-auto max-w-3xl space-y-6" data-testid="members-admin-page">
+      <BackLink to="/admin" label="Administration" data-testid="members-admin-back-link" />
 
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="page-title">Gérer les membres</h1>
+          <h1 className="page-title" data-testid="members-admin-title">Gérer les membres</h1>
           <p className="page-subtitle">
             {members.length} membre{members.length > 1 ? 's' : ''} — ajouter, modifier
             (infos + liens) ou supprimer.
           </p>
         </div>
-        <button type="button" className="btn-primary" onClick={() => setCreating(true)}>
+        <button type="button" className="btn-primary" onClick={() => setCreating(true)} data-testid="members-admin-add-button">
           + Ajouter un membre
         </button>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" data-testid="members-admin-error">
           {error}
         </div>
       )}
@@ -95,20 +95,22 @@ export function MembersAdminPage() {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Rechercher un membre…"
         className="input-field"
+        data-testid="members-admin-search-input"
       />
 
-      <ul className="space-y-2">
+      <ul className="space-y-2" data-testid="members-admin-list">
         {filtered.map((m) => (
           <li
             key={m.id}
+            data-testid={`member-row-${m.id}`}
             className="card flex items-center gap-3 !p-3"
           >
             <MemberAvatar member={m} size="lg" />
             <div className="min-w-0 flex-1">
-              <p className="truncate font-medium text-ink-800">
+              <p className="truncate font-medium text-ink-800" data-testid={`member-row-name-${m.id}`}>
                 {m.first_name} {m.last_name}
               </p>
-              <p className="truncate text-xs text-ink-500">
+              <p className="truncate text-xs text-ink-500" data-testid={`member-row-details-${m.id}`}>
                 {m.birth_date ? `Né(e) le ${formatDate(m.birth_date)}` : 'Date de naissance inconnue'}
                 {!m.is_alive && ' · Décédé(e)'}
                 {m.auth_user_id && ' · Compte lié'}
@@ -120,6 +122,7 @@ export function MembersAdminPage() {
                 type="button"
                 className="btn-secondary !px-3 !py-2"
                 onClick={() => setEditing(m)}
+                data-testid={`member-edit-button-${m.id}`}
               >
                 Modifier
               </button>
@@ -127,6 +130,7 @@ export function MembersAdminPage() {
                 type="button"
                 className="focus-ring inline-flex items-center rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100 active:scale-[0.98]"
                 onClick={() => handleDelete(m)}
+                data-testid={`member-delete-button-${m.id}`}
               >
                 Supprimer
               </button>
@@ -134,7 +138,7 @@ export function MembersAdminPage() {
           </li>
         ))}
         {filtered.length === 0 && (
-          <li className="py-8 text-center text-sm text-ink-500">Aucun membre trouvé.</li>
+          <li className="py-8 text-center text-sm text-ink-500" data-testid="members-admin-empty">Aucun membre trouvé.</li>
         )}
       </ul>
 

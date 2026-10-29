@@ -51,13 +51,13 @@ export function FamilyDirectoryPage() {
   }, [profiles, search]);
 
   return (
-    <div className="space-y-6">
-      <BackLink to="/accueil" label="Accueil" />
+    <div className="space-y-6" data-testid="family-page">
+      <BackLink to="/accueil" label="Accueil" data-testid="family-back-link" />
 
       <div>
         <div className="flex items-center gap-2">
           <Users className="h-6 w-6 text-warm-600" strokeWidth={1.75} />
-          <h1 className="page-title">La famille</h1>
+          <h1 className="page-title" data-testid="family-title">La famille</h1>
         </div>
         <p className="page-subtitle">
           Tous les membres et leurs liens de parenté.
@@ -76,19 +76,20 @@ export function FamilyDirectoryPage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher un prénom, nom ou proche…"
             className="input-field"
+            data-testid="family-search-input"
           />
         </div>
       )}
 
-      {loading && <LoadingSpinner />}
+      {loading && <LoadingSpinner data-testid="family-loading-spinner" />}
       {error && <ErrorMessage message={error} />}
 
       {!loading && !error && filteredProfiles.length === 0 && (
-        <p className="text-sm text-ink-500">Aucun membre ne correspond à ta recherche.</p>
+        <p className="text-sm text-ink-500" data-testid="family-empty">Aucun membre ne correspond à ta recherche.</p>
       )}
 
       {!loading && !error && filteredProfiles.length > 0 && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2" data-testid="family-list">
           {filteredProfiles.map((profile) => (
             <FamilyRelationsCard key={profile.member.id} profile={profile} />
           ))}

@@ -138,7 +138,7 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
   }, [mainMemberId]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" data-testid="familytreejs-view">
       <p className="text-sm text-arbey-600">
         Aperçu avec{' '}
         <a
@@ -165,12 +165,12 @@ export function FamilyTreeJSView({ mainMemberId }: FamilyTreeJSViewProps) {
           enablePanMomentum
           enableTrackPadPanning
         >
-          <div id={chartId} ref={containerRef} className="family-treejs-chart-host h-full w-full" />
+          <div id={chartId} ref={containerRef} data-testid="familytreejs-container" className="family-treejs-chart-host h-full w-full" />
         </TreePanZoom>
 
         {loading && (
           <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
-            <LoadingSpinner />
+            <LoadingSpinner data-testid="familytreejs-loading-spinner" />
           </div>
         )}
         {error && !loading && (

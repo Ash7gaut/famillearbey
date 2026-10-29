@@ -169,12 +169,12 @@ export function CalendarPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <BackLink to="/accueil" label="Accueil" />
+    <div className="space-y-6" data-testid="calendar-page">
+      <BackLink to="/accueil" label="Accueil" data-testid="calendar-back-link" />
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="page-title">Calendrier familial</h1>
+          <h1 className="page-title" data-testid="calendar-title">Calendrier familial</h1>
           <p className="page-subtitle">Anniversaires et événements de la famille, mois par mois.</p>
         </div>
         {isAuthenticated ? (
@@ -185,19 +185,20 @@ export function CalendarPage() {
               setShowForm(!showForm);
             }}
             className="btn-primary shrink-0"
+            data-testid="calendar-new-event-button"
           >
             <Plus className="h-4 w-4" strokeWidth={2} />
             Nouvel événement
           </button>
         ) : (
-          <Link to="/login" className="btn-secondary shrink-0">
+          <Link to="/login" className="btn-secondary shrink-0" data-testid="calendar-login-link">
             Se connecter pour ajouter
           </Link>
         )}
       </div>
 
       {showForm && (
-        <form onSubmit={(e) => void handleCreateEvent(e)} className="card space-y-4">
+        <form onSubmit={(e) => void handleCreateEvent(e)} className="card space-y-4" data-testid="event-form">
           <h2 className="font-display text-lg font-semibold text-ink-800">Créer un événement</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
@@ -206,6 +207,7 @@ export function CalendarPage() {
               </label>
               <input
                 id="event-title"
+                data-testid="event-title-input"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Repas de Noël, réunion famille…"
@@ -219,6 +221,7 @@ export function CalendarPage() {
               </label>
               <input
                 id="event-start"
+                data-testid="event-start-date-input"
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -232,6 +235,7 @@ export function CalendarPage() {
               </label>
               <input
                 id="event-end"
+                data-testid="event-end-date-input"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -245,6 +249,7 @@ export function CalendarPage() {
               </label>
               <input
                 id="event-location"
+                data-testid="event-location-input"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Chez mamie, Paris…"
@@ -257,6 +262,7 @@ export function CalendarPage() {
               </label>
               <textarea
                 id="event-description"
+                data-testid="event-description-input"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
@@ -264,12 +270,12 @@ export function CalendarPage() {
               />
             </div>
           </div>
-          {formError && <p className="text-sm text-red-600">{formError}</p>}
+          {formError && <p className="text-sm text-red-600" data-testid="event-form-error">{formError}</p>}
           <div className="flex gap-2">
-            <button type="submit" disabled={creating} className="btn-primary">
+            <button type="submit" disabled={creating} className="btn-primary" data-testid="event-submit-button">
               {creating ? 'Création…' : 'Créer'}
             </button>
-            <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">
+            <button type="button" onClick={() => setShowForm(false)} className="btn-secondary" data-testid="event-cancel-button">
               Annuler
             </button>
           </div>
@@ -286,17 +292,19 @@ export function CalendarPage() {
             }}
             className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full border border-cream-300 bg-cream-50 text-ink-700 transition hover:bg-cream-100"
             aria-label="Mois précédent"
+            data-testid="calendar-prev-month-button"
           >
             <ChevronLeft className="h-5 w-5" strokeWidth={2} />
           </button>
 
           <div className="text-center">
-            <h2 className="font-display text-xl font-semibold text-ink-800 sm:text-2xl">
+            <h2 className="font-display text-xl font-semibold text-ink-800 sm:text-2xl" data-testid="calendar-month-label">
               {getMonthLabel(year, month)}
             </h2>
             <button
               type="button"
               onClick={() => goToMonth(today.year, today.month)}
+              data-testid="calendar-today-button"
               className="mt-1 text-xs font-medium text-warm-700 transition hover:text-warm-800"
             >
               Revenir à aujourd&apos;hui
@@ -311,6 +319,7 @@ export function CalendarPage() {
             }}
             className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full border border-cream-300 bg-cream-50 text-ink-700 transition hover:bg-cream-100"
             aria-label="Mois suivant"
+            data-testid="calendar-next-month-button"
           >
             <ChevronRight className="h-5 w-5" strokeWidth={2} />
           </button>
@@ -320,13 +329,13 @@ export function CalendarPage() {
 
         {loading && !data ? (
           <div className="py-12">
-            <LoadingSpinner />
+            <LoadingSpinner data-testid="calendar-loading-spinner" />
           </div>
         ) : !error && data ? (
-          <div className={`relative transition-opacity ${refreshing ? 'pointer-events-none opacity-60' : ''}`}>
+          <div data-testid="calendar-grid" className={`relative transition-opacity ${refreshing ? 'pointer-events-none opacity-60' : ''}`}>
             {refreshing && (
               <div className="absolute inset-0 z-10 flex items-center justify-center">
-                <LoadingSpinner />
+                <LoadingSpinner data-testid="calendar-refreshing-spinner" />
               </div>
             )}
             <div className="grid grid-cols-7 border-b border-cream-300/70 bg-cream-100/60">
@@ -368,6 +377,7 @@ export function CalendarPage() {
                 return (
                   <div
                     key={cell.iso}
+                    data-testid={`calendar-day-${cell.iso}`}
                     role="button"
                     tabIndex={0}
                     onClick={() => setSelectedIso(cell.iso)}
@@ -391,6 +401,7 @@ export function CalendarPage() {
                         }}
                         className="focus-ring absolute right-1 top-1 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-cream-200 bg-cream-50/95 text-warm-700 opacity-0 shadow-sm transition hover:bg-warm-50 hover:text-warm-800 group-hover:opacity-100 sm:right-1.5 sm:top-1.5"
                         title="Créer un événement ce jour"
+                        data-testid={`calendar-day-add-button-${cell.iso}`}
                       >
                         <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
                       </button>
@@ -412,6 +423,7 @@ export function CalendarPage() {
                       {items.slice(0, 2).map((item) => (
                         <p
                           key={item.key}
+                          data-testid={`calendar-item-${cell.iso}-${item.key}`}
                           className={`truncate rounded px-1 py-0.5 text-[10px] font-medium sm:text-[11px] ${
                             item.tone === 'birthday'
                               ? 'bg-warm-100 text-warm-800'
@@ -440,9 +452,9 @@ export function CalendarPage() {
       </div>
 
       {data && !error && (
-        <div className="card">
+        <div className="card" data-testid="calendar-day-panel">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <h2 className="font-display text-lg font-semibold text-ink-800">
+            <h2 className="font-display text-lg font-semibold text-ink-800" data-testid="calendar-day-panel-title">
               {new Date(selectedIso).toLocaleDateString('fr-FR', {
                 weekday: 'long',
                 day: 'numeric',
@@ -455,6 +467,7 @@ export function CalendarPage() {
                 type="button"
                 onClick={() => openEventFormForDay(selectedIso)}
                 className="btn-secondary shrink-0"
+                data-testid="calendar-day-new-event-button"
               >
                 <Plus className="h-4 w-4" strokeWidth={2} />
                 Événement ce jour
@@ -463,13 +476,14 @@ export function CalendarPage() {
           </div>
 
           {!hasSelectedItems ? (
-            <p className="mt-3 text-sm text-ink-500">Rien de prévu ce jour-là.</p>
+            <p className="mt-3 text-sm text-ink-500" data-testid="calendar-day-empty">Rien de prévu ce jour-là.</p>
           ) : (
             <div className="mt-4 space-y-3">
               {selectedBirthdays.map((birthday) => (
                 <Link
                   key={birthday.member_id}
                   to={`/profil/${birthday.member_id}`}
+                  data-testid={`calendar-birthday-${birthday.member_id}`}
                   className="flex items-center gap-3 rounded-xl border border-warm-200 bg-warm-50/70 px-4 py-3 transition hover:bg-warm-50"
                 >
                   <Cake className="h-5 w-5 text-warm-700" strokeWidth={2} />
@@ -486,6 +500,7 @@ export function CalendarPage() {
                 <Link
                   key={album.id}
                   to={`/albums/${album.id}`}
+                  data-testid={`calendar-album-${album.id}`}
                   className="flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-100/80 px-4 py-3 transition hover:bg-cream-100"
                 >
                   {album.cover_url ? (
@@ -509,13 +524,14 @@ export function CalendarPage() {
               {selectedEvents.map((event) => (
                 <div
                   key={event.id}
+                  data-testid={`event-${event.id}`}
                   className="rounded-xl border border-arbey-200 bg-arbey-50/50 px-4 py-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <PartyPopper className="h-5 w-5 shrink-0 text-arbey-700" strokeWidth={2} />
-                        <p className="font-medium text-ink-800">{event.title}</p>
+                        <p className="font-medium text-ink-800" data-testid={`event-title-${event.id}`}>{event.title}</p>
                       </div>
                       <p className="mt-1 text-sm text-ink-500">
                         {formatEventDateRange(event.start_date, event.end_date)}
@@ -535,6 +551,7 @@ export function CalendarPage() {
                       <button
                         type="button"
                         onClick={() => void handleDeleteEvent(event.id)}
+                        data-testid={`event-delete-button-${event.id}`}
                         className="focus-ring inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-cream-300 bg-cream-50 text-red-600 transition hover:bg-red-50"
                         title="Supprimer l'événement"
                       >
@@ -549,7 +566,7 @@ export function CalendarPage() {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-4 text-sm text-ink-500">
+      <div className="flex flex-wrap gap-4 text-sm text-ink-500" data-testid="calendar-legend">
         <span className="rounded bg-warm-100 px-2 py-0.5 text-warm-800">🎂 Anniversaire</span>
         <span className="rounded bg-arbey-100 px-2 py-0.5 text-arbey-800">Événement</span>
         <span className="rounded bg-cream-200 px-2 py-0.5 text-ink-700">📸 Album photo</span>

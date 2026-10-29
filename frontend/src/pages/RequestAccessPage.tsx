@@ -34,7 +34,7 @@ export function RequestAccessPage() {
 
   if (success) {
     return (
-      <div className="mx-auto max-w-sm space-y-4 py-12 text-center">
+      <div className="mx-auto max-w-sm space-y-4 py-12 text-center" data-testid="request-access-success">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-warm-100 text-warm-700">
           <MailCheck className="h-7 w-7" strokeWidth={1.75} />
         </div>
@@ -43,7 +43,7 @@ export function RequestAccessPage() {
           Ton compte est prêt. Dès qu&apos;un administrateur aura validé ta demande, connecte-toi
           avec ton email — tu recevras un lien de connexion, pas besoin de mot de passe.
         </p>
-        <Link to="/login" className="btn-secondary inline-flex">
+        <Link to="/login" className="btn-secondary inline-flex" data-testid="request-access-back-to-login-link">
           Retour connexion
         </Link>
       </div>
@@ -51,8 +51,8 @@ export function RequestAccessPage() {
   }
 
   return (
-    <div className="mx-auto max-w-sm space-y-8 py-4">
-      <BackLink to="/" label="Accueil" />
+    <div className="mx-auto max-w-sm space-y-8 py-4" data-testid="request-access-page">
+      <BackLink to="/" label="Accueil" data-testid="request-access-back-link" />
       <div>
         <p className="text-sm font-medium uppercase tracking-widest text-warm-600">Invitation</p>
         <h1 className="page-title mt-2">Demander l&apos;accès</h1>
@@ -61,14 +61,14 @@ export function RequestAccessPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card space-y-4">
+      <form onSubmit={handleSubmit} className="card space-y-4" data-testid="request-access-form">
         <div>
           <label className="mb-1 block text-sm font-medium text-ink-700">Prénom</label>
-          <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="input-field" />
+          <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="input-field" data-testid="request-access-first-name-input" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink-700">Nom</label>
-          <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="input-field" />
+          <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="input-field" data-testid="request-access-last-name-input" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink-700">Email</label>
@@ -78,6 +78,7 @@ export function RequestAccessPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="input-field"
+            data-testid="request-access-email-input"
           />
         </div>
         <div>
@@ -88,19 +89,20 @@ export function RequestAccessPage() {
             rows={3}
             placeholder="Je suis le fils de..."
             className="input-field resize-none"
+            data-testid="request-access-message-input"
           />
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-600" data-testid="request-access-error">{error}</p>}
 
-        <button type="submit" disabled={loading} className="btn-primary w-full">
+        <button type="submit" disabled={loading} className="btn-primary w-full" data-testid="request-access-submit-button">
           {loading ? 'Création...' : 'Créer mon compte et demander l\'accès'}
         </button>
       </form>
 
       <p className="text-center text-sm text-ink-500">
         Déjà invité ?{' '}
-        <Link to="/login" className="font-medium text-warm-700 hover:underline">
+        <Link to="/login" className="font-medium text-warm-700 hover:underline" data-testid="request-access-login-link">
           Se connecter
         </Link>
       </p>

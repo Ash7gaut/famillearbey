@@ -72,7 +72,7 @@ export function RouletteWheel({ names, targetName, onComplete }: RouletteWheelPr
   }, [finalRotation, onComplete, segments, targetName]);
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-6" data-testid="roulette-wheel">
       <div className="relative mx-auto w-[min(100%,17rem)]">
         {/* Flèche fixe en haut, pointe vers la roue */}
         <div
@@ -119,6 +119,7 @@ export function RouletteWheel({ names, targetName, onComplete }: RouletteWheelPr
 
             <div className="absolute inset-[28%] z-10 flex items-center justify-center rounded-full border-4 border-cream-50 bg-cream-50 shadow-inner">
               <span
+                data-testid="roulette-ticker"
                 className={`px-2 text-center font-display text-lg font-bold text-arbey-900 transition-opacity sm:text-xl ${
                   done ? 'opacity-100' : 'opacity-90'
                 }`}
@@ -130,7 +131,7 @@ export function RouletteWheel({ names, targetName, onComplete }: RouletteWheelPr
         </div>
       </div>
 
-      <p className="text-sm text-arbey-500">
+      <p className="text-sm text-arbey-500" data-testid="roulette-status">
         {done ? 'Et le gagnant est…' : 'La roulette tourne…'}
       </p>
     </div>

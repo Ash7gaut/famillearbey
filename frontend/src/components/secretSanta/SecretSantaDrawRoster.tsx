@@ -34,7 +34,7 @@ export function SecretSantaDrawRoster({
   drawnAt,
 }: SecretSantaDrawRosterProps) {
   return (
-    <div className="card">
+    <div className="card" data-testid="draw-roster">
       <h2 className="font-display font-semibold text-arbey-900">Participants au tirage</h2>
       <p className="mt-1 text-sm text-arbey-600">
         {accepted.length} personne{accepted.length > 1 ? 's' : ''} dans la roue
@@ -50,7 +50,7 @@ export function SecretSantaDrawRoster({
         <h3 className="text-xs font-semibold uppercase tracking-wider text-arbey-600">
           Ont participé ({accepted.length})
         </h3>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2" data-testid="draw-roster-accepted-list">
           {accepted.map((participant) => (
             <DrawParticipantCard
               key={participant.id}
@@ -67,7 +67,7 @@ export function SecretSantaDrawRoster({
           <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-400">
             N&apos;ont pas participé ({absent.length})
           </h3>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div className="mt-3 grid gap-3 sm:grid-cols-2" data-testid="draw-roster-absent-list">
             {absent.map((participant) => (
               <DrawParticipantCard
                 key={participant.id}
@@ -143,11 +143,11 @@ function DrawParticipantCard({
 
   if (member && isActive) {
     return (
-      <Link to={`/profil/${member.id}`} className={`focus-ring ${className}`}>
+      <Link to={`/profil/${member.id}`} className={`focus-ring ${className}`} data-testid={`draw-roster-card-${participant.id}`}>
         {content}
       </Link>
     );
   }
 
-  return <div className={className}>{content}</div>;
+  return <div className={className} data-testid={`draw-roster-card-${participant.id}`}>{content}</div>;
 }

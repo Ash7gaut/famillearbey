@@ -55,11 +55,11 @@ export function WelcomePage() {
   const { initialized, isAuthenticated } = useAuthReady();
   const showGuestHub = hasGuestInvites();
 
-  if (!initialized) return <LoadingSpinner />;
+  if (!initialized) return <LoadingSpinner data-testid="welcome-loading-spinner" />;
   if (isAuthenticated) return <Navigate to="/accueil" replace />;
 
   return (
-    <div className="space-y-14">
+    <div className="space-y-14" data-testid="welcome-page">
       <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/80 px-6 py-12 shadow-warm sm:px-12 sm:py-16">
         <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-warm-200/30 blur-3xl" aria-hidden />
         <div className="absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-arbey-200/25 blur-3xl" aria-hidden />
@@ -71,7 +71,7 @@ export function WelcomePage() {
           <p className="text-sm font-medium uppercase tracking-widest text-warm-600">
             Espace privé
           </p>
-          <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-ink-800 sm:text-5xl">
+          <h1 data-testid="welcome-title" className="mt-3 font-display text-4xl font-semibold leading-tight text-ink-800 sm:text-5xl">
             Famille Arbey
           </h1>
           <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-ink-500 sm:text-lg">
@@ -80,11 +80,11 @@ export function WelcomePage() {
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link to="/login" className="btn-primary w-full px-6 py-3 text-base sm:w-auto">
+            <Link to="/login" data-testid="welcome-login-link" className="btn-primary w-full px-6 py-3 text-base sm:w-auto">
               Se connecter
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/demande-acces" className="btn-secondary w-full px-6 py-3 text-base sm:w-auto">
+            <Link to="/demande-acces" data-testid="welcome-request-access-link" className="btn-secondary w-full px-6 py-3 text-base sm:w-auto">
               Demander l&apos;accès
             </Link>
           </div>
@@ -97,7 +97,7 @@ export function WelcomePage() {
       </section>
 
       {showGuestHub && (
-        <section className="card border-warm-200/80 bg-warm-50/50">
+        <section className="card border-warm-200/80 bg-warm-50/50" data-testid="welcome-guest-hub">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-medium text-warm-700">Tu participes en invité</p>
@@ -108,7 +108,7 @@ export function WelcomePage() {
                 Pas besoin de compte — tes invitations sont enregistrées sur cet appareil.
               </p>
             </div>
-            <Link to="/mes-invitations" className="btn-primary shrink-0">
+            <Link to="/mes-invitations" data-testid="welcome-invitations-link" className="btn-primary shrink-0">
               Mes invitations
             </Link>
           </div>
@@ -123,7 +123,7 @@ export function WelcomePage() {
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="welcome-highlights">
           {highlights.map((item) => {
             const Icon = item.icon;
             return (
@@ -148,7 +148,7 @@ export function WelcomePage() {
           Crée ta demande d&apos;accès — un administrateur de la famille validera ton inscription
           avant que tu puisses te connecter.
         </p>
-        <Link to="/demande-acces" className="btn-primary mt-5 inline-flex">
+        <Link to="/demande-acces" data-testid="welcome-cta-request-access-link" className="btn-primary mt-5 inline-flex">
           Créer ma demande d&apos;accès
         </Link>
       </section>

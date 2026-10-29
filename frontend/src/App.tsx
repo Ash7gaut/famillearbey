@@ -24,6 +24,8 @@ import { GuestHubPage } from './pages/GuestHubPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { FamilyDirectoryPage } from './pages/FamilyDirectoryPage';
 import { CalendarPage } from './pages/CalendarPage';
+import { MessagingPage } from './pages/MessagingPage';
+import { ConversationPage } from './pages/ConversationPage';
 import { useAuthStore } from './stores/authStore';
 
 function AuthInit({ children }: { children: React.ReactNode }) {
@@ -62,6 +64,8 @@ export default function App() {
               <Route path="secret-santa/:id/reveal" element={<SecretSantaRevealPage />} />
               <Route path="famille" element={<FamilyDirectoryPage />} />
               <Route path="calendrier" element={<CalendarPage />} />
+              <Route path="messagerie" element={<MessagingPage />} />
+              <Route path="messagerie/:id" element={<ConversationPage />} />
               <Route path="profil" element={<ProfilePage />} />
               <Route path="profil/:id" element={<ProfilePage />} />
               <Route path="admin" element={<AdminPage />} />

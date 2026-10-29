@@ -14,6 +14,7 @@ interface MemberSelectProps {
   disabled?: boolean;
   id?: string;
   className?: string;
+  'data-testid'?: string;
 }
 
 /** Tri alphabétique prénom puis nom (locale FR). */
@@ -41,6 +42,7 @@ export function MemberSelect({
   disabled = false,
   id,
   className = '',
+  'data-testid': testId = 'member-select',
 }: MemberSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -127,10 +129,11 @@ export function MemberSelect({
   }
 
   return (
-    <div ref={rootRef} className={`relative ${className}`}>
+    <div ref={rootRef} className={`relative ${className}`} data-testid={testId}>
       <button
         ref={buttonRef}
         type="button"
+        data-testid={`${testId}-trigger`}
         id={id}
         disabled={disabled}
         onClick={() => setOpen((v) => !v)}
@@ -150,6 +153,7 @@ export function MemberSelect({
         createPortal(
           <div
             ref={menuRef}
+            data-testid={`${testId}-dropdown`}
             style={{
               position: 'fixed',
               left: menuPos.left,
@@ -165,16 +169,18 @@ export function MemberSelect({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
+              data-testid={`${testId}-search-input`}
               placeholder="Rechercher…"
               className="w-full rounded-lg border border-cream-400 bg-cream-50 px-3 py-2.5 text-base text-ink-800 placeholder:text-ink-400 focus:border-warm-400 focus:outline-none focus:ring-2 focus:ring-warm-100 sm:py-1.5 sm:text-sm"
             />
           </div>
-          <ul role="listbox" className="max-h-[50vh] overflow-y-auto overscroll-contain py-1 sm:max-h-56">
+          <ul role="listbox" data-testid={`${testId}-list`} className="max-h-[50vh] overflow-y-auto overscroll-contain py-1 sm:max-h-56">
             {value && (
               <li>
                 <button
                   type="button"
                   onClick={() => choose('')}
+                  data-testid={`${testId}-clear-option`}
                   className="flex min-h-[44px] w-full items-center px-3 py-2 text-left text-sm text-ink-400 hover:bg-cream-200/60"
                 >
                   Aucun
@@ -182,13 +188,14 @@ export function MemberSelect({
               </li>
             )}
             {filtered.length === 0 ? (
-              <li className="px-3 py-3 text-center text-sm text-ink-400">Aucun membre trouvé.</li>
+              <li className="px-3 py-3 text-center text-sm text-ink-400" data-testid={`${testId}-empty`}>Aucun membre trouvé.</li>
             ) : (
               filtered.map((m, i) => (
                 <li key={m.id}>
                   <button
                     type="button"
                     role="option"
+                    data-testid={`member-option-${m.id}`}
                     aria-selected={m.id === value}
                     onClick={() => choose(m.id)}
                     onMouseEnter={() => setActiveIndex(i)}

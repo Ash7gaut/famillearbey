@@ -76,7 +76,7 @@ export function SecretSantaGuestPage() {
     window.setTimeout(() => setCopied(false), 2000);
   }
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner data-testid="guest-loading-spinner" />;
   if (error || !info) return <ErrorMessage message={error ?? 'Invitation introuvable'} />;
 
   const locked =
@@ -85,7 +85,7 @@ export function SecretSantaGuestPage() {
 
   if (locked && assignment) {
     return (
-      <div className="mx-auto max-w-lg space-y-6">
+      <div className="mx-auto max-w-lg space-y-6" data-testid="guest-page-locked">
         <BookmarkCard onCopy={copyPersonalLink} copied={copied} />
         <LockedAssignment name={assignment.receiver_display_name} />
         <DrawParticipantsPanel
@@ -98,13 +98,13 @@ export function SecretSantaGuestPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
+    <div className="mx-auto max-w-lg space-y-6" data-testid="guest-page">
       <div className="text-center">
         <p className="mb-2 text-4xl" aria-hidden>
           🎁
         </p>
-        <h1 className="font-display text-2xl font-bold text-ink-800">{info.group_title}</h1>
-        <p className="mt-1 text-sm text-ink-500">
+        <h1 className="font-display text-2xl font-bold text-ink-800" data-testid="guest-group-title">{info.group_title}</h1>
+        <p className="mt-1 text-sm text-ink-500" data-testid="guest-greeting">
           Bonjour {info.guest_display_name} !
           {info.budget && ` · Budget : ${info.budget}`}
         </p>
@@ -113,23 +113,23 @@ export function SecretSantaGuestPage() {
       <BookmarkCard onCopy={copyPersonalLink} copied={copied} />
 
       {info.status === 'invited' && info.group_status === 'open' && (
-        <div className="card flex flex-col gap-3 text-center">
+        <div className="card flex flex-col gap-3 text-center" data-testid="guest-invitation-banner">
           <p className="text-sm text-ink-700">Tu es invité à ce Secret Santa.</p>
-          <button type="button" disabled={actionLoading} onClick={accept} className="btn-primary">
+          <button type="button" disabled={actionLoading} onClick={accept} className="btn-primary" data-testid="guest-accept-button">
             Participer
           </button>
-          <button type="button" disabled={actionLoading} onClick={decline} className="btn-secondary">
+          <button type="button" disabled={actionLoading} onClick={decline} className="btn-secondary" data-testid="guest-decline-button">
             Décliner
           </button>
         </div>
       )}
 
       {info.status === 'accepted' && info.group_status === 'open' && (
-        <div className="card space-y-3 text-center text-sm text-ink-600">
+        <div className="card space-y-3 text-center text-sm text-ink-600" data-testid="guest-accepted-notice">
           <p>C&apos;est noté ! Le créateur lancera la roulette quand tout le monde sera prêt.</p>
           <p className="text-ink-500">
             Tu peux fermer cette page — retrouve ton invitation dans{' '}
-            <Link to="/mes-invitations" className="font-medium text-warm-700 hover:underline">
+            <Link to="/mes-invitations" className="font-medium text-warm-700 hover:underline" data-testid="guest-accepted-invitations-link">
               Mes invitations
             </Link>
             .
@@ -138,7 +138,7 @@ export function SecretSantaGuestPage() {
       )}
 
       {info.status === 'declined' && (
-        <div className="card text-center text-sm text-ink-600">
+        <div className="card text-center text-sm text-ink-600" data-testid="guest-declined-notice">
           Tu as décliné cette invitation.
         </div>
       )}
@@ -170,7 +170,7 @@ function BookmarkCard({
   copied: boolean;
 }) {
   return (
-    <div className="card border-warm-200/80 bg-warm-50/40">
+    <div className="card border-warm-200/80 bg-warm-50/40" data-testid="guest-bookmark-card">
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cream-50 text-warm-700 shadow-sm">
           <Bookmark className="h-5 w-5" strokeWidth={1.75} />
@@ -183,6 +183,7 @@ function BookmarkCard({
           <button
             type="button"
             onClick={() => void onCopy()}
+            data-testid="guest-copy-link-button"
             className="btn-secondary mt-3"
           >
             <Link2 className="h-4 w-4" strokeWidth={2} />
@@ -196,9 +197,9 @@ function BookmarkCard({
 
 function HubReminder() {
   return (
-    <p className="text-center text-xs text-ink-400">
+    <p className="text-center text-xs text-ink-400" data-testid="guest-hub-reminder">
       Toutes tes invitations sont aussi dans{' '}
-      <Link to="/mes-invitations" className="font-medium text-warm-700 hover:underline">
+      <Link to="/mes-invitations" className="font-medium text-warm-700 hover:underline" data-testid="guest-hub-reminder-link">
         Mes invitations
       </Link>
       .

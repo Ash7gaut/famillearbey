@@ -101,7 +101,7 @@ export function FamilyChartView({ mainMemberId }: FamilyChartViewProps) {
   }, [mainMemberId]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" data-testid="family-chart-view">
       <p className="text-sm text-arbey-600">
         Aperçu avec la librairie{' '}
         <a
@@ -119,6 +119,7 @@ export function FamilyChartView({ mainMemberId }: FamilyChartViewProps) {
       <div className="card relative overflow-hidden p-0">
         <div
           id={chartId}
+          data-testid="family-chart-container"
           ref={containerRef}
           className="f3 family-chart-preview"
           style={{
@@ -128,7 +129,7 @@ export function FamilyChartView({ mainMemberId }: FamilyChartViewProps) {
         />
         {loading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90">
-            <LoadingSpinner />
+            <LoadingSpinner data-testid="family-chart-loading-spinner" />
           </div>
         )}
         {error && !loading && (

@@ -166,21 +166,21 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="relations-editor">
       <h3 className="font-display text-sm font-semibold text-ink-800">Liens de parenté</h3>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800" data-testid="relations-editor-error">
           {error}
         </div>
       )}
 
       {loading ? (
-        <p className="text-xs text-ink-500">Chargement des liens…</p>
+        <p className="text-xs text-ink-500" data-testid="relations-editor-loading">Chargement des liens…</p>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3" data-testid="relations-editor-list">
           {(Object.keys(CHOICE_LABELS) as RelationChoice[]).map((cat) => (
-            <div key={cat}>
+            <div key={cat} data-testid={`relations-group-${cat}`}>
               <p className="text-xs font-medium uppercase tracking-wide text-ink-400">
                 {CHOICE_LABELS[cat]}
               </p>
@@ -191,6 +191,7 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
                   {grouped[cat].map((row) => (
                     <li
                       key={row.relationshipId}
+                      data-testid={`relation-${row.relationshipId}`}
                       className="inline-flex items-center gap-1.5 rounded-full border border-cream-400 bg-cream-50 px-3 py-1 text-sm text-ink-700"
                     >
                       {row.other.first_name} {row.other.last_name}
@@ -199,6 +200,7 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
                         className="text-ink-400 transition hover:text-red-600"
                         onClick={() => handleRemove(row.relationshipId)}
                         aria-label={`Retirer le lien avec ${row.other.first_name}`}
+                        data-testid={`relation-remove-button-${row.relationshipId}`}
                       >
                         ✕
                       </button>
@@ -218,6 +220,7 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
           <select
             value={choice}
             onChange={(e) => setChoice(e.target.value as RelationChoice)}
+            data-testid="relations-editor-type-select"
             className="input-field !py-2"
           >
             {(Object.keys(CHOICE_LABELS) as RelationChoice[]).map((c) => (
@@ -234,12 +237,14 @@ export function MemberRelationsEditor({ member, allMembers }: MemberRelationsEdi
             value={otherId}
             onChange={setOtherId}
             placeholder="Choisir…"
+            data-testid="relations-editor-member-select"
           />
         </label>
         <button
           type="button"
           className="btn-primary !py-2"
           onClick={handleAdd}
+          data-testid="relations-editor-add-button"
           disabled={!otherId || saving}
         >
           Ajouter

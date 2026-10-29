@@ -105,6 +105,30 @@ export interface Photo {
   latest_comment?: PhotoLatestComment | null;
 }
 
+export interface Conversation {
+  id: string;
+  title: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ConversationSummary extends Conversation {
+  members: FamilyMember[];
+  unread_count: number;
+  muted: boolean;
+  last_message: Message | null;
+}
+
+export interface Message {
+  id: string;
+  conversation_id: string;
+  /** null si l'auteur a été supprimé. */
+  author_id: string | null;
+  content: string;
+  created_at: string;
+}
+
 export interface ApiResponse<T> {
   data: T;
 }

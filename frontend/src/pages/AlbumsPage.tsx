@@ -60,34 +60,35 @@ export function AlbumsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <BackLink to="/accueil" label="Accueil" />
+    <div className="space-y-6" data-testid="albums-page">
+      <BackLink to="/accueil" label="Accueil" data-testid="albums-back-link" />
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="page-title">Albums photos</h1>
+          <h1 className="page-title" data-testid="albums-title">Albums photos</h1>
           <p className="page-subtitle">
             Souvenirs de la famille, album par album.
           </p>
         </div>
         {isAuthenticated ? (
-          <button type="button" onClick={() => setShowForm(!showForm)} className="btn-primary shrink-0">
+          <button type="button" onClick={() => setShowForm(!showForm)} className="btn-primary shrink-0" data-testid="albums-new-button">
             + Nouvel album
           </button>
         ) : (
-          <Link to="/login" className="btn-secondary shrink-0">
+          <Link to="/login" className="btn-secondary shrink-0" data-testid="albums-login-link">
             Se connecter pour créer
           </Link>
         )}
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="card space-y-4">
+        <form onSubmit={handleCreate} className="card space-y-4" data-testid="album-form">
           <div>
             <label htmlFor="title" className="mb-1 block text-sm font-medium text-arbey-700">
               Titre
             </label>
             <input
               id="title"
+              data-testid="album-title-input"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -102,6 +103,7 @@ export function AlbumsPage() {
             </label>
             <input
               id="event-date"
+              data-testid="album-event-date-input"
               type="date"
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
@@ -115,6 +117,7 @@ export function AlbumsPage() {
             </label>
             <textarea
               id="description"
+              data-testid="album-description-input"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Un moment inoubliable en famille..."
@@ -136,17 +139,17 @@ export function AlbumsPage() {
             />
           </fieldset>
           <div className="flex gap-3">
-            <button type="submit" disabled={creating} className="btn-primary">
+            <button type="submit" disabled={creating} className="btn-primary" data-testid="album-submit-button">
               {creating ? 'Création...' : 'Créer'}
             </button>
-            <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">
+            <button type="button" onClick={() => setShowForm(false)} className="btn-secondary" data-testid="album-cancel-button">
               Annuler
             </button>
           </div>
         </form>
       )}
 
-      {loading && <LoadingSpinner />}
+      {loading && <LoadingSpinner data-testid="albums-loading-spinner" />}
       {error && <ErrorMessage message={error} onRetry={fetchAlbums} />}
 
       {!loading && !error && albums.length > 0 && (
@@ -162,12 +165,12 @@ export function AlbumsPage() {
 
       {!loading && !error && (
         albums.length === 0 ? (
-          <div className="card py-12 text-center">
+          <div className="card py-12 text-center" data-testid="albums-empty">
             <p className="mb-3 text-4xl">📸</p>
             <p className="text-arbey-600">Aucun album pour l'instant. Créez le premier !</p>
           </div>
         ) : filteredAlbums.length === 0 ? (
-          <div className="card py-12 text-center">
+          <div className="card py-12 text-center" data-testid="albums-filtered-empty">
             <p className="text-arbey-600">Aucun album ne correspond à ces filtres.</p>
             <button
               type="button"
@@ -176,17 +179,18 @@ export function AlbumsPage() {
                 setCreatorFilter('all');
               }}
               className="btn-secondary mt-4"
+              data-testid="albums-reset-filters-button"
             >
               Réinitialiser les filtres
             </button>
           </div>
         ) : (
           <>
-            <p className="text-sm text-ink-500">
+            <p className="text-sm text-ink-500" data-testid="albums-count">
               {filteredAlbums.length} album{filteredAlbums.length > 1 ? 's' : ''}
               {filteredAlbums.length !== albums.length && ` sur ${albums.length}`}
             </p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="album-list">
               {filteredAlbums.map((album) => (
                 <AlbumCard key={album.id} album={album} />
               ))}

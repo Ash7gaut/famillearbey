@@ -33,14 +33,14 @@ export function SecretSantaRevealPage() {
       .finally(() => setLoading(false));
   }, [id, initialized, isAuthenticated]);
 
-  if (!initialized || loading) return <LoadingSpinner />;
+  if (!initialized || loading) return <LoadingSpinner data-testid="reveal-loading-spinner" />;
 
   if (!isAuthenticated) {
     return (
-      <div className="card mx-auto max-w-md py-12 text-center">
-        <BackLink to="/secret-santa" label="Secret Santa" />
+      <div className="card mx-auto max-w-md py-12 text-center" data-testid="reveal-login-prompt">
+        <BackLink to="/secret-santa" label="Secret Santa" data-testid="reveal-back-link" />
         <p className="text-sm text-ink-500">Connecte-toi pour voir ton tirage.</p>
-        <Link to="/login" className="btn-primary mt-4 inline-flex">
+        <Link to="/login" className="btn-primary mt-4 inline-flex" data-testid="reveal-login-link">
           Se connecter
         </Link>
       </div>
@@ -54,8 +54,8 @@ export function SecretSantaRevealPage() {
   const participants = assignment.participants ?? [];
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
-      <BackLink to={`/secret-santa/${id}`} label="Secret Santa" />
+    <div className="mx-auto max-w-lg space-y-6" data-testid="reveal-page">
+      <BackLink to={`/secret-santa/${id}`} label="Secret Santa" data-testid="reveal-back-link" />
 
       {locked ? (
         <>

@@ -11,10 +11,11 @@ interface BranchSelectorProps {
 
 export function BranchSelector({ branches, active, onChange }: BranchSelectorProps) {
   return (
-    <div className="border-b border-arbey-100 bg-white px-4 py-3 sm:px-6">
+    <div className="border-b border-arbey-100 bg-white px-4 py-3 sm:px-6" data-testid="branch-selector">
       <p className="mb-2 text-xs font-medium text-arbey-500">Filtrer la vue</p>
       <div className="flex gap-2 overflow-x-auto pb-1">
         <FilterChip
+          testId="branch-filter-all"
           label="Tout voir"
           active={active === 'all'}
           onClick={() => onChange('all')}
@@ -22,6 +23,7 @@ export function BranchSelector({ branches, active, onChange }: BranchSelectorPro
         {branches.map((branch) => (
           <FilterChip
             key={branch.member.id}
+            testId={`branch-filter-${branch.member.id}`}
             label={getBranchShortTitle(branch)}
             active={active === branch.member.id}
             onClick={() => onChange(branch.member.id)}
@@ -36,15 +38,18 @@ function FilterChip({
   label,
   active,
   onClick,
+  testId,
 }: {
   label: string;
   active: boolean;
   onClick: () => void;
+  testId: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      data-testid={testId}
       className={`tree-control shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
         active
           ? 'bg-arbey-800 text-white shadow-sm'

@@ -1,0 +1,23 @@
+# ============================================================
+# Image de DÉVELOPPEMENT générique Node (backend ET frontend)
+# ------------------------------------------------------------
+# Volontairement nommée "Dockerfile.node.dev" et rangée dans docker/ :
+# railpack ne détecte QUE les fichiers "Dockerfile" (sans suffixe).
+# Ce fichier n'est donc jamais interprété par le déploiement.
+#
+# On installe les dépendances dans l'image ; le CODE SOURCE est monté
+# en volume par docker-compose (hot-reload). La commande (npm run dev)
+# est fournie par le compose, pas ici.
+# ============================================================
+
+FROM node:22-slim
+
+WORKDIR /app
+
+# Installe les deps à partir des manifestes (bon cache Docker).
+# Le lockfile est copié s'il existe pour un install déterministe.
+COPY package*.json ./
+RUN npm install
+
+# Le reste du code arrive via les volumes montés par docker-compose.
+EXPOSE 3001 5173

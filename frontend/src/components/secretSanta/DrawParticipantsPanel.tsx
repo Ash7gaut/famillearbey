@@ -20,7 +20,7 @@ export function DrawParticipantsPanel({
   if (participants.length === 0) return null;
 
   return (
-    <div className="card">
+    <div className="card" data-testid="draw-participants-panel">
       <div className="flex items-center gap-2">
         <Users className="h-4 w-4 text-arbey-600" strokeWidth={2} />
         <h2 className="font-display font-semibold text-arbey-900">Qui joue avec toi</h2>
@@ -28,7 +28,7 @@ export function DrawParticipantsPanel({
       <p className="mt-1 text-xs text-arbey-500">
         {participants.length} participant{participants.length > 1 ? 's' : ''} dans ce tirage
       </p>
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-4 space-y-2" data-testid="draw-participant-list">
         {participants.map((participant) => (
           <DrawParticipantItem
             key={participant.id}
@@ -92,12 +92,12 @@ function DrawParticipantItem({
   if (showProfileLink && participant.member_id) {
     return (
       <li>
-        <Link to={`/profil/${participant.member_id}`} className="focus-ring block rounded-xl">
+        <Link to={`/profil/${participant.member_id}`} className="focus-ring block rounded-xl" data-testid={`draw-participant-link-${participant.id}`}>
           {content}
         </Link>
       </li>
     );
   }
 
-  return <li>{content}</li>;
+  return <li data-testid={`draw-participant-${participant.id}`}>{content}</li>;
 }

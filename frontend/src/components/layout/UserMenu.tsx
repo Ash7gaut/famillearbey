@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Download, LogOut, Settings, User, UserRound } from 'lucide-react';
+import { Bell, ChevronDown, Download, LogOut, Settings, User, UserRound } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useInstallPrompt } from '../../hooks/useInstallPrompt';
+import { usePushNotifications } from '../../hooks/usePushNotifications';
 import { MemberAvatar } from '../profile/MemberAvatar';
 import { InstallInstructionsModal } from '../ui/InstallInstructionsModal';
 
@@ -25,6 +26,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
   const [showInstallInstructions, setShowInstallInstructions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { isVisible: showInstallItem, canPromptNative, isIos, promptInstall } = useInstallPrompt();
+  const { permission, subscribed, subscribe, unsubscribe } = usePushNotifications();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -36,6 +38,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [open]);
 
+  const tid = `user-menu-${variant}`;
   const isFloating = variant === 'floating';
 
   const isSidebar = variant === 'sidebar';
@@ -55,10 +58,11 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
 
   if (!session || !member) {
     return (
-      <div className="relative" ref={menuRef}>
+      <div className="relative" ref={menuRef} data-testid={`${tid}-guest`}>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
+          data-testid={`${tid}-guest-trigger`}
           className={triggerClassGuest}
           aria-expanded={open}
           aria-haspopup="menu"
@@ -73,10 +77,12 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
         {open && (
           <div
             role="menu"
+            data-testid={`${tid}-guest-menu`}
             className={`absolute z-50 overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 py-1 shadow-[0_8px_30px_-6px_rgba(44,36,25,0.15)] ${isSidebar ? 'w-full' : 'w-52'} ${menuPositionClass}`}
           >
             <Link
               to="/login"
+              data-testid={`${tid}-login-link`}
               role="menuitem"
               onClick={() => setOpen(false)}
               className={`${menuItemClass} font-medium text-ink-800 hover:bg-cream-200/60`}
@@ -85,6 +91,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
             </Link>
             <Link
               to="/demande-acces"
+              data-testid={`${tid}-request-access-link`}
               role="menuitem"
               onClick={() => setOpen(false)}
               className={`${menuItemClass} text-ink-600 hover:bg-cream-200/60`}
@@ -107,10 +114,11 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
       : 'focus-ring inline-flex items-center gap-2 rounded-full bg-ink-800 py-1 pl-1 pr-2.5 text-sm font-medium text-cream-50 shadow-[0_4px_20px_-4px_rgba(44,36,25,0.2)] transition hover:bg-ink-700 focus-visible:ring-offset-ink-800';
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative" ref={menuRef} data-testid={tid}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
+        data-testid={`${tid}-trigger`}
         className={triggerClassUser}
         aria-expanded={open}
         aria-haspopup="menu"
@@ -137,12 +145,13 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
       {open && (
         <div
           role="menu"
+          data-testid={`${tid}-menu`}
           className={`absolute z-50 overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 py-1 shadow-[0_8px_30px_-6px_rgba(44,36,25,0.15)] ${isSidebar ? 'w-full' : 'w-56'} ${menuPositionClass}`}
         >
           <div className="flex items-center gap-3 border-b border-cream-300/60 px-4 py-3">
             <MemberAvatar member={member} size="md" />
             <div className="min-w-0">
-              <p className="truncate font-medium text-ink-800">
+              <p className="truncate font-medium text-ink-800" data-testid={`${tid}-name`}>
                 {member.first_name} {member.last_name}
               </p>
               <p className="text-xs text-ink-400">Membre de la famille</p>
@@ -151,6 +160,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
 
           <Link
             to="/profil"
+            data-testid={`${tid}-profile-link`}
             role="menuitem"
             onClick={() => setOpen(false)}
             className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
@@ -163,6 +173,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
             <button
               type="button"
               role="menuitem"
+              data-testid={`${tid}-install-button`}
               onClick={() => {
                 setOpen(false);
                 if (canPromptNative) {
@@ -178,9 +189,34 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
             </button>
           )}
 
+          {permission !== 'unsupported' && (
+            <button
+              type="button"
+              role="menuitem"
+              data-testid={subscribed ? `${tid}-push-disable-button` : `${tid}-push-enable-button`}
+              onClick={() => {
+                setOpen(false);
+                if (isIos && showInstallItem) {
+                  setShowInstallInstructions(true);
+                  return;
+                }
+                if (subscribed) {
+                  void unsubscribe();
+                } else {
+                  void subscribe();
+                }
+              }}
+              className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
+            >
+              <Bell className="h-4 w-4" strokeWidth={1.75} />
+              {subscribed ? 'Désactiver les notifications' : 'Activer les notifications'}
+            </button>
+          )}
+
           {member.is_admin && (
             <Link
               to="/admin"
+              data-testid={`${tid}-admin-link`}
               role="menuitem"
               onClick={() => setOpen(false)}
               className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
@@ -193,6 +229,7 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
           <button
             type="button"
             role="menuitem"
+            data-testid={`${tid}-logout-button`}
             onClick={() => {
               setOpen(false);
               logout();

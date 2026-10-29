@@ -8,8 +8,8 @@ export function RequireAuth() {
 
   if (!initialized) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream-100">
-        <LoadingSpinner />
+      <div className="flex min-h-screen items-center justify-center bg-cream-100" data-testid="require-auth-loading">
+        <LoadingSpinner data-testid="require-auth-spinner" />
       </div>
     );
   }

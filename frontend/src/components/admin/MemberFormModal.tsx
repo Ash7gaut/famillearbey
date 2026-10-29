@@ -88,19 +88,22 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
     <div
       className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm"
       onClick={onClose}
+      data-testid="member-form-overlay"
     >
       <div
         className="my-8 w-full max-w-lg space-y-6 rounded-2xl border border-cream-300 bg-cream-50 p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
+        data-testid="member-form-modal"
       >
         <div className="flex items-start justify-between">
-          <h2 className="font-display text-xl font-semibold text-ink-800">
+          <h2 className="font-display text-xl font-semibold text-ink-800" data-testid="member-form-title">
             {isEdit ? `Modifier ${member?.first_name}` : 'Nouveau membre'}
           </h2>
           <button
             type="button"
             className="focus-ring rounded-lg p-1 text-ink-500 hover:text-ink-800"
             onClick={onClose}
+            data-testid="member-form-close-button"
             aria-label="Fermer"
           >
             ✕
@@ -108,13 +111,13 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
         </div>
 
         {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" data-testid="member-form-error">
             {error}
           </div>
         )}
 
         {/* Démographie */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" data-testid="member-form">
           <div className="grid grid-cols-2 gap-3">
             <label className="block space-y-1">
               <span className="text-xs font-medium text-ink-600">Prénom *</span>
@@ -123,6 +126,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
                 required
                 value={form.first_name}
                 onChange={(e) => update('first_name', e.target.value)}
+                data-testid="member-form-first-name-input"
                 className="input-field"
               />
             </label>
@@ -132,6 +136,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
                 type="text"
                 value={form.last_name}
                 onChange={(e) => update('last_name', e.target.value)}
+                data-testid="member-form-last-name-input"
                 className="input-field uppercase"
               />
             </label>
@@ -143,6 +148,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
               <select
                 value={form.gender}
                 onChange={(e) => update('gender', e.target.value as Gender)}
+                data-testid="member-form-gender-select"
                 className="input-field"
               >
                 <option value="male">Homme</option>
@@ -154,6 +160,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
               <select
                 value={form.tribu_id}
                 onChange={(e) => update('tribu_id', e.target.value)}
+                data-testid="member-form-tribe-select"
                 className="input-field"
               >
                 <option value="">Aucune</option>
@@ -173,6 +180,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
                 type="date"
                 value={form.birth_date}
                 onChange={(e) => update('birth_date', e.target.value)}
+                data-testid="member-form-birth-date-input"
                 className="input-field"
               />
             </label>
@@ -182,6 +190,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
                 type="date"
                 value={form.death_date}
                 onChange={(e) => update('death_date', e.target.value)}
+                data-testid="member-form-death-date-input"
                 className="input-field"
               />
             </label>
@@ -205,16 +214,17 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
             <textarea
               value={form.bio}
               onChange={(e) => update('bio', e.target.value)}
+              data-testid="member-form-bio-input"
               rows={3}
               className="input-field resize-none"
             />
           </label>
 
           <div className="flex justify-end gap-2">
-            <button type="button" className="btn-secondary" onClick={onClose}>
+            <button type="button" className="btn-secondary" onClick={onClose} data-testid="member-form-cancel-button">
               Annuler
             </button>
-            <button type="submit" className="btn-primary" disabled={saving}>
+            <button type="submit" className="btn-primary" disabled={saving} data-testid="member-form-submit-button">
               {saving ? 'Enregistrement…' : isEdit ? 'Enregistrer' : 'Créer le membre'}
             </button>
           </div>

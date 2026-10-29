@@ -100,6 +100,48 @@ export interface TreeNode {
   children: TreeNode[];
 }
 
+export interface Conversation {
+  id: string;
+  title: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ConversationMember {
+  conversation_id: string;
+  member_id: string;
+  added_by: string | null;
+  joined_at: string;
+  muted: boolean;
+  last_read_at: string;
+}
+
+export interface ConversationSummary extends Conversation {
+  members: FamilyMember[];
+  unread_count: number;
+  muted: boolean;
+  last_message: Message | null;
+}
+
+export interface Message {
+  id: string;
+  conversation_id: string;
+  /** null si l'auteur a été supprimé (FK ON DELETE SET NULL). */
+  author_id: string | null;
+  content: string;
+  created_at: string;
+}
+
+export interface PushSubscriptionInput {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+  user_agent?: string;
+}
+
 export interface ApiResponse<T> {
   data: T;
 }

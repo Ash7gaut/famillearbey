@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion — Famille Arbey</title>
+</head>
+<body style="margin:0;padding:0;background-color:#faf7f2;font-family:Georgia,'Times New Roman',serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#faf7f2;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:480px;background-color:#fdfbf7;border:1px solid #ede6da;border-radius:16px;overflow:hidden;">
+          <!-- En-tête -->
+          <tr>
+            <td style="padding:28px 32px 8px;text-align:center;">
+              <p style="margin:0;font-size:32px;line-height:1;">🌳</p>
+              <p style="margin:8px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:600;color:#2c2419;letter-spacing:-0.02em;">
+                Famille Arbey
+              </p>
+            </td>
+          </tr>
+
+          <!-- Contenu -->
+          <tr>
+            <td style="padding:16px 32px 8px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+              <h1 style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:600;color:#2c2419;">
+                Ta connexion
+              </h1>
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#7a6b5c;">
+                Saisis le code ci-dessous, ou clique sur le bouton, pour te connecter à
+                Famille Arbey. Ce code et ce lien expirent rapidement et ne peuvent être
+                utilisés qu'une seule fois.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Code de connexion -->
+          <tr>
+            <td style="padding:8px 32px 8px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+              <p style="margin:0 0 8px;font-size:13px;color:#9a8b7a;">Ton code de connexion&nbsp;:</p>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="center" style="background-color:#faf7f2;border:1px solid #ede6da;border-radius:12px;padding:16px;">
+                    <span style="font-family:'Courier New',Courier,monospace;font-size:30px;font-weight:700;letter-spacing:8px;color:#a54f2d;">{{ .Token }}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Séparateur "ou" -->
+          <tr>
+            <td style="padding:16px 32px 4px;text-align:center;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+              <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#b8a99a;">ou</p>
+            </td>
+          </tr>
+
+          <!-- Bouton -->
+          <tr>
+            <td style="padding:8px 32px 24px;text-align:center;">
+              <a
+                href="{{ .ConfirmationURL }}"
+                style="display:inline-block;background-color:#c66434;color:#ffffff;text-decoration:none;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:12px;box-shadow:0 4px 20px -4px rgba(44,36,25,0.15);"
+              >
+                Se connecter
+              </a>
+            </td>
+          </tr>
+
+          <!-- Lien secours -->
+          <tr>
+            <td style="padding:0 32px 24px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+              <p style="margin:0;font-size:13px;line-height:1.5;color:#9a8b7a;">
+                Si le bouton ne fonctionne pas, copie-colle ce lien dans ton navigateur&nbsp;:
+              </p>
+              <p style="margin:8px 0 0;font-size:12px;line-height:1.5;color:#c66434;word-break:break-all;">
+                <a href="{{ .ConfirmationURL }}" style="color:#a54f2d;text-decoration:underline;">{{ .ConfirmationURL }}</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Pied -->
+          <tr>
+            <td style="padding:20px 32px 28px;border-top:1px solid #ede6da;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;text-align:center;">
+              <p style="margin:0;font-size:12px;line-height:1.5;color:#9a8b7a;">
+                Tu n'as pas demandé cette connexion&nbsp;? Tu peux ignorer cet email.
+              </p>
+              <p style="margin:12px 0 0;font-size:12px;color:#9a8b7a;">
+                Famille Arbey
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

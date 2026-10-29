@@ -41,7 +41,7 @@ export function AssignmentReveal({
 
   if (phase === 'locked') {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6" data-testid="assignment-locked">
         <LockedAssignment name={assignment.receiver_display_name} />
         <DrawParticipantsPanel participants={participants} showProfileLinks={showProfileLinks} />
       </div>
@@ -50,15 +50,15 @@ export function AssignmentReveal({
 
   if (phase === 'ready') {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6" data-testid="assignment-ready">
         <div className="flex flex-col items-center gap-6 text-center">
           <div>
-            <h1 className="page-title">Ta roulette</h1>
+            <h1 className="page-title" data-testid="assignment-title">Ta roulette</h1>
             <p className="page-subtitle">
               Prêt ? La roue ne tourne qu&apos;une seule fois.
             </p>
           </div>
-          <button type="button" onClick={() => setPhase('spinning')} className="btn-primary px-8">
+          <button type="button" onClick={() => setPhase('spinning')} className="btn-primary px-8" data-testid="assignment-spin-button">
             🎰 Lancer la roulette
           </button>
         </div>
@@ -68,7 +68,7 @@ export function AssignmentReveal({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="assignment-spinning">
       <RouletteWheel
         names={assignment.participant_names}
         targetName={assignment.receiver_display_name}

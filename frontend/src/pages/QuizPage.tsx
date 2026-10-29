@@ -34,51 +34,52 @@ export function QuizPage() {
   const accuracy = total > 0 ? Math.round((score / total) * 100) : 0;
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
-      <BackLink to="/accueil" label="Accueil" />
+    <div className="mx-auto max-w-lg space-y-6" data-testid="quiz-page">
+      <BackLink to="/accueil" label="Accueil" data-testid="quiz-back-link" />
       <div className="text-center">
         <p className="text-4xl mb-2">🧠</p>
-        <h1 className="page-title">Quiz familial</h1>
+        <h1 className="page-title" data-testid="quiz-title">Quiz familial</h1>
         <p className="mt-1 text-sm text-arbey-600">
           Teste tes connaissances sur la famille !
         </p>
       </div>
 
       {/* Score bar */}
-      <div className="flex items-center justify-between rounded-2xl border border-arbey-100 bg-cream-50 px-5 py-3 shadow-sm">
+      <div className="flex items-center justify-between rounded-2xl border border-arbey-100 bg-cream-50 px-5 py-3 shadow-sm" data-testid="quiz-scorebar">
         <div className="text-center">
           <p className="text-xs text-arbey-500">Score</p>
-          <p className="font-display text-lg font-semibold text-arbey-900">
+          <p className="font-display text-lg font-semibold text-arbey-900" data-testid="quiz-score">
             {score}/{total}
           </p>
         </div>
         <div className="text-center">
           <p className="text-xs text-arbey-500">Précision</p>
-          <p className="font-display text-lg font-semibold text-arbey-900">{accuracy}%</p>
+          <p className="font-display text-lg font-semibold text-arbey-900" data-testid="quiz-accuracy">{accuracy}%</p>
         </div>
         <div className="text-center">
           <p className="text-xs text-arbey-500">Série</p>
-          <p className="font-display text-lg font-semibold text-warm-600">
+          <p className="font-display text-lg font-semibold text-warm-600" data-testid="quiz-streak">
             {streak > 0 ? `🔥 ${streak}` : '—'}
           </p>
         </div>
       </div>
 
-      {loading && !question && <LoadingSpinner />}
+      {loading && !question && <LoadingSpinner data-testid="quiz-loading-spinner" />}
       {error && !question && <ErrorMessage message={error} onRetry={fetchQuestion} />}
 
       {question && phase === 'playing' && !loading && (
-        <div className="card space-y-5">
-          <span className="inline-block rounded-full bg-arbey-50 px-3 py-1 text-xs font-medium text-arbey-600">
+        <div className="card space-y-5" data-testid="quiz-question">
+          <span className="inline-block rounded-full bg-arbey-50 px-3 py-1 text-xs font-medium text-arbey-600" data-testid="quiz-question-type">
             {typeLabels[question.type] ?? question.type}
           </span>
-          <h2 className="font-display text-xl font-semibold text-arbey-900 leading-snug">
+          <h2 className="font-display text-xl font-semibold text-arbey-900 leading-snug" data-testid="quiz-question-prompt">
             {question.prompt}
           </h2>
-          <div className="grid gap-2">
+          <div className="grid gap-2" data-testid="quiz-option-list">
             {question.options.map((option) => (
               <button
                 key={option.id}
+                data-testid={`quiz-option-${option.id}`}
                 type="button"
                 onClick={() => submitAnswer(option.id)}
                 disabled={loading}
@@ -93,6 +94,7 @@ export function QuizPage() {
 
       {phase === 'feedback' && result && (
         <div
+          data-testid={result.correct ? 'quiz-feedback-correct' : 'quiz-feedback-wrong'}
           className={`card space-y-4 ${
             result.correct
               ? 'border-green-200 bg-green-50/30'
@@ -106,27 +108,27 @@ export function QuizPage() {
             </p>
             {!result.correct && (
               <p className="mt-1 text-sm text-arbey-600">
-                La bonne réponse : <strong>{result.correctLabel}</strong>
+                La bonne réponse : <strong data-testid="quiz-correct-answer">{result.correctLabel}</strong>
               </p>
             )}
             {result.explanation && (
-              <p className="mt-2 text-sm text-arbey-500">{result.explanation}</p>
+              <p className="mt-2 text-sm text-arbey-500" data-testid="quiz-explanation">{result.explanation}</p>
             )}
           </div>
-          <button type="button" onClick={nextQuestion} className="btn-primary w-full">
+          <button type="button" onClick={nextQuestion} className="btn-primary w-full" data-testid="quiz-next-button">
             Question suivante →
           </button>
         </div>
       )}
 
       {loading && question && phase === 'playing' && (
-        <div className="flex justify-center py-4">
+        <div className="flex justify-center py-4" data-testid="quiz-answer-spinner">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-arbey-200 border-t-arbey-600" />
         </div>
       )}
 
       {total > 0 && (
-        <button type="button" onClick={() => { reset(); fetchQuestion(); }} className="btn-secondary w-full">
+        <button type="button" onClick={() => { reset(); fetchQuestion(); }} className="btn-secondary w-full" data-testid="quiz-reset-button">
           Recommencer
         </button>
       )}

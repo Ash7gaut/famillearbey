@@ -11,6 +11,7 @@ export function AlbumVisibilityBadge({ visibility, className = '' }: AlbumVisibi
 
   return (
     <span
+      data-testid="album-visibility-badge"
       className={`inline-flex items-center gap-1 rounded-full bg-warm-100 px-2 py-0.5 text-[11px] font-medium text-warm-800 ${className}`}
     >
       <Lock className="h-3 w-3" strokeWidth={2} />
@@ -44,6 +45,7 @@ export function AlbumVisibilityOption({
         value={value}
         checked={selected}
         onChange={() => onChange(value)}
+        data-testid={`album-visibility-option-${value}`}
         className="mt-1 accent-warm-600"
       />
       <span className="min-w-0">

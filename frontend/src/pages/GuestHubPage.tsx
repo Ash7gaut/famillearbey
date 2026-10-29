@@ -42,22 +42,23 @@ function InviteCard({
   }
 
   return (
-    <article className="card">
+    <article className="card" data-testid={`guest-invite-${invite.token}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-medium uppercase tracking-wide text-warm-600">Secret Santa</p>
-          <h2 className="mt-1 font-display text-xl font-semibold text-ink-800">{invite.groupTitle}</h2>
+          <h2 className="mt-1 font-display text-xl font-semibold text-ink-800" data-testid={`guest-invite-title-${invite.token}`}>{invite.groupTitle}</h2>
           <p className="mt-1 text-sm text-ink-500">
             Bonjour {invite.guestDisplayName}
             {invite.budget ? ` · Budget : ${invite.budget}` : ''}
           </p>
-          <span className="mt-3 inline-block rounded-full bg-cream-200 px-2.5 py-1 text-xs font-medium text-ink-600">
+          <span className="mt-3 inline-block rounded-full bg-cream-200 px-2.5 py-1 text-xs font-medium text-ink-600" data-testid={`guest-invite-status-${invite.token}`}>
             {inviteStatusLabel(invite)}
           </span>
         </div>
         <button
           type="button"
           onClick={() => onRemove(invite.token)}
+          data-testid={`guest-invite-remove-button-${invite.token}`}
           className="focus-ring shrink-0 rounded-lg p-2 text-ink-400 transition hover:bg-red-50 hover:text-red-600"
           title="Retirer de cette liste"
         >
@@ -66,11 +67,11 @@ function InviteCard({
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link to={guestInvitePath(invite.token)} className="btn-primary">
+        <Link to={guestInvitePath(invite.token)} className="btn-primary" data-testid={`guest-invite-open-link-${invite.token}`}>
           Ouvrir
           <ArrowRight className="h-4 w-4" />
         </Link>
-        <button type="button" onClick={() => void copyLink()} className="btn-secondary">
+        <button type="button" onClick={() => void copyLink()} className="btn-secondary" data-testid={`guest-invite-copy-button-${invite.token}`}>
           <Link2 className="h-4 w-4" strokeWidth={2} />
           {copied ? 'Lien copié' : 'Copier le lien'}
         </button>
@@ -115,15 +116,15 @@ export function GuestHubPage() {
     setInvites((current) => current.filter((item) => item.token !== token));
   }
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner data-testid="guest-hub-loading-spinner" />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="guest-hub-page">
       <div className="text-center sm:text-left">
         <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-warm-100 text-warm-700">
           <Gift className="h-6 w-6" strokeWidth={1.75} />
         </div>
-        <h1 className="page-title">Mes invitations</h1>
+        <h1 className="page-title" data-testid="guest-hub-title">Mes invitations</h1>
         <p className="page-subtitle">
           Retrouve ici les Secret Santa auxquels tu as été invité. Garde cette page en favori ou
           le lien reçu par email pour revenir plus tard.
@@ -131,7 +132,7 @@ export function GuestHubPage() {
       </div>
 
       {invites.length === 0 ? (
-        <div className="card text-center">
+        <div className="card text-center" data-testid="guest-hub-empty">
           <p className="text-sm leading-relaxed text-ink-600">
             Aucune invitation enregistrée sur cet appareil pour l&apos;instant.
           </p>
@@ -139,12 +140,12 @@ export function GuestHubPage() {
             Tu as reçu un email d&apos;invitation ? Ouvre le lien dedans — il s&apos;affichera
             automatiquement ici.
           </p>
-          <Link to="/" className="btn-secondary mt-6 inline-flex">
+          <Link to="/" className="btn-secondary mt-6 inline-flex" data-testid="guest-hub-home-link">
             Retour à l&apos;accueil
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" data-testid="guest-invite-list">
           {invites.map((invite) => (
             <InviteCard key={invite.token} invite={invite} onRemove={handleRemove} />
           ))}

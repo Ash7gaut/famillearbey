@@ -44,14 +44,14 @@ export function HomePage() {
   const { member } = useAuthReady();
 
   return (
-    <div className="space-y-12">
-      <section className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/80 px-6 py-10 shadow-warm sm:px-10 sm:py-12">
+    <div className="space-y-12" data-testid="home-page">
+      <section data-testid="home-hero" className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/80 px-6 py-10 shadow-warm sm:px-10 sm:py-12">
         <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-warm-200/30 blur-2xl" aria-hidden />
         <div className="absolute -bottom-10 -left-6 h-32 w-32 rounded-full bg-arbey-200/25 blur-2xl" aria-hidden />
 
         <div className="relative max-w-xl">
           <p className="text-sm font-medium uppercase tracking-widest text-warm-600">Bienvenue</p>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-ink-800 sm:text-4xl">
+          <h1 data-testid="home-title" className="mt-2 font-display text-3xl font-semibold leading-tight text-ink-800 sm:text-4xl">
             Famille Arbey
           </h1>
           <p className="mt-4 text-base leading-relaxed text-ink-500">
@@ -69,6 +69,7 @@ export function HomePage() {
             <Link
               key={feature.title}
               to={feature.to}
+              data-testid={`home-feature-${feature.to.slice(1)}-link`}
               className="group relative overflow-hidden rounded-2xl border border-cream-300/60 bg-cream-50 p-6 shadow-warm transition hover:border-warm-200 hover:shadow-warm-md"
             >
               <div
@@ -124,6 +125,7 @@ export function HomePage() {
               <li key={feature.title}>
                 <Link
                   to={feature.to}
+                  data-testid={`home-other-${feature.to.slice(1)}-link`}
                   className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-cream-200/40"
                 >
                   {content}

@@ -57,6 +57,7 @@ export function PhotoLightbox({
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
       onClick={onClose}
+      data-testid="lightbox"
       role="dialog"
       aria-modal="true"
       aria-label={alt}
@@ -68,12 +69,13 @@ export function PhotoLightbox({
         onClick={onClose}
         className="focus-ring absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-ink-900/50 text-white transition hover:bg-ink-900/70"
         aria-label="Fermer"
+        data-testid="lightbox-close-button"
       >
         <X className="h-5 w-5" strokeWidth={2} />
       </button>
 
       {positionLabel && (
-        <p className="absolute left-4 top-4 z-20 rounded-full border border-white/15 bg-ink-900/45 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm">
+        <p data-testid="lightbox-position" className="absolute left-4 top-4 z-20 rounded-full border border-white/15 bg-ink-900/45 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm">
           {positionLabel}
         </p>
       )}
@@ -91,6 +93,7 @@ export function PhotoLightbox({
               onClick={onPrevious}
               className={`${navButtonClassName} left-2 sm:left-4`}
               aria-label="Photo précédente"
+              data-testid="lightbox-previous-button"
             >
               <ChevronLeft className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.5} />
             </button>
@@ -102,12 +105,13 @@ export function PhotoLightbox({
               onClick={onNext}
               className={`${navButtonClassName} right-2 sm:right-4`}
               aria-label="Photo suivante"
+              data-testid="lightbox-next-button"
             >
               <ChevronRight className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.5} />
             </button>
           )}
 
-          <img src={src} alt={alt} className={imageClassName} />
+          <img src={src} alt={alt} className={imageClassName} data-testid="lightbox-image" />
         </div>
 
         {sidePanel}

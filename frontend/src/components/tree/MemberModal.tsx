@@ -24,19 +24,21 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-arbey-950/40 p-4"
       onClick={onClose}
+      data-testid="member-modal-overlay"
     >
       <div
         className="w-full max-w-md rounded-2xl bg-cream-50 p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
+        data-testid="member-modal"
       >
         <div className="flex items-start gap-4">
           <MemberAvatar member={member} size="xl" className="font-display" />
           <div>
-            <h2 className="font-display text-xl font-semibold text-arbey-900">
+            <h2 className="font-display text-xl font-semibold text-arbey-900" data-testid="member-modal-name">
               {member.first_name} {member.last_name}
             </h2>
             {member.birth_date && (
-              <p className="text-sm text-arbey-500">
+              <p className="text-sm text-arbey-500" data-testid="member-modal-birth-date">
                 Né(e) le {formatDate(member.birth_date)}
               </p>
             )}
@@ -44,18 +46,19 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
         </div>
 
         {bio && (
-          <p className="mt-4 text-sm leading-relaxed text-arbey-700">{bio}</p>
+          <p className="mt-4 text-sm leading-relaxed text-arbey-700" data-testid="member-modal-bio">{bio}</p>
         )}
 
         <div className="mt-6 flex gap-2">
           <Link
             to={`/profil/${member.id}`}
             onClick={onClose}
+            data-testid="member-modal-profile-link"
             className="btn-primary flex-1"
           >
             Voir le profil
           </Link>
-          <button type="button" onClick={onClose} className="btn-secondary flex-1">
+          <button type="button" onClick={onClose} className="btn-secondary flex-1" data-testid="member-modal-close-button">
             Fermer
           </button>
         </div>

@@ -72,6 +72,7 @@ export function InstallInstructionsModal({
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center"
       onClick={onClose}
+      data-testid="install-instructions-overlay"
     >
       <div
         className="absolute inset-0 bg-ink-900/55 backdrop-blur-md"
@@ -82,6 +83,7 @@ export function InstallInstructionsModal({
         className="relative z-10 w-full max-w-sm overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 shadow-[0_16px_48px_-12px_rgba(44,36,25,0.35)]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
+        data-testid="install-instructions-modal"
         aria-modal="true"
         aria-labelledby="install-instructions-title"
       >
@@ -97,7 +99,7 @@ export function InstallInstructionsModal({
 
         <div className="space-y-4 px-5 py-4">
           {items.map(({ icon: Icon, text }, i) => (
-            <div key={i} className="flex items-center gap-3">
+            <div key={i} className="flex items-center gap-3" data-testid={`install-instructions-step-${i}`}>
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-arbey-100 text-arbey-700">
                 <Icon className="h-4 w-4" strokeWidth={1.75} />
               </span>
@@ -106,7 +108,7 @@ export function InstallInstructionsModal({
           ))}
 
           <div className="flex justify-end pt-2">
-            <button type="button" onClick={onClose} className="btn-primary">
+            <button type="button" onClick={onClose} className="btn-primary" data-testid="install-instructions-close-button">
               Compris
             </button>
           </div>

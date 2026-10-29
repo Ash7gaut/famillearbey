@@ -53,6 +53,7 @@ export function ProfilePhotoCropModal({
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center"
       onClick={onClose}
+      data-testid="crop-modal-overlay"
     >
       <div
         className="absolute inset-0 bg-ink-900/55 backdrop-blur-md"
@@ -63,6 +64,7 @@ export function ProfilePhotoCropModal({
         className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 shadow-[0_16px_48px_-12px_rgba(44,36,25,0.35)]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
+        data-testid="crop-modal"
         aria-modal="true"
         aria-labelledby="crop-photo-title"
       >
@@ -104,19 +106,21 @@ export function ProfilePhotoCropModal({
               onChange={(e) => setZoom(Number(e.target.value))}
               className="w-full accent-warm-600"
               aria-label="Zoom"
+              data-testid="crop-zoom-input"
             />
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-red-600" data-testid="crop-error">{error}</p>}
 
           <div className="flex flex-wrap justify-end gap-2">
-            <button type="button" onClick={onClose} disabled={saving} className="btn-secondary">
+            <button type="button" onClick={onClose} disabled={saving} className="btn-secondary" data-testid="crop-cancel-button">
               Annuler
             </button>
             <button
               type="button"
               onClick={() => void handleConfirm()}
               disabled={saving || !croppedArea}
+              data-testid="crop-confirm-button"
               className="btn-primary"
             >
               {saving ? 'Enregistrement…' : 'Valider la photo'}

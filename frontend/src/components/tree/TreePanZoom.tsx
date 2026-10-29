@@ -30,6 +30,7 @@ function ZoomControls() {
       <button
         type="button"
         onClick={() => zoomIn()}
+        data-testid="tree-zoom-in-button"
         className="tree-control flex h-8 w-8 items-center justify-center rounded-lg text-arbey-700 transition hover:bg-arbey-50"
         aria-label="Zoomer"
       >
@@ -38,6 +39,7 @@ function ZoomControls() {
       <button
         type="button"
         onClick={() => zoomOut()}
+        data-testid="tree-zoom-out-button"
         className="tree-control flex h-8 w-8 items-center justify-center rounded-lg text-arbey-700 transition hover:bg-arbey-50"
         aria-label="Dézoomer"
       >
@@ -46,6 +48,7 @@ function ZoomControls() {
       <button
         type="button"
         onClick={() => resetTransform()}
+        data-testid="tree-zoom-reset-button"
         className="tree-control flex h-8 w-8 items-center justify-center rounded-lg text-xs text-arbey-600 transition hover:bg-arbey-50"
         aria-label="Réinitialiser la vue"
         title="Réinitialiser"
@@ -73,6 +76,7 @@ export function TreePanZoom({
 
   return (
     <div
+      data-testid="tree-panzoom"
       className={`relative overflow-hidden rounded-b-2xl bg-arbey-50/80 bg-[radial-gradient(circle_at_1px_1px,#d2d8c8_1px,transparent_0)] bg-[length:24px_24px] ${heightClass}`}
     >
       <TransformWrapper
@@ -118,7 +122,7 @@ export function TreePanZoom({
       </TransformWrapper>
 
       {showHint && (
-        <p className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-arbey-200/80 bg-white/90 px-3 py-1.5 text-xs text-arbey-500 backdrop-blur-sm">
+        <p data-testid="tree-panzoom-hint" className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-arbey-200/80 bg-white/90 px-3 py-1.5 text-xs text-arbey-500 backdrop-blur-sm">
           Glisser pour naviguer · Molette pour zoomer
         </p>
       )}

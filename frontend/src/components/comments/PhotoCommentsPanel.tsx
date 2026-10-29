@@ -75,7 +75,7 @@ export function PhotoCommentsPanel({ photoId }: PhotoCommentsPanelProps) {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col border-t border-cream-300/70 bg-cream-50 sm:w-80 sm:border-l sm:border-t-0 lg:w-96">
+    <div data-testid="comments-panel" className="flex h-full min-h-0 flex-col border-t border-cream-300/70 bg-cream-50 sm:w-80 sm:border-l sm:border-t-0 lg:w-96">
       <div className="border-b border-cream-300/60 px-4 py-3">
         <div className="flex items-center gap-2 text-sm font-medium text-ink-700">
           <MessageCircle className="h-4 w-4 text-ink-500" strokeWidth={2} />
@@ -85,14 +85,14 @@ export function PhotoCommentsPanel({ photoId }: PhotoCommentsPanelProps) {
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {loading ? (
-          <p className="text-sm text-ink-400">Chargement…</p>
+          <p className="text-sm text-ink-400" data-testid="comments-loading">Chargement…</p>
         ) : comments.length === 0 ? (
-          <p className="text-sm text-ink-400">Aucun commentaire pour l&apos;instant.</p>
+          <p className="text-sm text-ink-400" data-testid="comments-empty">Aucun commentaire pour l&apos;instant.</p>
         ) : (
-          <ul className="space-y-3">
+          <ul className="space-y-3" data-testid="comment-list">
             {comments.map((comment) => (
-              <li key={comment.id} className="group flex gap-2.5">
-                <Link to={`/profil/${comment.author.id}`} className="shrink-0">
+              <li key={comment.id} data-testid={`comment-${comment.id}`} className="group flex gap-2.5">
+                <Link to={`/profil/${comment.author.id}`} className="shrink-0" data-testid={`comment-avatar-link-${comment.id}`}>
                   <MemberAvatar member={comment.author} size="sm" />
                 </Link>
                 <div className="min-w-0 flex-1">
@@ -100,6 +100,7 @@ export function PhotoCommentsPanel({ photoId }: PhotoCommentsPanelProps) {
                     <div>
                       <Link
                         to={`/profil/${comment.author.id}`}
+                        data-testid={`comment-author-link-${comment.id}`}
                         className="text-sm font-medium text-ink-800 hover:text-warm-700"
                       >
                         {memberFullName(comment.author)}
@@ -110,6 +111,7 @@ export function PhotoCommentsPanel({ photoId }: PhotoCommentsPanelProps) {
                       <button
                         type="button"
                         onClick={() => void handleDelete(comment.id)}
+                        data-testid={`comment-delete-button-${comment.id}`}
                         className="focus-ring inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-400 opacity-0 transition hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
                         title="Supprimer"
                       >
@@ -117,7 +119,7 @@ export function PhotoCommentsPanel({ photoId }: PhotoCommentsPanelProps) {
                       </button>
                     )}
                   </div>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-700">{comment.content}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-700" data-testid={`comment-content-${comment.id}`}>{comment.content}</p>
                 </div>
               </li>
             ))}
@@ -127,22 +129,23 @@ export function PhotoCommentsPanel({ photoId }: PhotoCommentsPanelProps) {
 
       <div className="border-t border-cream-300/60 p-4">
         {isAuthenticated ? (
-          <form onSubmit={(e) => void handleSubmit(e)} className="space-y-2">
+          <form onSubmit={(e) => void handleSubmit(e)} className="space-y-2" data-testid="comment-form">
             <textarea
+              data-testid="comment-input"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={2}
               placeholder="Ajouter un commentaire…"
               className="input-field resize-none text-sm"
             />
-            {error && <p className="text-xs text-red-600">{error}</p>}
-            <button type="submit" disabled={submitting || !content.trim()} className="btn-primary w-full">
+            {error && <p className="text-xs text-red-600" data-testid="comment-error">{error}</p>}
+            <button type="submit" disabled={submitting || !content.trim()} className="btn-primary w-full" data-testid="comment-submit-button">
               {submitting ? 'Envoi…' : 'Commenter'}
             </button>
           </form>
         ) : (
           <p className="text-sm text-ink-500">
-            <Link to="/login" className="font-medium text-warm-700 hover:underline">
+            <Link to="/login" className="font-medium text-warm-700 hover:underline" data-testid="comment-login-link">
               Connecte-toi
             </Link>{' '}
             pour commenter.
