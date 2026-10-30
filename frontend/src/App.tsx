@@ -21,7 +21,6 @@ import { SecretSantaRevealPage } from './pages/SecretSantaRevealPage';
 import { SecretSantaGuestPage } from './pages/SecretSantaGuestPage';
 import { GuestHubPage } from './pages/GuestHubPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { FamilyDirectoryPage } from './pages/FamilyDirectoryPage';
 import { CalendarPage } from './pages/CalendarPage';
 import { MessagingPage } from './pages/MessagingPage';
 import { ConversationPage } from './pages/ConversationPage';
@@ -60,7 +59,6 @@ export default function App() {
               <Route path="secret-santa/new" element={<SecretSantaNewPage />} />
               <Route path="secret-santa/:id" element={<SecretSantaDetailPage />} />
               <Route path="secret-santa/:id/reveal" element={<SecretSantaRevealPage />} />
-              <Route path="famille" element={<FamilyDirectoryPage />} />
               <Route path="calendrier" element={<CalendarPage />} />
               <Route path="messagerie" element={<MessagingPage />} />
               <Route path="messagerie/:id" element={<ConversationPage />} />

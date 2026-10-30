@@ -21,7 +21,6 @@ const router = Router();
 router.use(asyncMiddleware(requireAuth));
 
 router.get('/', asyncHandler(familyMemberController.getAll));
-router.get('/directory', asyncHandler(familyMemberController.getDirectory));
 router.patch('/me', asyncHandler(familyMemberController.updateMe));
 router.post(
   '/me/photo',

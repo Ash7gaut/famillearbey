@@ -87,21 +87,6 @@ export const familyMemberService = {
     return buildMemberProfile(member, context);
   },
 
-  async listDirectory(): Promise<MemberProfile[]> {
-    const context = await this.getDirectoryContext();
-    return context.members
-      .map((member) => buildMemberProfile(member, context))
-      .sort((a, b) => {
-        const lastName = a.member.last_name.localeCompare(b.member.last_name, 'fr', {
-          sensitivity: 'base',
-        });
-        if (lastName !== 0) return lastName;
-        return a.member.first_name.localeCompare(b.member.first_name, 'fr', {
-          sensitivity: 'base',
-        });
-      });
-  },
-
   async getDirectoryContext() {
     const [members, relationships] = await Promise.all([this.getAll(), getAllRelationships()]);
     const memberMap = new Map(members.map((m) => [m.id, m]));

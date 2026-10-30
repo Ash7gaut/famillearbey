@@ -6,6 +6,7 @@
 - Arbre généalogique : refonte complète en une vue unique codée maison (React + SVG) : layout par générations (couples, remariages, racines multiples), cartes photo aux tokens de l'app (dark mode inclus), connecteurs orthogonaux arrondis, pan/zoom maison (pointer events, molette, pinch), recherche de membre, sélecteur de racine (mamie par défaut). Store `familyStore` : `fetchTreeData` (`/members` + `/relationships`) remplace `fetchTree`. Mobile : zoom de départ lisible (0,85) centré sur la racine quand l'arbre ne tient pas, texte des cartes agrandi, hauteur du canvas compensant la nav mobile, contraste dark des défunts et connecteurs renforcé.
 
 ### Supprimé
+- Page « Famille » (`/famille`, `FamilyDirectoryPage`, `FamilyRelationsCard`), son entrée de navigation, le raccourci « Voir toute la famille » du profil et l'endpoint `GET /members/directory`.
 - Les 3 anciennes vues (FamilyTree JS / BALKAN, vue détaillée, family-chart), leur CSS (`index.css`) et les dépendances `@balkangraph/familytree.js`, `family-chart`, `react-zoom-pan-pinch`.
 
 ## [Non publié] — feature/chat

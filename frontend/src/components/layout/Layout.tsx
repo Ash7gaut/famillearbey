@@ -3,14 +3,13 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { useMessagingStore } from '../../stores/messagingStore';
 import type { LucideIcon } from 'lucide-react';
-import { Calendar, Gift, Images, MessageCircle, TreePine, BrainCircuit, Users } from 'lucide-react';
+import { Calendar, Gift, Images, MessageCircle, TreePine, BrainCircuit } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
 const navItems: { to: string; label: string; icon: LucideIcon; testId: string }[] = [
   { to: '/messagerie', label: 'Messages', icon: MessageCircle, testId: 'messages' },
   { to: '/tree', label: 'Arbre', icon: TreePine, testId: 'tree' },
-  { to: '/famille', label: 'Famille', icon: Users, testId: 'family' },
   { to: '/albums', label: 'Albums', icon: Images, testId: 'albums' },
   { to: '/calendrier', label: 'Calendrier', icon: Calendar, testId: 'calendar' },
   { to: '/quiz', label: 'Quiz', icon: BrainCircuit, testId: 'quiz' },

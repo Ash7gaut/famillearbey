@@ -482,16 +482,6 @@ export function ProfilePage() {
               </li>
               <li>
                 <Link
-                  to="/famille"
-                  data-testid="profile-shortcut-family-link"
-                  className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
-                >
-                  <Users className="h-4 w-4 text-warm-600" strokeWidth={1.75} />
-                  Voir toute la famille
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/albums"
                   data-testid="profile-shortcut-albums-link"
                   className="focus-ring flex items-center gap-3 rounded-xl border border-cream-300 bg-cream-50 px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:border-warm-200 hover:bg-warm-50"
