@@ -1,19 +1,19 @@
 import { create } from 'zustand';
 import { api } from '../services/api';
-import type { FamilyMember, TreeNode } from '../types';
+import type { FamilyMember, Relationship } from '../types';
 
 interface FamilyState {
   members: FamilyMember[];
-  tree: TreeNode[];
+  relationships: Relationship[];
   loading: boolean;
   error: string | null;
   fetchMembers: () => Promise<void>;
-  fetchTree: () => Promise<void>;
+  fetchTreeData: () => Promise<void>;
 }
 
 export const useFamilyStore = create<FamilyState>((set) => ({
   members: [],
-  tree: [],
+  relationships: [],
   loading: false,
   error: null,
 
@@ -27,11 +27,14 @@ export const useFamilyStore = create<FamilyState>((set) => ({
     }
   },
 
-  fetchTree: async () => {
+  fetchTreeData: async () => {
     set({ loading: true, error: null });
     try {
-      const tree = await api.get<TreeNode[]>('/relationships/tree');
-      set({ tree, loading: false });
+      const [members, relationships] = await Promise.all([
+        api.get<FamilyMember[]>('/members'),
+        api.get<Relationship[]>('/relationships'),
+      ]);
+      set({ members, relationships, loading: false });
     } catch (err) {
       set({ error: (err as Error).message, loading: false });
     }

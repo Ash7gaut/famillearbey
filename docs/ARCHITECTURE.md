@@ -59,7 +59,7 @@ famillearbey/
 
 | Module            | Priorité MVP | Statut   |
 |-------------------|--------------|----------|
-| Arbre généalogique| Haute        | ✅ MVP   |
+| Arbre généalogique| Haute        | ✅ MVP (vue unique maison : React + SVG, layout par générations, pan/zoom, voir `frontend/src/components/tree/`) |
 | Albums photos     | Haute        | ✅ MVP   |
 | Mur familial      | Moyenne      | Phase 2  |
 | Événements + RSVP | Moyenne      | Phase 2  |

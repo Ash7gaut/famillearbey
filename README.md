@@ -10,6 +10,10 @@ Plateforme privée pour centraliser les souvenirs, l'arbre généalogique et la 
 | Backend   | Node.js + Express (clean architecture) |
 | Database  | Supabase (PostgreSQL + Storage) |
 
+## Arbre généalogique
+
+Vue unique, codée maison (React + SVG, aucune librairie de rendu d'arbre) : cartes photo, couples côte à côte, enfants centrés, connecteurs orthogonaux arrondis, pan/zoom (glisser, molette, pincement), recherche et choix de la racine (mamie par défaut). Données : `GET /members` + `GET /relationships`. Code dans `frontend/src/components/tree/` (`treeModel`, `treeLayout`, `TreeCanvas`, `TreeNodeCard`) et `frontend/src/pages/TreePage.tsx`.
+
 ## Structure
 
 ```
