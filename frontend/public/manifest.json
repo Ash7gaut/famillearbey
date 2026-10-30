@@ -2,7 +2,7 @@
   "name": "Famille Arbey",
   "short_name": "Arbey",
   "description": "L'arbre généalogique et les souvenirs de la famille Arbey",
-  "start_url": "/accueil",
+  "start_url": "/messagerie",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FDFBF7",

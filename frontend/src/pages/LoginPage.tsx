@@ -13,7 +13,7 @@ export function LoginPage() {
 
   const redirectTo =
     (location.state as { from?: { pathname?: string } } | null)?.from
-      ?.pathname ?? "/accueil";
+      ?.pathname ?? "/messagerie";
 
   if (session && member) return <Navigate to={redirectTo} replace />;
 

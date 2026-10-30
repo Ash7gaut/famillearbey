@@ -56,7 +56,7 @@ export function WelcomePage() {
   const showGuestHub = hasGuestInvites();
 
   if (!initialized) return <LoadingSpinner data-testid="welcome-loading-spinner" />;
-  if (isAuthenticated) return <Navigate to="/accueil" replace />;
+  if (isAuthenticated) return <Navigate to="/messagerie" replace />;
 
   return (
     <div className="space-y-14" data-testid="welcome-page">

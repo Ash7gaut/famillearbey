@@ -52,7 +52,7 @@ export function FamilyDirectoryPage() {
 
   return (
     <div className="space-y-6" data-testid="family-page">
-      <BackLink to="/accueil" label="Accueil" data-testid="family-back-link" />
+      <BackLink to="/messagerie" label="Messages" data-testid="family-back-link" />
 
       <div>
         <div className="flex items-center gap-2">

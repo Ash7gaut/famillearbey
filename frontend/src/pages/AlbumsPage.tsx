@@ -61,7 +61,7 @@ export function AlbumsPage() {
 
   return (
     <div className="space-y-6" data-testid="albums-page">
-      <BackLink to="/accueil" label="Accueil" data-testid="albums-back-link" />
+      <BackLink to="/messagerie" label="Messages" data-testid="albums-back-link" />
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="page-title" data-testid="albums-title">Albums photos</h1>

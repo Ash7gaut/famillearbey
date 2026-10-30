@@ -11,6 +11,9 @@
 - `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`.
 - Attributs `data-testid` (convention kebab-case `<zone>-<élément>[-<id>]`, documentée dans `CLAUDE.md`) sur toutes les pages et composants interactifs du frontend, et prop `data-testid` sur les composants UI réutilisables, pour les tests Playwright.
 
+### Modifié
+- La vue « Accueil » (`/accueil`, `HomePage`) est supprimée : « Messages » (`/messagerie`) devient la vue principale (premier item de navigation desktop et mobile, logos, redirection après connexion, `start_url` de la PWA, liens de retour des pages).
+
 ### Dev local (Realtime)
 - `docker-compose.dev.yml` désormais versionné (retiré du `.gitignore`) ; lockfiles `backend/` et `frontend/` resynchronisés avec `package.json` (`web-push`, `vite-plugin-pwa`, `workbox-precaching`) pour que `npm ci` passe.
 - `docker/init/00-roles.sql` : `supabase_realtime_admin` SUPERUSER (dev uniquement, requis pour les migrations internes de Realtime avec l'image postgres standard).

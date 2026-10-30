@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       set({ session: data.session });
 
       // `initialized` n'est posé qu'une fois le membre chargé : sinon RequireAuth
-      // voit session && !member et redirige (rechargement de /messagerie → /accueil).
+      // voit session && !member et redirige (rechargement de /messagerie → /).
       if (data.session) {
         try {
           const member = await api.get<FamilyMember | null>('/auth/me');

@@ -4,7 +4,6 @@ import { RequireAuth } from './components/auth/RequireAuth';
 import { Layout } from './components/layout/Layout';
 import { GuestLayout } from './components/layout/GuestLayout';
 import { PublicLayout } from './components/layout/PublicLayout';
-import { HomePage } from './pages/HomePage';
 import { WelcomePage } from './pages/WelcomePage';
 import { TreePage } from './pages/TreePage';
 import { AlbumsPage } from './pages/AlbumsPage';
@@ -53,7 +52,6 @@ export default function App() {
 
           <Route element={<RequireAuth />}>
             <Route element={<Layout />}>
-              <Route path="accueil" element={<HomePage />} />
               <Route path="tree" element={<TreePage />} />
               <Route path="albums" element={<AlbumsPage />} />
               <Route path="albums/:id" element={<AlbumDetailPage />} />

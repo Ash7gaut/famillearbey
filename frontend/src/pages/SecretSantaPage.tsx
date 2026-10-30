@@ -56,7 +56,7 @@ export function SecretSantaPage() {
 
   return (
     <div className="space-y-6" data-testid="secret-santa-page">
-      <BackLink to="/accueil" label="Accueil" data-testid="secret-santa-back-link" />
+      <BackLink to="/messagerie" label="Messages" data-testid="secret-santa-back-link" />
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="page-title" data-testid="secret-santa-title">Secret Santa</h1>

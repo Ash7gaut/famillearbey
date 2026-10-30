@@ -3,26 +3,24 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { useMessagingStore } from '../../stores/messagingStore';
 import type { LucideIcon } from 'lucide-react';
-import { Calendar, Gift, Home, Images, MessageCircle, TreePine, BrainCircuit, Users } from 'lucide-react';
+import { Calendar, Gift, Images, MessageCircle, TreePine, BrainCircuit, Users } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
 const navItems: { to: string; label: string; icon: LucideIcon; testId: string }[] = [
-  { to: '/accueil', label: 'Accueil', icon: Home, testId: 'home' },
+  { to: '/messagerie', label: 'Messages', icon: MessageCircle, testId: 'messages' },
   { to: '/tree', label: 'Arbre', icon: TreePine, testId: 'tree' },
   { to: '/famille', label: 'Famille', icon: Users, testId: 'family' },
   { to: '/albums', label: 'Albums', icon: Images, testId: 'albums' },
-  { to: '/messagerie', label: 'Messages', icon: MessageCircle, testId: 'messages' },
   { to: '/calendrier', label: 'Calendrier', icon: Calendar, testId: 'calendar' },
   { to: '/quiz', label: 'Quiz', icon: BrainCircuit, testId: 'quiz' },
   { to: '/secret-santa', label: 'Santa', icon: Gift, testId: 'secret-santa' },
 ];
 
-function NavItem({ to, label, icon: Icon, end, testId }: { to: string; label: string; icon: LucideIcon; end?: boolean; testId: string }) {
+function NavItem({ to, label, icon: Icon, testId }: { to: string; label: string; icon: LucideIcon; testId: string }) {
   return (
     <NavLink
       to={to}
-      end={end}
       data-testid={`nav-${testId}-link`}
       className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
     >
@@ -49,7 +47,7 @@ export function Layout() {
       {/* Sidebar desktop — fixe, toujours visible */}
       <aside data-testid="nav-sidebar" className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-cream-300/60 bg-cream-50/95 backdrop-blur-md lg:flex">
         <div className="flex h-full flex-col px-4 py-6">
-          <NavLink to="/accueil" data-testid="nav-logo-link" className="focus-ring mb-8 block shrink-0 rounded-xl px-2 py-1 focus-visible:ring-offset-cream-50">
+          <NavLink to="/messagerie" data-testid="nav-logo-link" className="focus-ring mb-8 block shrink-0 rounded-xl px-2 py-1 focus-visible:ring-offset-cream-50">
             <p className="font-display text-xl font-semibold leading-tight text-ink-800">
               Famille Arbey
             </p>
@@ -58,7 +56,7 @@ export function Layout() {
 
           <nav data-testid="nav-desktop" className="flex flex-1 flex-col gap-1 overflow-y-auto">
             {navItems.map((item) => (
-              <NavItem key={item.to} {...item} end={item.to === '/accueil'} />
+              <NavItem key={item.to} {...item} />
             ))}
           </nav>
 
@@ -73,7 +71,7 @@ export function Layout() {
       <div className="flex min-h-screen flex-col lg:ml-60">
         <header data-testid="mobile-header" className="pt-safe sticky top-0 z-30 border-b border-cream-300/60 bg-cream-50/90 backdrop-blur-md lg:hidden">
           <div className="flex h-16 items-center justify-between gap-3 px-4">
-            <NavLink to="/accueil" data-testid="mobile-logo-link" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
+            <NavLink to="/messagerie" data-testid="mobile-logo-link" className="focus-ring min-w-0 rounded-lg px-1 py-0.5">
               <p className="truncate font-display text-lg font-semibold text-ink-800">Famille Arbey</p>
             </NavLink>
             <div className="flex shrink-0 items-center gap-1">
@@ -95,7 +93,6 @@ export function Layout() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  end={item.to === '/accueil'}
                   data-testid={`mobile-nav-${item.testId}-link`}
                   className={({ isActive }) =>
                     `focus-ring flex flex-col items-center gap-0.5 rounded-lg px-2 py-1 text-[10px] font-medium transition ${

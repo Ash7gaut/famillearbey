@@ -170,7 +170,7 @@ export function CalendarPage() {
 
   return (
     <div className="space-y-6" data-testid="calendar-page">
-      <BackLink to="/accueil" label="Accueil" data-testid="calendar-back-link" />
+      <BackLink to="/messagerie" label="Messages" data-testid="calendar-back-link" />
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>

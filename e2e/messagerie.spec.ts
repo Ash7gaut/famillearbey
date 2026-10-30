@@ -5,12 +5,10 @@ const users = readUsers();
 const stamp = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 /**
- * Un chargement direct de /messagerie* renvoie vers /accueil (RequireAuth voit la session
- * avant le member) : on passe donc par la navigation de l'app.
+ * /messagerie est la vue principale de l'app (page d'arrivée après connexion).
  */
 async function openMessagerie(page: Page, convId?: string) {
-  await page.goto('/accueil');
-  await page.getByTestId('nav-messages-link').click();
+  await page.goto('/messagerie');
   if (convId) await page.getByTestId(`conversation-item-${convId}`).click();
 }
 

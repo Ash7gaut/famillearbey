@@ -198,7 +198,7 @@ export function ProfilePage() {
         />
       )}
 
-      <BackLink to="/accueil" label="Accueil" data-testid="profile-back-link" />
+      <BackLink to="/messagerie" label="Messages" data-testid="profile-back-link" />
 
       <section data-testid="profile-header" className="relative overflow-hidden rounded-3xl border border-cream-300/60 bg-cream-50/90 p-6 shadow-warm sm:p-8">
         <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-warm-200/25 blur-2xl" aria-hidden />
