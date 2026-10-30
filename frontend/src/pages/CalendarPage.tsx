@@ -177,20 +177,7 @@ export function CalendarPage() {
           <h1 className="page-title" data-testid="calendar-title">Calendrier familial</h1>
           <p className="page-subtitle">Anniversaires et événements de la famille, mois par mois.</p>
         </div>
-        {isAuthenticated ? (
-          <button
-            type="button"
-            onClick={() => {
-              setStartDate(selectedIso);
-              setShowForm(!showForm);
-            }}
-            className="btn-primary shrink-0"
-            data-testid="calendar-new-event-button"
-          >
-            <Plus className="h-4 w-4" strokeWidth={2} />
-            Nouvel événement
-          </button>
-        ) : (
+        {!isAuthenticated && (
           <Link to="/login" className="btn-secondary shrink-0" data-testid="calendar-login-link">
             Se connecter pour ajouter
           </Link>
