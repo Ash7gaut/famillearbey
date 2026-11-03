@@ -49,6 +49,33 @@ test.describe('Messagerie (admin)', () => {
   });
 });
 
+test.describe('Messagerie (paramètres du groupe)', () => {
+  test.use({ storageState: STORAGE_FILE.admin });
+
+  test('5. un membre renomme le groupe et ajoute un membre', async ({ page }) => {
+    const conv = await createConversation(users.admin.token, `E2E conf ${stamp()}`, []);
+    const newTitle = `Renommé ${stamp()}`;
+    await openMessagerie(page, conv.id);
+    await page.getByTestId('conversation-settings-button').click();
+    await expect(page.getByTestId('group-settings-modal')).toBeVisible();
+    // Aucune action de retrait n'existe dans l'UI.
+    await expect(page.getByTestId('group-settings-member-list').getByRole('button')).toHaveCount(0);
+
+    await page.getByTestId('group-settings-name-input').fill(newTitle);
+    await page.getByTestId('group-settings-description-input').fill('Une description');
+    // L'upload d'image n'est pas testé ici : la stack Docker dev n'embarque pas Supabase Storage.
+    await expect(page.getByTestId('group-settings-image-input')).toBeAttached();
+    await page.getByTestId('group-settings-add-member-select-trigger').click();
+    await page.getByTestId('group-settings-add-member-select-search-input').fill('E2E');
+    await page.getByTestId(`member-option-${users.member.memberId}`).click();
+    await expect(page.getByTestId(`group-settings-member-${users.member.memberId}`)).toBeVisible();
+
+    await page.getByTestId('group-settings-submit-button').click();
+    await expect(page.getByTestId('group-settings-modal')).toBeHidden();
+    await expect(page.getByTestId('conversation-title')).toHaveText(newTitle);
+  });
+});
+
 /** Résout quand le canal Realtime est abonné (phx_reply ok contenant postgres_changes). */
 function waitRealtimeSubscribed(page: Page): Promise<void> {
   return new Promise((resolve) => {

@@ -19,6 +19,8 @@
 - [ ] Appliquer la migration `011_messaging.sql` sur Supabase
 - [ ] Générer les clés VAPID et les renseigner dans l'env
 - [ ] Tests Playwright de la messagerie
+- [x] Paramètres du groupe de messagerie (nom, image, description, ajout de membres, aucun retrait)
+- [ ] Appliquer la migration `013_conversation_settings.sql` sur Supabase
 - [ ] Tests Playwright de l'arbre (`e2e/arbre.spec.ts`)
 
 ## À venir

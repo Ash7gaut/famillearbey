@@ -8,6 +8,17 @@
 ### Modifié
 - `useInstallPrompt` : `beforeinstallprompt` / `appinstalled` captés au niveau module (dès `main.tsx`) ; expose `canInstall`, `isStandalone`, `isIOS`, `isMobileDevice`, `install()` (API de `UserMenu` conservée).
 
+## [Non publié] — feat/config-groupe-messagerie
+
+### Ajouté
+- Paramètres du groupe de messagerie : modale `GroupSettingsModal` (bouton `conversation-settings-button`) pour renommer, changer l'image, éditer la description et ajouter des membres ; routes `PATCH /conversations/:id` et `POST /conversations/:id/image` (tout membre du groupe, contrôlé côté backend).
+- Migration `013_conversation_settings.sql` : colonnes `image_url` et `description`, `search_path` figé sur `bump_conversation`, `DELETE` révoqué sur `conversation_members` + trigger bloquant les suppressions directes (cascades autorisées).
+- Image du groupe affichée dans la liste des conversations.
+- Tests e2e : paramètres du groupe (UI) et droits/non-retrait (API).
+
+### Supprimé
+- Retrait de membre et « Quitter le groupe » : route `DELETE /conversations/:id/members/:mid`, `removeMember` (service, store) et boutons associés.
+
 ## [Non publié] — worktree-arbre-genealogique
 
 ### Modifié

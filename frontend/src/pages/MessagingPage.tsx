@@ -62,13 +62,17 @@ export function MessagingPage() {
                 data-testid={`conversation-item-${c.id}`}
                 className="card flex items-center gap-3 !p-3 no-underline transition hover:bg-cream-100"
               >
-                <div className="flex -space-x-2">
-                  {otherMembers(c.members, member?.id)
-                    .slice(0, 3)
-                    .map((m) => (
-                      <MemberAvatar key={m.id} member={m} size="md" className="ring-2 ring-cream-50" />
-                    ))}
-                </div>
+                {c.image_url ? (
+                  <img src={c.image_url} alt="" className="h-10 w-10 rounded-full object-cover" data-testid={`conversation-image-${c.id}`} />
+                ) : (
+                  <div className="flex -space-x-2">
+                    {otherMembers(c.members, member?.id)
+                      .slice(0, 3)
+                      .map((m) => (
+                        <MemberAvatar key={m.id} member={m} size="md" className="ring-2 ring-cream-50" />
+                      ))}
+                  </div>
+                )}
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-ink-800" data-testid={`conversation-title-${c.id}`}>{label || 'Groupe'}</p>
                   <p className="truncate text-xs text-ink-500" data-testid={`conversation-last-message-${c.id}`}>

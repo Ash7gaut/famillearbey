@@ -103,6 +103,8 @@ export interface TreeNode {
 export interface Conversation {
   id: string;
   title: string | null;
+  image_url: string | null;
+  description: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;

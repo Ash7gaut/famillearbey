@@ -17,7 +17,8 @@ interface MessagingState {
   fetchConversations: () => Promise<void>;
   createConversation: (title: string | null, memberIds: string[]) => Promise<Conversation>;
   addMember: (conversationId: string, memberId: string) => Promise<void>;
-  removeMember: (conversationId: string, memberId: string) => Promise<void>;
+  updateSettings: (conversationId: string, settings: { title?: string | null; description?: string | null }) => Promise<void>;
+  uploadImage: (conversationId: string, file: File) => Promise<void>;
   setMuted: (conversationId: string, muted: boolean) => Promise<void>;
 
   openConversation: (conversationId: string) => Promise<void>;
@@ -62,9 +63,14 @@ export const useMessagingStore = create<MessagingState>((set, get) => ({
     await get().fetchConversations();
   },
 
-  removeMember: async (conversationId, memberId) => {
-    await api.delete(`/conversations/${conversationId}/members/${memberId}`);
-    await get().fetchConversations();
+  updateSettings: async (conversationId, settings) => {
+    const updated = await api.patch<Conversation>(`/conversations/${conversationId}`, settings);
+    set({ conversations: get().conversations.map((c) => (c.id === conversationId ? { ...c, ...updated } : c)) });
+  },
+
+  uploadImage: async (conversationId, file) => {
+    const updated = await api.upload<Conversation>(`/conversations/${conversationId}/image`, file);
+    set({ conversations: get().conversations.map((c) => (c.id === conversationId ? { ...c, ...updated } : c)) });
   },
 
   setMuted: async (conversationId, muted) => {

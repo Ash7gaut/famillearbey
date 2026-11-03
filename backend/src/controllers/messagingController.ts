@@ -32,13 +32,19 @@ export const messagingController = {
     res.status(204).send();
   },
 
-  async removeMember(req: AuthRequest, res: Response) {
-    await messagingService.removeMember(
-      requireParam(req.params.id, 'id'),
-      currentMemberId(req),
-      requireParam(req.params.memberId, 'memberId'),
-    );
-    res.status(204).send();
+  async updateSettings(req: AuthRequest, res: Response<ApiResponse<Conversation>>) {
+    const { title, description } = (req.body ?? {}) as { title?: unknown; description?: unknown };
+    const data = await messagingService.updateSettings(requireParam(req.params.id, 'id'), currentMemberId(req), {
+      title,
+      description,
+    });
+    res.json({ data });
+  },
+
+  async uploadImage(req: AuthRequest, res: Response<ApiResponse<Conversation>>) {
+    if (!req.file) throw new AppError(400, 'Image requise', 'VALIDATION_ERROR');
+    const data = await messagingService.uploadImage(requireParam(req.params.id, 'id'), currentMemberId(req), req.file);
+    res.json({ data });
   },
 
   async setMuted(req: AuthRequest, res: Response) {

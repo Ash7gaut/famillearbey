@@ -204,12 +204,15 @@ Toutes les routes exigent d'être connecté. Migration : `supabase/migrations/01
 | GET     | `/api/v1/conversations/:id/messages`      | Messages                                     |
 | POST    | `/api/v1/conversations/:id/messages`      | Envoyer un message                           |
 | PUT     | `/api/v1/conversations/:id/members/:mid`  | Ajouter un membre                            |
-| DELETE  | `/api/v1/conversations/:id/members/:mid`  | Retirer un membre                            |
+| PATCH   | `/api/v1/conversations/:id`               | Renommer / description (tout membre du groupe) |
+| POST    | `/api/v1/conversations/:id/image`         | Image du groupe (multipart, tout membre)     |
 | PATCH   | `/api/v1/conversations/:id/muted`         | Couper / réactiver les notifications         |
 | POST    | `/api/v1/conversations/:id/read`          | Marquer comme lu                             |
 | GET     | `/api/v1/push/public-key`                 | Clé publique VAPID                           |
 | POST    | `/api/v1/push/subscribe`                  | Abonner l'appareil aux notifications push    |
 | POST    | `/api/v1/push/unsubscribe`                | Désabonner l'appareil                        |
+
+Paramètres du groupe (migration `013_conversation_settings.sql`) : tout membre du groupe peut renommer, changer l'image (bucket `albums`, dossier `conversations/`), éditer la description et ajouter des membres. Personne ne peut retirer un membre (ni quitter) : pas d'endpoint, `DELETE` révoqué et bloqué par trigger (hors cascade).
 
 Variables d'environnement backend : `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
 

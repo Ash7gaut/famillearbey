@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../config/supabase.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { pushService } from './pushService.js';
@@ -6,6 +7,9 @@ import type { Conversation, ConversationSummary, Message } from '../types/index.
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
 const MAX_MESSAGE_LENGTH = 4000;
+const MAX_TITLE_LENGTH = 100;
+const MAX_DESCRIPTION_LENGTH = 500;
+const IMAGE_BUCKET = 'albums';
 
 async function requireMembership(conversationId: string, memberId: string): Promise<void> {
   const { data, error } = await supabase
@@ -63,25 +67,87 @@ export const messagingService = {
     if (error) throw new AppError(400, error.message, 'DB_ERROR');
   },
 
-  /** Retire un membre d'une conversation (soi-même ou un autre) — accessible à tout membre. */
-  async removeMember(conversationId: string, actingMemberId: string, targetMemberId: string): Promise<void> {
+  // Aucune suppression de membre (ni « quitter le groupe ») : volontairement non supportée, cf. migration 013.
+
+  /** Renomme le groupe / modifie sa description — accessible à tout membre de la conversation. */
+  async updateSettings(
+    conversationId: string,
+    actingMemberId: string,
+    input: { title?: unknown; description?: unknown },
+  ): Promise<Conversation> {
     await requireMembership(conversationId, actingMemberId);
 
-    const { error } = await supabase
-      .from('conversation_members')
-      .delete()
-      .eq('conversation_id', conversationId)
-      .eq('member_id', targetMemberId);
-    if (error) throw new AppError(400, error.message, 'DB_ERROR');
-
-    // Plus aucun membre : la conversation est orpheline, on la supprime (messages en cascade).
-    const { count } = await supabase
-      .from('conversation_members')
-      .select('member_id', { count: 'exact', head: true })
-      .eq('conversation_id', conversationId);
-    if (count === 0) {
-      await supabase.from('conversations').delete().eq('id', conversationId);
+    const patch: { title?: string | null; description?: string | null } = {};
+    if (input.title !== undefined) {
+      if (input.title !== null && typeof input.title !== 'string') {
+        throw new AppError(400, 'Nom invalide', 'VALIDATION_ERROR');
+      }
+      const title = input.title?.trim() || null;
+      if (title && title.length > MAX_TITLE_LENGTH) {
+        throw new AppError(400, `Nom trop long (${MAX_TITLE_LENGTH} caractères max)`, 'VALIDATION_ERROR');
+      }
+      patch.title = title;
     }
+    if (input.description !== undefined) {
+      if (input.description !== null && typeof input.description !== 'string') {
+        throw new AppError(400, 'Description invalide', 'VALIDATION_ERROR');
+      }
+      const description = input.description?.trim() || null;
+      if (description && description.length > MAX_DESCRIPTION_LENGTH) {
+        throw new AppError(400, `Description trop longue (${MAX_DESCRIPTION_LENGTH} caractères max)`, 'VALIDATION_ERROR');
+      }
+      patch.description = description;
+    }
+    if (Object.keys(patch).length === 0) {
+      throw new AppError(400, 'Rien à modifier', 'VALIDATION_ERROR');
+    }
+
+    const { data, error } = await supabase
+      .from('conversations')
+      .update(patch)
+      .eq('id', conversationId)
+      .select()
+      .single();
+    if (error || !data) throw new AppError(400, error?.message ?? 'Modification impossible', 'DB_ERROR');
+    return data;
+  },
+
+  /** Remplace l'image du groupe — accessible à tout membre de la conversation. */
+  async uploadImage(conversationId: string, actingMemberId: string, file: Express.Multer.File): Promise<Conversation> {
+    await requireMembership(conversationId, actingMemberId);
+
+    const { data: current, error: currentError } = await supabase
+      .from('conversations')
+      .select('image_url')
+      .eq('id', conversationId)
+      .single();
+    if (currentError || !current) throw new AppError(404, 'Conversation introuvable', 'NOT_FOUND');
+
+    const ext = (file.originalname.split('.').pop() ?? 'jpg').replace(/[^a-z0-9]/gi, '').slice(0, 5) || 'jpg';
+    const storagePath = `conversations/${conversationId}/${uuidv4()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(IMAGE_BUCKET)
+      .upload(storagePath, file.buffer, { contentType: file.mimetype, upsert: false });
+    if (uploadError) throw new AppError(500, uploadError.message, 'STORAGE_ERROR');
+
+    const { data: urlData } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(storagePath);
+
+    const { data, error } = await supabase
+      .from('conversations')
+      .update({ image_url: urlData.publicUrl })
+      .eq('id', conversationId)
+      .select()
+      .single();
+    if (error || !data) throw new AppError(400, error?.message ?? 'Modification impossible', 'DB_ERROR');
+
+    const marker = `/object/public/${IMAGE_BUCKET}/`;
+    const index = current.image_url?.indexOf(marker) ?? -1;
+    if (current.image_url && index !== -1) {
+      await supabase.storage.from(IMAGE_BUCKET).remove([current.image_url.slice(index + marker.length)]);
+    }
+
+    return data;
   },
 
   /** Active/désactive le mode silencieux pour le membre courant sur cette conversation. */
