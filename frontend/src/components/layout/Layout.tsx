@@ -6,6 +6,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Calendar, Gift, Images, MessageCircle, TreePine, BrainCircuit } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { InstallPromptModal } from '../ui/InstallPromptModal';
 
 const navItems: { to: string; label: string; icon: LucideIcon; testId: string }[] = [
   { to: '/messagerie', label: 'Messages', icon: MessageCircle, testId: 'messages' },
@@ -107,6 +108,7 @@ export function Layout() {
           </div>
         </nav>
       </div>
+      <InstallPromptModal />
     </div>
   );
 }

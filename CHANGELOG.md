@@ -1,5 +1,13 @@
 # Changelog
 
+## [Non publié] — feat/modal-installation-pwa
+
+### Ajouté
+- Modale « Installe l'appli ! » à chaque visite pour l'utilisateur connecté (auth résolue) hors PWA installée : bouton Installer (Chrome/Edge/Android, via `beforeinstallprompt`) ou instructions Partager > « Sur l'écran d'accueil » (iOS). Fermeture valable pour la session seulement, aucune mémorisation. Affichée uniquement sur mobile/tablette (détection d'appareil : `pointer: coarse`, userAgent Android/iPhone/iPad, iPadOS en mode Mac avec `maxTouchPoints > 1`), jamais sur ordinateur ; le bouton « Installer l'app » du UserMenu reste inchangé. Masquée sur les navigateurs mobiles sans installation (ex. Firefox Android).
+
+### Modifié
+- `useInstallPrompt` : `beforeinstallprompt` / `appinstalled` captés au niveau module (dès `main.tsx`) ; expose `canInstall`, `isStandalone`, `isIOS`, `isMobileDevice`, `install()` (API de `UserMenu` conservée).
+
 ## [Non publié] — worktree-arbre-genealogique
 
 ### Modifié

@@ -213,6 +213,10 @@ Toutes les routes exigent d'être connecté. Migration : `supabase/migrations/01
 
 Variables d'environnement backend : `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
 
+## PWA
+
+L'app est installable (`frontend/public/manifest.json`, service worker `src/sw.ts`). Sur mobile/tablette uniquement (détection tactile `pointer: coarse` / userAgent / iPadOS, jamais sur ordinateur), pour un utilisateur connecté qui n'utilise pas la PWA installée, la modale `InstallPromptModal` (montée dans `Layout`) propose l'installation à chaque chargement ; sa fermeture ne vaut que pour la session. iOS : instructions manuelles (pas d'API d'installation).
+
 ## Roadmap
 
 Voir [ROADMAP.md](ROADMAP.md) et [CHANGELOG.md](CHANGELOG.md).
