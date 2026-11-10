@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MemberAvatar } from '../profile/MemberAvatar';
-import { sanitizeMemberBio } from '../profile/memberUtils';
+import { formatPhoneDisplay, phoneHref, sanitizeMemberBio } from '../profile/memberUtils';
 import type { FamilyMember } from '../../types';
 
 interface MemberModalProps {
@@ -44,7 +44,10 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
             )}
             {member.phone && (
               <p className="text-sm text-arbey-500" data-testid="member-modal-phone">
-                Tél. {member.phone}
+                Tél.{' '}
+                <a href={phoneHref(member.phone)} className="hover:underline" data-testid="member-modal-phone-link">
+                  {formatPhoneDisplay(member.phone)}
+                </a>
               </p>
             )}
           </div>

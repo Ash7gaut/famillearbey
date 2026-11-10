@@ -20,8 +20,11 @@ import { MemberAvatar } from '../components/profile/MemberAvatar';
 import { ProfilePhotoCropModal } from '../components/profile/ProfilePhotoCropModal';
 import {
   formatBirthDateForProfile,
+  formatPhoneDisplay,
+  phoneHref,
   sanitizeMemberBio,
 } from '../components/profile/memberUtils';
+import { PhoneInput } from '../components/ui/PhoneInput';
 import { api } from '../services/api';
 import type { BirthDateDisplay, FamilyMember, MemberProfile } from '../types';
 
@@ -311,8 +314,8 @@ export function ProfilePage() {
               {member.phone && (
                 <p data-testid="profile-phone">
                   Tél.{' '}
-                  <a href={`tel:${member.phone.replace(/[^\d+]/g, '')}`} className="font-medium text-ink-700 hover:underline">
-                    {member.phone}
+                  <a href={phoneHref(member.phone)} className="font-medium text-ink-700 hover:underline" data-testid="profile-phone-link">
+                    {formatPhoneDisplay(member.phone)}
                   </a>
                 </p>
               )}
@@ -381,14 +384,11 @@ export function ProfilePage() {
                   <label htmlFor="profile-phone-field" className="mb-1.5 block text-sm font-medium text-ink-700">
                     Numéro de téléphone
                   </label>
-                  <input
+                  <PhoneInput
                     id="profile-phone-field"
                     data-testid="profile-phone-input"
-                    type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="06 12 34 56 78"
-                    className="input-field max-w-xs"
+                    onChange={setPhone}
                   />
                 </div>
                 {birthDate && (

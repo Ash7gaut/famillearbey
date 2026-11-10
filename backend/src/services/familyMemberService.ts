@@ -12,18 +12,35 @@ function upperLastName(value: string): string {
 }
 
 /**
- * Numéro de téléphone : vide => null ; sinon format léger (chiffres, espaces, + . - ( )),
- * 6 à 15 chiffres. `undefined` = champ non fourni (inchangé).
+ * Numéro de téléphone : vide => null ; sinon numéro français uniquement (+33 ou 0 national,
+ * 9 chiffres, 08 refusé), stocké en E.164 `+33XXXXXXXXX`. `undefined` = champ non fourni (inchangé).
  */
 function normalizePhone(value: string | null | undefined): string | null | undefined {
   if (value === undefined) return undefined;
   const phone = value?.trim();
   if (!phone) return null;
-  const digits = phone.replace(/\D/g, '');
-  if (!/^\+?[0-9 .()-]{6,25}$/.test(phone) || digits.length < 6 || digits.length > 15) {
-    throw new AppError(400, 'Numéro de téléphone invalide', 'VALIDATION_ERROR');
+  const invalid = () =>
+    new AppError(
+      400,
+      'Numéro de téléphone invalide : seuls les numéros français (+33) à 9 chiffres sont acceptés, hors numéros en 08',
+      'VALIDATION_ERROR',
+    );
+  if (!/^\+?[0-9 .()-]+$/.test(phone)) throw invalid();
+  let digits = phone.replace(/\D/g, '');
+  if (phone.startsWith('+')) {
+    if (!digits.startsWith('33')) throw invalid();
+    digits = digits.slice(2);
+  } else if (digits.startsWith('0033')) {
+    digits = digits.slice(4);
+  } else if (digits.startsWith('0')) {
+    digits = digits.slice(1);
+  } else {
+    throw invalid();
   }
-  return phone;
+  // Format +33 (0)6… toléré : zéro résiduel après l'indicatif.
+  if (digits.length === 10 && digits.startsWith('0')) digits = digits.slice(1);
+  if (!/^[1-79]\d{8}$/.test(digits)) throw invalid();
+  return `+33${digits}`;
 }
 
 export const familyMemberService = {

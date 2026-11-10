@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../../services/api';
 import type { FamilyMember, Gender, Tribu } from '../../types';
 import { MemberRelationsEditor } from './MemberRelationsEditor';
+import { PhoneInput } from '../ui/PhoneInput';
 
 interface MemberFormModalProps {
   /** null = création ; sinon édition */
@@ -201,13 +202,10 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
 
           <label className="block space-y-1">
             <span className="text-xs font-medium text-ink-600">Téléphone</span>
-            <input
-              type="tel"
+            <PhoneInput
               value={form.phone}
-              onChange={(e) => update('phone', e.target.value)}
+              onChange={(v) => update('phone', v)}
               data-testid="member-form-phone-input"
-              placeholder="06 12 34 56 78"
-              className="input-field"
             />
           </label>
 

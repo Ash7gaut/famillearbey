@@ -13,6 +13,7 @@
 - [x] Refonte de l'arbre généalogique (vue unique maison, sans BALKAN ni family-chart)
 - [x] Retrait de la page Famille (l'arbre et les profils couvrent le besoin)
 - [x] Numéro de téléphone du membre (profil, fiche membre, admin)
+- [x] Téléphone : numéros français uniquement (+33), saisie `PhoneInput` formatée, stockage E.164
 
 ## En cours (`feature/chat`)
 

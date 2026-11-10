@@ -7,6 +7,7 @@ import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { MemberAvatar } from '../components/profile/MemberAvatar';
 import { MemberFormModal } from '../components/admin/MemberFormModal';
+import { formatPhoneDisplay, phoneHref } from '../components/profile/memberUtils';
 
 export function MembersAdminPage() {
   const { session } = useAuthStore();
@@ -112,7 +113,14 @@ export function MembersAdminPage() {
               </p>
               <p className="truncate text-xs text-ink-500" data-testid={`member-row-details-${m.id}`}>
                 {m.birth_date ? `Né(e) le ${formatDate(m.birth_date)}` : 'Date de naissance inconnue'}
-                {m.phone && ` · ${m.phone}`}
+                {m.phone && (
+                  <>
+                    {' · '}
+                    <a href={phoneHref(m.phone)} className="hover:underline" data-testid={`member-row-phone-${m.id}`}>
+                      {formatPhoneDisplay(m.phone)}
+                    </a>
+                  </>
+                )}
                 {!m.is_alive && ' · Décédé(e)'}
                 {m.auth_user_id && ' · Compte lié'}
                 {m.is_admin && ' · Admin'}

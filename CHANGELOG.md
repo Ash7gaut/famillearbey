@@ -1,5 +1,14 @@
 ﻿# Changelog
 
+## [Non publié] — feat/phone-input-fr
+
+### Ajouté
+- Composant `PhoneInput` (`components/ui/`) : préfixe fixe « 🇫🇷 +33 », saisie du numéro national formatée par paires (« 6 12 34 56 78 »), accepte « 06… », « 6… », « +33 6… », chiffres uniquement, état valide/erreur, `inputMode="tel"`, dark mode. Émet du E.164 (`+33612345678`). Utilisé dans le profil et le formulaire admin (testids `profile-phone-input`, `member-form-phone-input` conservés ; suffixes `-prefix`, `-valid`, `-error`, `-wrapper`).
+- Helpers `parseFrenchNational`, `isValidFrenchPhone`, `formatPhoneDisplay`, `phoneHref` (`memberUtils.ts`) : affichage « +33 6 12 34 56 78 » avec lien `tel:+33…` sur le profil, la fiche arbre et la liste admin ; un numéro historique non convertible est affiché tel quel.
+
+### Modifié
+- Backend `normalizePhone` : seuls les numéros français sont acceptés (+33 ou 0 national, 9 chiffres, 01-07 et 09, 08 refusé), stockés en E.164 `+33XXXXXXXXX` ; sinon 400 `VALIDATION_ERROR`.
+
 ## [Non publié] — feat/pwa-install-visuels
 
 ### Ajouté

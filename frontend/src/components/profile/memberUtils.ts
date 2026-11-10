@@ -58,6 +58,43 @@ export function formatBirthDateForProfile(
   };
 }
 
+/**
+ * Extrait les chiffres nationaux (sans 0 initial ni +33), max 9.
+ * Accepte « 06 12… », « 6 12… », « +33 6 12… », « 0033 6 12… ».
+ */
+export function parseFrenchNational(raw: string | null | undefined): string {
+  const value = (raw ?? '').trim();
+  let digits = value.replace(/\D/g, '');
+  if (value.startsWith('+')) {
+    if (!digits.startsWith('33')) return ''; // autre indicatif : non convertible
+    digits = digits.slice(2);
+    if (digits.startsWith('0')) digits = digits.slice(1); // +33 (0)6…
+  } else if (digits.startsWith('0033')) digits = digits.slice(4);
+  else if (digits.startsWith('0')) digits = digits.slice(1);
+  return digits.slice(0, 9);
+}
+
+/** Numéro français valide : 9 chiffres nationaux, premier chiffre 1-7 ou 9 (08 refusé). */
+export function isValidFrenchPhone(raw: string | null | undefined): boolean {
+  return /^[1-79]\d{8}$/.test(parseFrenchNational(raw));
+}
+
+/** « 612345678 » => « 6 12 34 56 78 » (formatage progressif). */
+export function formatNationalDigits(digits: string): string {
+  if (!digits) return '';
+  return [digits.slice(0, 1), ...(digits.slice(1).match(/\d{1,2}/g) ?? [])].join(' ');
+}
+
+/** Affichage « +33 6 12 34 56 78 » ; renvoie la valeur telle quelle si non convertible. */
+export function formatPhoneDisplay(raw: string): string {
+  return isValidFrenchPhone(raw) ? `+33 ${formatNationalDigits(parseFrenchNational(raw))}` : raw;
+}
+
+/** Valeur pour un lien `tel:` (E.164 si numéro français, sinon chiffres/+ conservés). */
+export function phoneHref(raw: string): string {
+  return isValidFrenchPhone(raw) ? `tel:+33${parseFrenchNational(raw)}` : `tel:${raw.replace(/[^\d+]/g, '')}`;
+}
+
 export function sortMembersByName(members: FamilyMember[]) {
   return [...members].sort((a, b) =>
     a.first_name.localeCompare(b.first_name, 'fr', { sensitivity: 'base' }),
