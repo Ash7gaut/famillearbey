@@ -200,6 +200,18 @@ App disponible sur `http://localhost:5173`
 | GET     | `/api/v1/photos/album/:id`      | Photos d'un album        |
 | POST    | `/api/v1/photos/album/:id`      | Upload photo (multipart) |
 
+### Secret Santa : listes de souhaits
+
+Migration : `supabase/migrations/015_secret_santa_wishlist.sql`. Les routes `/secret-santa/:id/...` exigent d'être connecté ; les équivalents `/secret-santa/invite/:token/...` servent les invités externes (lien personnel).
+
+| Méthode | Endpoint (préfixe `/api/v1/secret-santa/:id`) | Description |
+|---------|-----------------------------------------------|-------------|
+| GET / POST | `/wishlist` | Ma liste / ajouter une idée (max 20) |
+| PATCH / DELETE | `/wishlist/:itemId` | Modifier / retirer une de mes idées |
+| GET | `/receiver-wishlist` | Liste de mon tiré (après tirage) + `picked` (mes cases) |
+| PUT / DELETE | `/receiver-wishlist/:itemId/pick` | Cocher / décocher « Je prends ça » |
+
+Confidentialité : le tiré ne voit jamais les cases cochées (table `secret_santa_wishlist_picks` séparée) ; le serveur retrouve le tiré via la paire du tireur, aucun identifiant de pair n'est exposé. `url` et `image_url` : `https://` uniquement. L'aperçu de lien est récupéré par le navigateur via Microlink (`https://api.microlink.io`, quota gratuit limité, l'URL collée lui est envoyée) puis copié dans l'idée ; si l'aperçu échoue, saisie manuelle.
 ### Messagerie et notifications push (branche `feature/chat`)
 
 Toutes les routes exigent d'être connecté. Migration : `supabase/migrations/011_messaging.sql`.

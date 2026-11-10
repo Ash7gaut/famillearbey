@@ -5,6 +5,7 @@ import type { SecretSantaAssignment } from '../types/secretSanta';
 import { AssignmentReveal } from '../components/secretSanta/AssignmentReveal';
 import { DrawParticipantsPanel } from '../components/secretSanta/DrawParticipantsPanel';
 import { LockedAssignment } from '../components/secretSanta/LockedAssignment';
+import { ReceiverWishlist } from '../components/secretSanta/ReceiverWishlist';
 import { BackLink } from '../components/ui/BackLink';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
@@ -19,6 +20,7 @@ export function SecretSantaRevealPage() {
   const [error, setError] = useState<string | null>(null);
 
   const storageKey = id ? revealStorageKey(id) : '';
+  const basePath = `/secret-santa/${id}`;
 
   useEffect(() => {
     if (!id || !initialized) return;
@@ -60,12 +62,14 @@ export function SecretSantaRevealPage() {
       {locked ? (
         <>
           <LockedAssignment name={assignment.receiver_display_name} />
+          <ReceiverWishlist basePath={basePath} receiverName={assignment.receiver_display_name} />
           <DrawParticipantsPanel participants={participants} />
         </>
       ) : (
         <AssignmentReveal
           assignment={assignment}
           storageKey={storageKey}
+          basePath={basePath}
           onConfirmReveal={async () => {
             const updated = await api.post<SecretSantaAssignment>(`/secret-santa/${id}/confirm-reveal`);
             setAssignment(updated);

@@ -3,6 +3,7 @@ import type { SecretSantaAssignment } from '../../types/secretSanta';
 import { isRevealStored, storeReveal } from '../../lib/secretSantaRevealStorage';
 import { DrawParticipantsPanel } from './DrawParticipantsPanel';
 import { LockedAssignment } from './LockedAssignment';
+import { ReceiverWishlist } from './ReceiverWishlist';
 import { RouletteWheel } from './RouletteWheel';
 
 type Phase = 'ready' | 'spinning' | 'locked';
@@ -11,7 +12,8 @@ interface AssignmentRevealProps {
   assignment: SecretSantaAssignment;
   storageKey: string;
   onConfirmReveal: () => Promise<void>;
-  showProfileLinks?: boolean;
+  /** Ex. `/secret-santa/<id>` ou `/secret-santa/invite/<token>` : sert à charger la liste de souhaits du tiré. */
+  basePath: string;
 }
 
 function isAlreadyRevealed(assignment: SecretSantaAssignment, storageKey: string): boolean {
@@ -22,7 +24,7 @@ export function AssignmentReveal({
   assignment,
   storageKey,
   onConfirmReveal,
-  showProfileLinks = true,
+  basePath,
 }: AssignmentRevealProps) {
   const [phase, setPhase] = useState<Phase>(() =>
     isAlreadyRevealed(assignment, storageKey) ? 'locked' : 'ready',
@@ -43,7 +45,8 @@ export function AssignmentReveal({
     return (
       <div className="space-y-6" data-testid="assignment-locked">
         <LockedAssignment name={assignment.receiver_display_name} />
-        <DrawParticipantsPanel participants={participants} showProfileLinks={showProfileLinks} />
+        <ReceiverWishlist basePath={basePath} receiverName={assignment.receiver_display_name} />
+        <DrawParticipantsPanel participants={participants} />
       </div>
     );
   }
@@ -62,7 +65,7 @@ export function AssignmentReveal({
             🎰 Lancer la roulette
           </button>
         </div>
-        <DrawParticipantsPanel participants={participants} showProfileLinks={showProfileLinks} />
+        <DrawParticipantsPanel participants={participants} />
       </div>
     );
   }
@@ -74,7 +77,7 @@ export function AssignmentReveal({
         targetName={assignment.receiver_display_name}
         onComplete={handleSpinComplete}
       />
-      <DrawParticipantsPanel participants={participants} showProfileLinks={showProfileLinks} />
+      <DrawParticipantsPanel participants={participants} />
     </div>
   );
 }

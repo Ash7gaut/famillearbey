@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import type { FamilyMember } from '../../types';
 import type { ParticipantStatus, SecretSantaParticipantView } from '../../types/secretSanta';
 import { MemberAvatar } from '../profile/MemberAvatar';
@@ -128,26 +127,15 @@ function DrawParticipantCard({
         {bio && isActive && (
           <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-ink-500">{bio}</p>
         )}
-        {member && isActive && (
-          <p className="mt-2 text-xs font-medium text-warm-700">Voir le profil →</p>
-        )}
       </div>
     </>
   );
 
-  const className = `flex items-start gap-3 rounded-2xl border p-4 transition ${
+  const className = `flex items-start gap-3 rounded-2xl border p-4 ${
     isActive
-      ? 'border-cream-300/70 bg-cream-50/80 hover:border-warm-200 hover:bg-warm-50/40'
+      ? 'border-cream-300/70 bg-cream-50/80'
       : 'border-cream-300/50 bg-cream-50/60 opacity-90'
   }`;
-
-  if (member && isActive) {
-    return (
-      <Link to={`/profil/${member.id}`} className={`focus-ring ${className}`} data-testid={`draw-roster-card-${participant.id}`}>
-        {content}
-      </Link>
-    );
-  }
 
   return <div className={className} data-testid={`draw-roster-card-${participant.id}`}>{content}</div>;
 }

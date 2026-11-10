@@ -13,10 +13,64 @@ import type {
   SecretSantaGroupSummary,
   SecretSantaParticipant,
   SecretSantaParticipantView,
+  ReceiverWishlistItem,
+  WishlistItem,
+  WishlistItemInput,
 } from '../types/secretSanta.js';
 import { drawAssignments, SECRET_SANTA_MIN_PARTICIPANTS } from './secretSantaDraw.js';
 import { emailService } from './emailService.js';
 import type { InviteMemberResult } from '../types/secretSanta.js';
+
+const WISHLIST_COLUMNS = 'id, title, url, image_url, price, note, position, created_at';
+const WISHLIST_MAX_ITEMS = 20;
+const WISHLIST_LIMITS = { title: 120, note: 300, price: 40, url: 2000, image_url: 2000 };
+
+function optionalText(value: unknown, field: string, max: number): string | null {
+  if (value === undefined || value === null || value === '') return null;
+  if (typeof value !== 'string') throw new AppError(400, `Champ ${field} invalide`, 'VALIDATION');
+  const text = value.trim();
+  if (text.length > max) {
+    throw new AppError(400, `Champ ${field} trop long (${max} caractères max)`, 'VALIDATION');
+  }
+  return text || null;
+}
+
+function optionalHttpsUrl(value: unknown, field: string): string | null {
+  const text = optionalText(value, field, WISHLIST_LIMITS.url);
+  if (text === null) return null;
+  let parsed: URL;
+  try {
+    parsed = new URL(text);
+  } catch {
+    throw new AppError(400, `Lien ${field} invalide`, 'VALIDATION');
+  }
+  if (parsed.protocol !== 'https:') {
+    throw new AppError(400, 'Seuls les liens https:// sont acceptés', 'VALIDATION');
+  }
+  return parsed.toString();
+}
+
+/** Valide et normalise une idée cadeau ; en mode `partial`, ne renvoie que les champs fournis. */
+function parseWishlistInput(
+  input: WishlistItemInput | undefined,
+  partial: boolean,
+): Partial<Omit<WishlistItem, 'id' | 'position' | 'created_at'>> {
+  const body = input ?? {};
+  const has = (key: keyof WishlistItemInput) => !partial || body[key] !== undefined;
+  const out: Partial<Omit<WishlistItem, 'id' | 'position' | 'created_at'>> = {};
+
+  if (has('title')) {
+    const title = optionalText(body.title, 'titre', WISHLIST_LIMITS.title);
+    if (!title) throw new AppError(400, 'Titre requis', 'VALIDATION');
+    out.title = title;
+  }
+  if (has('url')) out.url = optionalHttpsUrl(body.url, 'url');
+  if (has('image_url')) out.image_url = optionalHttpsUrl(body.image_url, 'image');
+  if (has('price')) out.price = optionalText(body.price, 'prix', WISHLIST_LIMITS.price);
+  if (has('note')) out.note = optionalText(body.note, 'note', WISHLIST_LIMITS.note);
+
+  return out;
+}
 
 function memberDisplayName(m: Pick<FamilyMember, 'first_name' | 'last_name'>): string {
   return `${m.first_name} ${m.last_name}`;
@@ -702,6 +756,187 @@ export const secretSantaService = {
     if (error) throw new AppError(500, error.message, 'DB_ERROR');
 
     return this.getGroupDetail(groupId, member);
+  },
+
+  // ── Listes de souhaits ──────────────────────────────────────────────
+
+  /** Participant « accepté » correspondant au membre connecté. */
+  async acceptedParticipantForMember(
+    groupId: string,
+    member: FamilyMember,
+  ): Promise<{ group: SecretSantaGroup; me: SecretSantaParticipant }> {
+    const { group, me } = await assertGroupAccess(groupId, member);
+    if (!me || me.status !== 'accepted') {
+      throw new AppError(403, 'Tu ne participes pas à ce Secret Santa', 'FORBIDDEN');
+    }
+    return { group, me };
+  },
+
+  /** Participant « accepté » correspondant à un lien d'invitation externe. */
+  async acceptedParticipantForToken(
+    token: string,
+  ): Promise<{ group: SecretSantaGroup; me: SecretSantaParticipant }> {
+    const me = await this.getParticipantByToken(token);
+    const group = await getGroupOrThrow(me.group_id);
+    if (me.status !== 'accepted') {
+      throw new AppError(403, 'Invitation non acceptée', 'FORBIDDEN');
+    }
+    return { group, me };
+  },
+
+  async listWishlist(participantId: string): Promise<WishlistItem[]> {
+    const { data, error } = await supabase
+      .from('secret_santa_wishlist_items')
+      .select(WISHLIST_COLUMNS)
+      .eq('participant_id', participantId)
+      .order('position')
+      .order('created_at');
+
+    if (error) throw new AppError(500, 'Erreur lors de la lecture de la liste', 'DB_ERROR');
+    return data ?? [];
+  },
+
+  async createWishlistItem(participantId: string, input: WishlistItemInput): Promise<WishlistItem> {
+    const values = parseWishlistInput(input, false);
+
+    const { data: existing, error: listError } = await supabase
+      .from('secret_santa_wishlist_items')
+      .select('position')
+      .eq('participant_id', participantId)
+      .order('position', { ascending: false });
+
+    if (listError) throw new AppError(500, 'Erreur lors de l\'ajout', 'DB_ERROR');
+    if ((existing?.length ?? 0) >= WISHLIST_MAX_ITEMS) {
+      throw new AppError(
+        400,
+        `Ta liste est limitée à ${WISHLIST_MAX_ITEMS} idées`,
+        'WISHLIST_FULL',
+      );
+    }
+
+    const { data, error } = await supabase
+      .from('secret_santa_wishlist_items')
+      .insert({
+        participant_id: participantId,
+        ...values,
+        position: (existing?.[0]?.position ?? -1) + 1,
+      })
+      .select(WISHLIST_COLUMNS)
+      .single();
+
+    if (error || !data) throw new AppError(500, 'Erreur lors de l\'ajout', 'DB_ERROR');
+    return data;
+  },
+
+  async updateWishlistItem(
+    participantId: string,
+    itemId: string,
+    input: WishlistItemInput,
+  ): Promise<WishlistItem> {
+    const values = parseWishlistInput(input, true);
+    await this.assertOwnWishlistItem(participantId, itemId);
+
+    if (Object.keys(values).length === 0) {
+      throw new AppError(400, 'Aucune modification', 'VALIDATION');
+    }
+
+    const { data, error } = await supabase
+      .from('secret_santa_wishlist_items')
+      .update(values)
+      .eq('id', itemId)
+      .eq('participant_id', participantId)
+      .select(WISHLIST_COLUMNS)
+      .single();
+
+    if (error || !data) throw new AppError(500, 'Erreur lors de la modification', 'DB_ERROR');
+    return data;
+  },
+
+  async deleteWishlistItem(participantId: string, itemId: string): Promise<void> {
+    await this.assertOwnWishlistItem(participantId, itemId);
+
+    const { error } = await supabase
+      .from('secret_santa_wishlist_items')
+      .delete()
+      .eq('id', itemId)
+      .eq('participant_id', participantId);
+
+    if (error) throw new AppError(500, 'Erreur lors de la suppression', 'DB_ERROR');
+  },
+
+  async assertOwnWishlistItem(participantId: string, itemId: string): Promise<void> {
+    const { data } = await supabase
+      .from('secret_santa_wishlist_items')
+      .select('id')
+      .eq('id', itemId)
+      .eq('participant_id', participantId)
+      .maybeSingle();
+
+    if (!data) throw new AppError(404, 'Idée introuvable', 'NOT_FOUND');
+  },
+
+  /** Participant tiré par `giverId` (résolu côté serveur, jamais exposé au client). */
+  async receiverOf(group: SecretSantaGroup, giverId: string): Promise<string> {
+    if (group.status !== 'drawn') {
+      throw new AppError(400, 'Le tirage n\'a pas encore eu lieu', 'NOT_DRAWN');
+    }
+
+    const { data: pair } = await supabase
+      .from('secret_santa_pairs')
+      .select('receiver_participant_id')
+      .eq('group_id', group.id)
+      .eq('giver_participant_id', giverId)
+      .maybeSingle();
+
+    if (!pair) throw new AppError(404, 'Tirage introuvable', 'NOT_FOUND');
+    return pair.receiver_participant_id;
+  },
+
+  /** Liste du tiré + cases cochées par le tireur uniquement. */
+  async getReceiverWishlist(
+    group: SecretSantaGroup,
+    giverId: string,
+  ): Promise<ReceiverWishlistItem[]> {
+    const receiverId = await this.receiverOf(group, giverId);
+    const items = await this.listWishlist(receiverId);
+    if (items.length === 0) return [];
+
+    const { data: picks, error } = await supabase
+      .from('secret_santa_wishlist_picks')
+      .select('item_id')
+      .eq('giver_participant_id', giverId)
+      .in(
+        'item_id',
+        items.map((item) => item.id),
+      );
+
+    if (error) throw new AppError(500, 'Erreur lors de la lecture de la liste', 'DB_ERROR');
+
+    const picked = new Set((picks ?? []).map((p) => p.item_id));
+    return items.map((item) => ({ ...item, picked: picked.has(item.id) }));
+  },
+
+  async setReceiverPick(
+    group: SecretSantaGroup,
+    giverId: string,
+    itemId: string,
+    picked: boolean,
+  ): Promise<void> {
+    const receiverId = await this.receiverOf(group, giverId);
+    await this.assertOwnWishlistItem(receiverId, itemId);
+
+    const query = picked
+      ? supabase
+          .from('secret_santa_wishlist_picks')
+          .upsert({ item_id: itemId, giver_participant_id: giverId })
+      : supabase
+          .from('secret_santa_wishlist_picks')
+          .delete()
+          .eq('item_id', itemId)
+          .eq('giver_participant_id', giverId);
+
+    const { error } = await query;
+    if (error) throw new AppError(500, 'Erreur lors de la mise à jour', 'DB_ERROR');
   },
 
   async deleteGroup(groupId: string, member: FamilyMember): Promise<void> {

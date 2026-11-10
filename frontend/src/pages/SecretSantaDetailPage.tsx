@@ -9,6 +9,7 @@ import type {
   SecretSantaGroupDetail,
   SecretSantaParticipantView,
 } from '../types/secretSanta';
+import { WishlistEditor } from '../components/secretSanta/WishlistEditor';
 import { SecretSantaDrawRoster } from '../components/secretSanta/SecretSantaDrawRoster';
 import { MemberSelect } from '../components/ui/MemberSelect';
 import { MemberAvatar } from '../components/profile/MemberAvatar';
@@ -274,6 +275,10 @@ export function SecretSantaDetailPage() {
             ))}
           </ul>
         </div>
+      )}
+
+      {group.my_status === 'accepted' && (
+        <WishlistEditor basePath={`/secret-santa/${group.id}`} />
       )}
 
       {group.is_creator && group.status === 'open' && (

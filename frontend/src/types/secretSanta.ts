@@ -76,3 +76,25 @@ export interface InviteEmailResult {
   email_sent: boolean;
   email_message?: string;
 }
+
+export interface WishlistItem {
+  id: string;
+  title: string;
+  url: string | null;
+  image_url: string | null;
+  price: string | null;
+  note: string | null;
+  position: number;
+}
+
+export interface ReceiverWishlistItem extends WishlistItem {
+  picked: boolean;
+}
+
+export interface WishlistItemInput {
+  title: string;
+  url: string | null;
+  image_url: string | null;
+  price: string | null;
+  note: string | null;
+}

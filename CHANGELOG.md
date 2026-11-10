@@ -1,5 +1,20 @@
 # Changelog
 
+## [Non publié] — feat/secret-santa-wishlist
+
+### Ajouté
+- Secret Santa : liste de souhaits par participant (membres et invités externes), modifiable avant ou après le tirage (max 20 idées : titre, lien https, image, prix, précision). Composants `WishlistEditor`, `WishlistItemCard`, `ReceiverWishlist`.
+- Aperçu de lien (titre + image) appelé depuis le navigateur via Microlink (`lib/linkPreview.ts`), copié dans l'idée à l'enregistrement ; repli de saisie manuelle si l'aperçu échoue (Amazon, Cdiscount…). L'URL collée est envoyée à Microlink.
+- Le tireur voit la liste de son tiré (après tirage) et coche « Je prends ça » ; les cases sont dans une table séparée, le tiré ne les voit jamais et la liste du tiré est résolue côté serveur (aucun identifiant de pair exposé).
+- Backend : routes `/secret-santa/:id/wishlist`, `/:id/receiver-wishlist[/:itemId/pick]` et équivalents `/secret-santa/invite/:token/...` pour les invités ; validation (https uniquement, titre 120, précision 300, prix 40).
+- Migration `015_secret_santa_wishlist.sql` (tables `secret_santa_wishlist_items`, `secret_santa_wishlist_picks`, RLS sans policy ; ajoute aussi `revealed_at` s'il manque). À appliquer sur Supabase.
+
+### Corrigé
+- Mobile : la modale « Ajouter/Modifier une idée » passe au-dessus de la barre de navigation (portail `body` + `z-[100]`), défile en interne (`max-h` en `dvh`), verrouille le scroll de la page et garde le bouton de validation collé en bas. Test e2e mobile 390x844 et 360x640.
+- Outillage : ajout de `.gitattributes` (`*.sh text eol=lf`) ; `docker/apply-migrations.sh` n'est plus extrait en CRLF sous Windows (erreur `set: Illegal option -` du service `migrate`).
+
+### Supprimé
+- Secret Santa : lien « Voir le profil » retiré partout (panneau « Qui joue avec toi », liste des participants au tirage) ; les cartes ne sont plus cliquables.
 ## [Non publié] — feat/profile-vcard
 
 ### Ajouté

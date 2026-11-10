@@ -11,7 +11,26 @@ router.post('/invite/:token/decline', asyncHandler(secretSantaController.guestDe
 router.get('/invite/:token/assignment', asyncHandler(secretSantaController.guestAssignment));
 router.post('/invite/:token/confirm-reveal', asyncHandler(secretSantaController.confirmGuestReveal));
 
+const wishlistRoutes = [
+  ['get', '/wishlist', secretSantaController.wishlistList],
+  ['post', '/wishlist', secretSantaController.wishlistCreate],
+  ['patch', '/wishlist/:itemId', secretSantaController.wishlistUpdate],
+  ['delete', '/wishlist/:itemId', secretSantaController.wishlistDelete],
+  ['get', '/receiver-wishlist', secretSantaController.receiverWishlist],
+  ['put', '/receiver-wishlist/:itemId/pick', secretSantaController.receiverPick],
+  ['delete', '/receiver-wishlist/:itemId/pick', secretSantaController.receiverUnpick],
+] as const;
+
+// Invités externes (publiques, avant requireAuth)
+for (const [method, path, handler] of wishlistRoutes) {
+  router[method](`/invite/:token${path}`, asyncHandler(handler));
+}
+
 router.use(asyncMiddleware(requireAuth));
+
+for (const [method, path, handler] of wishlistRoutes) {
+  router[method](`/:id${path}`, asyncHandler(handler));
+}
 
 router.get('/', asyncHandler(secretSantaController.list));
 router.post('/', asyncHandler(secretSantaController.create));

@@ -11,7 +11,18 @@ import type {
   SecretSantaGroupDetail,
   SecretSantaGroupSummary,
   SecretSantaParticipantView,
+  ReceiverWishlistItem,
+  WishlistItem,
 } from '../types/secretSanta.js';
+
+function resolveActor(req: AuthRequest) {
+  return req.params.token
+    ? secretSantaService.acceptedParticipantForToken(requireParam(req.params.token, 'token'))
+    : secretSantaService.acceptedParticipantForMember(
+        requireParam(req.params.id, 'id'),
+        req.member!,
+      );
+}
 
 export const secretSantaController = {
   async create(req: AuthRequest, res: Response<ApiResponse<SecretSantaGroupDetail>>) {
@@ -125,6 +136,61 @@ export const secretSantaController = {
       requireParam(req.params.participantId, 'participantId'),
     );
     res.json({ data });
+  },
+
+  // Listes de souhaits : mêmes handlers pour les membres (/:id/...) et les invités (/invite/:token/...)
+  async wishlistList(req: AuthRequest, res: Response<ApiResponse<WishlistItem[]>>) {
+    const { me } = await resolveActor(req);
+    res.json({ data: await secretSantaService.listWishlist(me.id) });
+  },
+
+  async wishlistCreate(req: AuthRequest, res: Response<ApiResponse<WishlistItem>>) {
+    const { me } = await resolveActor(req);
+    const data = await secretSantaService.createWishlistItem(me.id, req.body);
+    res.status(201).json({ data });
+  },
+
+  async wishlistUpdate(req: AuthRequest, res: Response<ApiResponse<WishlistItem>>) {
+    const { me } = await resolveActor(req);
+    const data = await secretSantaService.updateWishlistItem(
+      me.id,
+      requireParam(req.params.itemId, 'itemId'),
+      req.body,
+    );
+    res.json({ data });
+  },
+
+  async wishlistDelete(req: AuthRequest, res: Response) {
+    const { me } = await resolveActor(req);
+    await secretSantaService.deleteWishlistItem(me.id, requireParam(req.params.itemId, 'itemId'));
+    res.status(204).send();
+  },
+
+  async receiverWishlist(req: AuthRequest, res: Response<ApiResponse<ReceiverWishlistItem[]>>) {
+    const { group, me } = await resolveActor(req);
+    res.json({ data: await secretSantaService.getReceiverWishlist(group, me.id) });
+  },
+
+  async receiverPick(req: AuthRequest, res: Response) {
+    const { group, me } = await resolveActor(req);
+    await secretSantaService.setReceiverPick(
+      group,
+      me.id,
+      requireParam(req.params.itemId, 'itemId'),
+      true,
+    );
+    res.status(204).send();
+  },
+
+  async receiverUnpick(req: AuthRequest, res: Response) {
+    const { group, me } = await resolveActor(req);
+    await secretSantaService.setReceiverPick(
+      group,
+      me.id,
+      requireParam(req.params.itemId, 'itemId'),
+      false,
+    );
+    res.status(204).send();
   },
 
   async deleteGroup(req: AuthRequest, res: Response) {

@@ -6,6 +6,8 @@ import type { GuestInviteInfo, SecretSantaAssignment } from '../types/secretSant
 import { AssignmentReveal } from '../components/secretSanta/AssignmentReveal';
 import { DrawParticipantsPanel } from '../components/secretSanta/DrawParticipantsPanel';
 import { LockedAssignment } from '../components/secretSanta/LockedAssignment';
+import { ReceiverWishlist } from '../components/secretSanta/ReceiverWishlist';
+import { WishlistEditor } from '../components/secretSanta/WishlistEditor';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { guestRevealStorageKey, isRevealStored } from '../lib/secretSantaRevealStorage';
@@ -21,6 +23,7 @@ export function SecretSantaGuestPage() {
   const [copied, setCopied] = useState(false);
 
   const storageKey = token ? guestRevealStorageKey(token) : '';
+  const basePath = `/secret-santa/invite/${token}`;
 
   useEffect(() => {
     if (!token) return;
@@ -88,10 +91,9 @@ export function SecretSantaGuestPage() {
       <div className="mx-auto max-w-lg space-y-6" data-testid="guest-page-locked">
         <BookmarkCard onCopy={copyPersonalLink} copied={copied} />
         <LockedAssignment name={assignment.receiver_display_name} />
-        <DrawParticipantsPanel
-          participants={assignment.participants ?? []}
-          showProfileLinks={false}
-        />
+        <ReceiverWishlist basePath={basePath} receiverName={assignment.receiver_display_name} />
+        <WishlistEditor basePath={basePath} />
+        <DrawParticipantsPanel participants={assignment.participants ?? []} />
         <HubReminder />
       </div>
     );
@@ -137,6 +139,10 @@ export function SecretSantaGuestPage() {
         </div>
       )}
 
+      {info.status === 'accepted' && (info.group_status === 'open' || assignment) && (
+        <WishlistEditor basePath={basePath} />
+      )}
+
       {info.status === 'declined' && (
         <div className="card text-center text-sm text-ink-600" data-testid="guest-declined-notice">
           Tu as décliné cette invitation.
@@ -147,7 +153,7 @@ export function SecretSantaGuestPage() {
         <AssignmentReveal
           assignment={assignment}
           storageKey={storageKey}
-          showProfileLinks={false}
+          basePath={basePath}
           onConfirmReveal={async () => {
             const updated = await api.post<SecretSantaAssignment>(
               `/secret-santa/invite/${token}/confirm-reveal`,
