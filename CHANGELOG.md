@@ -1,3 +1,21 @@
+## [Non publié] — feat/groupes-whatsapp
+
+### Ajouté
+- Page « Groupes » (`/groupes`, `GroupsPage`) : annuaire des groupes WhatsApp de la famille (image ou initiales, description, « N membres de l'arbre y sont », « Rejoindre », « J'y suis déjà » / « Vous y êtes », « Le lien ne marche plus ? », groupe épinglé). C'est la vue principale (navigation, redirections, `start_url` PWA).
+- Création / modification : nom, image, description, lien d'invitation (doit commencer par `https://chat.whatsapp.com/`), accès. Accès « Toute la famille » ou « Accès limité » (sélecteur `GroupAccessPicker` : puces des personnes, tribus en un tap qui copient leurs membres, recherche de personnes, « Annuler »).
+- Tuto « Comment obtenir le lien d'invitation ? » (`GroupHelpModal`, étapes valables sur iPhone et Android, réinitialisation du lien).
+- Backend `/whatsapp-groups` (`whatsappGroupService`) : le lien n'est jamais renvoyé sans accès (404), tout membre ayant accès modifie la fiche, ajoute ET retire des personnes et change le mode d'accès (le créateur garde toujours accès) ; épinglage et suppression réservés au créateur/admin ; un admin voit et modifie tous les groupes, y compris à accès limité.
+- Migration `016_whatsapp_groups.sql` (groupes, accès, présences, signalements).
+- Tests e2e `groupes-whatsapp.spec.ts`.
+
+### Supprimé
+- Messagerie (pages, store, composants, routes `/conversations`, tests e2e) et notifications push (routes `/push`, `web-push`, hook, bouton du menu, gestionnaires du service worker, variables `VAPID_*`).
+- Migration `017_remove_messaging.sql` : tables `conversations`, `conversation_members`, `messages`, `push_subscriptions` et fonctions associées (à appliquer séparément).
+- `/messagerie` redirige vers `/groupes`.
+- Service `realtime` du `docker-compose.dev.yml` (et sa route Kong), plus utilisé par l'appli.
+
+### Modifié
+- Tuto du lien d'invitation aligné sur les pages d'aide officielles de WhatsApp (libellés confirmés uniquement, le reste reste générique).
 # Changelog
 
 ## [Non publié] — feat/secret-santa-wishlist

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Bell, ChevronDown, Download, LogOut, Settings, User, UserRound } from 'lucide-react';
+import { ChevronDown, Download, LogOut, Settings, User, UserRound } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useInstallPrompt } from '../../hooks/useInstallPrompt';
-import { usePushNotifications } from '../../hooks/usePushNotifications';
 import { MemberAvatar } from '../profile/MemberAvatar';
 import { InstallInstructionsModal } from '../ui/InstallInstructionsModal';
 
@@ -26,7 +25,6 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
   const [showInstallInstructions, setShowInstallInstructions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { isVisible: showInstallItem, canPromptNative, isIos, promptInstall } = useInstallPrompt();
-  const { permission, subscribed, subscribe, unsubscribe } = usePushNotifications();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -186,30 +184,6 @@ export function UserMenu({ variant = 'header' }: UserMenuProps) {
             >
               <Download className="h-4 w-4" strokeWidth={1.75} />
               Installer l'app
-            </button>
-          )}
-
-          {permission !== 'unsupported' && (
-            <button
-              type="button"
-              role="menuitem"
-              data-testid={subscribed ? `${tid}-push-disable-button` : `${tid}-push-enable-button`}
-              onClick={() => {
-                setOpen(false);
-                if (isIos && showInstallItem) {
-                  setShowInstallInstructions(true);
-                  return;
-                }
-                if (subscribed) {
-                  void unsubscribe();
-                } else {
-                  void subscribe();
-                }
-              }}
-              className={`${menuItemClass} text-ink-700 hover:bg-cream-200/60`}
-            >
-              <Bell className="h-4 w-4" strokeWidth={1.75} />
-              {subscribed ? 'Désactiver les notifications' : 'Activer les notifications'}
             </button>
           )}
 

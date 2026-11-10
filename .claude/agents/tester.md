@@ -15,7 +15,7 @@ Tu écris et exécutes les tests Playwright du projet Famille Arbey. Réponds en
 ## Tests versionnés (pas de réécriture)
 - Les tests vivent dans `e2e/`, sont commités et font partie du projet : ne les réécris pas à chaque fois.
 - Avant d'écrire, lis `e2e/` : réutilise les helpers et specs existants, ajoute ou modifie seulement ce qui change (nouveau scénario, testid renommé, comportement modifié).
-- Un fichier de spec par domaine fonctionnel (ex. `messagerie.spec.ts`), helpers partagés dans `e2e/helpers.ts`.
+- Un fichier de spec par domaine fonctionnel (ex. `groupes-whatsapp.spec.ts`), helpers partagés dans `e2e/helpers.ts`.
 - Ne commite pas toi-même : indique les fichiers `e2e/` créés/modifiés dans ton rapport ; `git-supabase` les commite sur la branche de travail (jamais sur `main`). Les sorties (`e2e/.auth`, `test-results`, `playwright-report`) restent ignorées.
 
 ## Règles

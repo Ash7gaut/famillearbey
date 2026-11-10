@@ -212,29 +212,23 @@ Migration : `supabase/migrations/015_secret_santa_wishlist.sql`. Les routes `/se
 | PUT / DELETE | `/receiver-wishlist/:itemId/pick` | Cocher / décocher « Je prends ça » |
 
 Confidentialité : le tiré ne voit jamais les cases cochées (table `secret_santa_wishlist_picks` séparée) ; le serveur retrouve le tiré via la paire du tireur, aucun identifiant de pair n'est exposé. `url` et `image_url` : `https://` uniquement. L'aperçu de lien est récupéré par le navigateur via Microlink (`https://api.microlink.io`, quota gratuit limité, l'URL collée lui est envoyée) puis copié dans l'idée ; si l'aperçu échoue, saisie manuelle.
-### Messagerie et notifications push (branche `feature/chat`)
+### Groupes WhatsApp
 
-Toutes les routes exigent d'être connecté. Migration : `supabase/migrations/011_messaging.sql`.
+Annuaire des groupes WhatsApp de la famille (remplace la Messagerie). Toutes les routes exigent d'être connecté. Migration : `supabase/migrations/016_whatsapp_groups.sql` (la suppression de l'ancienne messagerie est dans `017_remove_messaging.sql`, à appliquer séparément).
 
-| Méthode | Endpoint                                  | Description                                  |
-|---------|-------------------------------------------|----------------------------------------------|
-| GET     | `/api/v1/conversations`                   | Mes conversations                            |
-| POST    | `/api/v1/conversations`                   | Créer une conversation (admin)               |
-| GET     | `/api/v1/conversations/:id/messages`      | Messages                                     |
-| POST    | `/api/v1/conversations/:id/messages`      | Envoyer un message                           |
-| PUT     | `/api/v1/conversations/:id/members/:mid`  | Ajouter un membre                            |
-| PATCH   | `/api/v1/conversations/:id`               | Renommer / description (tout membre du groupe) |
-| POST    | `/api/v1/conversations/:id/image`         | Image du groupe (multipart, tout membre)     |
-| PATCH   | `/api/v1/conversations/:id/muted`         | Couper / réactiver les notifications         |
-| POST    | `/api/v1/conversations/:id/read`          | Marquer comme lu                             |
-| GET     | `/api/v1/push/public-key`                 | Clé publique VAPID                           |
-| POST    | `/api/v1/push/subscribe`                  | Abonner l'appareil aux notifications push    |
-| POST    | `/api/v1/push/unsubscribe`                | Désabonner l'appareil                        |
+| Méthode | Route                                          | Description                                              |
+|---------|------------------------------------------------|----------------------------------------------------------|
+| GET     | `/api/v1/whatsapp-groups`                      | Groupes visibles (le lien n'est jamais renvoyé sans accès) |
+| POST    | `/api/v1/whatsapp-groups`                      | Créer un groupe (tout utilisateur connecté)              |
+| PATCH   | `/api/v1/whatsapp-groups/:id`                  | Modifier la fiche, dont le mode d'accès (tout membre ayant accès, ou admin ; épingle : créateur/admin) |
+| DELETE  | `/api/v1/whatsapp-groups/:id`                  | Supprimer (créateur ou admin)                            |
+| POST    | `/api/v1/whatsapp-groups/:id/image`            | Image du groupe (multipart, bucket `albums`, dossier `whatsapp-groups/`) |
+| POST    | `/api/v1/whatsapp-groups/:id/access`           | Ajouter des personnes à l'accès (tout membre ayant accès, ou admin) |
+| DELETE  | `/api/v1/whatsapp-groups/:id/access/:memberId` | Retirer une personne (tout membre ayant accès, ou admin ; le créateur garde toujours accès)               |
+| PUT     | `/api/v1/whatsapp-groups/:id/joined`           | « J'y suis déjà » (`{ joined: boolean }`)                |
+| POST    | `/api/v1/whatsapp-groups/:id/report-link`      | Signaler un lien cassé au créateur                       |
 
-Paramètres du groupe (migration `013_conversation_settings.sql`) : tout membre du groupe peut renommer, changer l'image (bucket `albums`, dossier `conversations/`), éditer la description et ajouter des membres. Personne ne peut retirer un membre (ni quitter) : pas d'endpoint, `DELETE` révoqué et bloqué par trigger (hors cascade).
-
-Variables d'environnement backend : `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
-
+Accès : « Toute la famille » par défaut, ou « Accès limité » à une liste de personnes (une tribu ajoutée copie ses membres au moment de l'ajout). Un groupe sans accès est invisible (404), sauf pour les admins qui voient et modifient tous les groupes. Les notifications push de l'ancienne messagerie sont supprimées (plus de variables `VAPID_*`).
 ## PWA
 
 L'app est installable (`frontend/public/manifest.json`, service worker `src/sw.ts`). Sur mobile/tablette uniquement (détection tactile `pointer: coarse` / userAgent / iPadOS, jamais sur ordinateur), pour un utilisateur connecté qui n'utilise pas la PWA installée, la modale `InstallPromptModal` (montée dans `Layout`) propose l'installation à chaque chargement ; sa fermeture ne vaut que pour la session. iOS : instructions manuelles en étapes numérotées avec illustrations SVG (Partager, puis « Sur l'écran d'accueil »), pas d'API d'installation. Android/Chrome/Edge : le manifest déclare `description` et `screenshots` (`frontend/public/screenshots/`, 4 captures `*-narrow.png` 390x844 et 2 `*-wide.png` 1280x800) pour l'interface d'installation enrichie ; ces PNG ne sont pas précachés par le service worker.

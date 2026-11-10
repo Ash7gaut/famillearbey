@@ -22,8 +22,7 @@ import { SecretSantaGuestPage } from './pages/SecretSantaGuestPage';
 import { GuestHubPage } from './pages/GuestHubPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { CalendarPage } from './pages/CalendarPage';
-import { MessagingPage } from './pages/MessagingPage';
-import { ConversationPage } from './pages/ConversationPage';
+import { GroupsPage } from './pages/GroupsPage';
 import { useAuthStore } from './stores/authStore';
 
 function AuthInit({ children }: { children: React.ReactNode }) {
@@ -60,8 +59,9 @@ export default function App() {
               <Route path="secret-santa/:id" element={<SecretSantaDetailPage />} />
               <Route path="secret-santa/:id/reveal" element={<SecretSantaRevealPage />} />
               <Route path="calendrier" element={<CalendarPage />} />
-              <Route path="messagerie" element={<MessagingPage />} />
-              <Route path="messagerie/:id" element={<ConversationPage />} />
+              <Route path="groupes" element={<GroupsPage />} />
+              {/* Ancienne Messagerie : anciens favoris / start_url PWA */}
+              <Route path="messagerie/*" element={<Navigate to="/groupes" replace />} />
               <Route path="profil" element={<ProfilePage />} />
               <Route path="profil/:id" element={<ProfilePage />} />
               <Route path="admin" element={<AdminPage />} />

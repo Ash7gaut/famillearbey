@@ -102,48 +102,32 @@ export interface TreeNode {
   children: TreeNode[];
 }
 
-export interface Conversation {
+export interface WhatsAppGroupRow {
   id: string;
-  title: string | null;
-  image_url: string | null;
+  name: string;
   description: string | null;
+  image_url: string | null;
+  invite_link: string;
+  restricted: boolean;
+  pinned: boolean;
   created_by: string | null;
   created_at: string;
   updated_at: string;
 }
 
-export interface ConversationMember {
-  conversation_id: string;
-  member_id: string;
-  added_by: string | null;
-  joined_at: string;
-  muted: boolean;
-  last_read_at: string;
-}
-
-export interface ConversationSummary extends Conversation {
-  members: FamilyMember[];
-  unread_count: number;
-  muted: boolean;
-  last_message: Message | null;
-}
-
-export interface Message {
-  id: string;
-  conversation_id: string;
-  /** null si l'auteur a été supprimé (FK ON DELETE SET NULL). */
-  author_id: string | null;
-  content: string;
-  created_at: string;
-}
-
-export interface PushSubscriptionInput {
-  endpoint: string;
-  keys: {
-    p256dh: string;
-    auth: string;
-  };
-  user_agent?: string;
+/** Groupe tel que renvoyé à un membre AYANT accès (le lien n'est jamais renvoyé sans accès). */
+export interface WhatsAppGroup extends WhatsAppGroupRow {
+  /** Nombre de membres ayant déclaré « j'y suis déjà ». */
+  joined_count: number;
+  /** Le membre courant a déclaré être dans le groupe. */
+  joined: boolean;
+  is_creator: boolean;
+  /** Personnes ayant accès (vide si accès « toute la famille »). */
+  access_member_ids: string[];
+  /** Nombre de signalements « lien cassé » (renvoyé au créateur uniquement, 0 sinon). */
+  report_count: number;
+  /** Le membre courant a déjà signalé le lien. */
+  reported_by_me: boolean;
 }
 
 export interface ApiResponse<T> {

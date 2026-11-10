@@ -107,32 +107,28 @@ export interface Photo {
   latest_comment?: PhotoLatestComment | null;
 }
 
-export interface Conversation {
+/** Groupe WhatsApp tel que renvoyé par l'API (uniquement les groupes auxquels on a accès). */
+export interface WhatsAppGroup {
   id: string;
-  title: string | null;
-  image_url: string | null;
+  name: string;
   description: string | null;
+  image_url: string | null;
+  invite_link: string;
+  /** false = toute la famille ; true = accès limité à `access_member_ids`. */
+  restricted: boolean;
+  pinned: boolean;
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  /** Nombre de membres ayant déclaré « j'y suis déjà ». */
+  joined_count: number;
+  joined: boolean;
+  is_creator: boolean;
+  access_member_ids: string[];
+  /** Signalements « lien cassé » (renseigné pour le créateur uniquement). */
+  report_count: number;
+  reported_by_me: boolean;
 }
-
-export interface ConversationSummary extends Conversation {
-  members: FamilyMember[];
-  unread_count: number;
-  muted: boolean;
-  last_message: Message | null;
-}
-
-export interface Message {
-  id: string;
-  conversation_id: string;
-  /** null si l'auteur a été supprimé. */
-  author_id: string | null;
-  content: string;
-  created_at: string;
-}
-
 export interface ApiResponse<T> {
   data: T;
 }

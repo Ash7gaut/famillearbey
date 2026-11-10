@@ -15,6 +15,7 @@ export const USERS_FILE = path.join(AUTH_DIR, 'users.json');
 export const STORAGE_FILE = {
   admin: path.join(AUTH_DIR, 'admin.json'),
   member: path.join(AUTH_DIR, 'member.json'),
+  member2: path.join(AUTH_DIR, 'member2.json'),
 };
 
 export interface Session {
@@ -118,12 +119,52 @@ export async function apiCall<T>(token: string, method: string, route: string, b
   return (json?.data ?? json) as T;
 }
 
-export function createConversation(token: string, title: string, memberIds: string[]) {
-  return apiCall<{ id: string; title: string | null }>(token, 'POST', '/conversations', { title, memberIds });
+/** Appel API brut (sans lever sur 4xx) : statut + corps texte, pour tester les refus et les fuites. */
+export async function apiRaw(token: string, method: string, route: string, body?: unknown) {
+  const res = await fetch(`${API_URL}${route}`, {
+    method,
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  return { status: res.status, text: await res.text() };
 }
 
-export function sendMessageApi(token: string, conversationId: string, content: string) {
-  return apiCall<{ id: string }>(token, 'POST', `/conversations/${conversationId}/messages`, { content });
+// ── Groupes WhatsApp ─────────────────────────────────────────────────
+
+export interface WhatsAppGroupDto {
+  id: string;
+  name: string;
+  invite_link: string;
+  restricted: boolean;
+  access_member_ids: string[];
+  joined_count: number;
+  joined: boolean;
+  report_count: number;
+}
+
+export const WA_LINK_PREFIX = 'https://chat.whatsapp.com/';
+
+/** Lien d'invitation factice mais valide (unique par test). */
+export function fakeInviteLink(tag: string): string {
+  return `${WA_LINK_PREFIX}${tag.replace(/[^a-z0-9]/gi, '')}`;
+}
+
+export function createWhatsappGroup(
+  token: string,
+  input: { name: string; invite_link: string; description?: string; restricted?: boolean; memberIds?: string[] },
+) {
+  return apiCall<WhatsAppGroupDto>(token, 'POST', '/whatsapp-groups', input);
+}
+
+export function listWhatsappGroups(token: string) {
+  return apiCall<WhatsAppGroupDto[]>(token, 'GET', '/whatsapp-groups');
+}
+
+/** Crée une tribu et y rattache les membres (copiés ensuite dans l'accès d'un groupe). */
+export async function createTribu(token: string, name: string, memberIds: string[]): Promise<string> {
+  const tribu = await apiCall<{ id: string }>(token, 'POST', '/tribus', { name });
+  for (const memberId of memberIds) await apiCall(token, 'PUT', `/tribus/${tribu.id}/members/${memberId}`);
+  return tribu.id;
 }
 
 // ── Secret Santa ─────────────────────────────────────────────────────

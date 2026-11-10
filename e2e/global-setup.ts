@@ -37,4 +37,5 @@ export default async function globalSetup() {
   );
   fs.writeFileSync(STORAGE_FILE.admin, JSON.stringify(toStorageState(adminSession)));
   fs.writeFileSync(STORAGE_FILE.member, JSON.stringify(toStorageState(memberSession)));
+  fs.writeFileSync(STORAGE_FILE.member2, JSON.stringify(toStorageState(member2Session)));
 }

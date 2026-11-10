@@ -33,30 +33,6 @@ docker compose -f docker-compose.dev.yml down
 docker compose -f docker-compose.dev.yml down -v
 ```
 
-## Notifications push (messagerie)
-
-Le backend a besoin d'une paire de clés VAPID pour signer les envois Web Push
-(package `web-push`). Génère la tienne (une seule fois, à garder secrète) :
-
-```bash
-docker run --rm node:22-slim sh -c "npx --yes web-push generate-vapid-keys"
-```
-
-Puis exporte-les avant `docker compose up` (ou mets-les dans un `.env` à la
-racine, lu automatiquement par Docker Compose) :
-
-```
-VAPID_PUBLIC_KEY=...
-VAPID_PRIVATE_KEY=...
-VAPID_SUBJECT=mailto:ton-email@example.com
-```
-
-Sans ces variables, `pushService.isConfigured()` reste `false` et les
-messages continuent de fonctionner normalement — seul l'envoi de
-notifications push est silencieusement désactivé (log `[push] VAPID non
-configuré`). En production (Railway), poser les mêmes variables dans les
-Environment Variables du service backend.
-
 ## Comment les migrations sont appliquées
 
 Au **premier** démarrage du volume Postgres uniquement :

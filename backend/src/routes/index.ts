@@ -12,8 +12,7 @@ import calendarRoutes from './calendarRoutes.js';
 import eventRoutes from './eventRoutes.js';
 import commentRoutes from './commentRoutes.js';
 import tribuRoutes from './tribuRoutes.js';
-import messagingRoutes from './messagingRoutes.js';
-import pushRoutes from './pushRoutes.js';
+import whatsappGroupRoutes from './whatsappGroupRoutes.js';
 
 const router = Router();
 
@@ -30,8 +29,7 @@ router.use('/calendar', calendarRoutes);
 router.use('/events', eventRoutes);
 router.use('/comments', commentRoutes);
 router.use('/tribus', tribuRoutes);
-router.use('/conversations', messagingRoutes);
-router.use('/push', pushRoutes);
+router.use('/whatsapp-groups', whatsappGroupRoutes);
 
 router.get('/health', (_req, res) => {
   res.json({ data: { status: 'ok', app: 'FamilyHub – Famille Arbey' } });

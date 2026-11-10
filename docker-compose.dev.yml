@@ -12,7 +12,6 @@
 #   db        Postgres 15 (données Supabase + auth)
 #   auth      GoTrue (authentification Supabase)
 #   rest      PostgREST (API REST auto sur les tables)
-#   realtime  Supabase Realtime (websocket, écoute des nouveaux messages)
 #   kong      Passerelle = l'URL "Supabase" unique (http://localhost:8000)
 #   backend   API Express (npm run dev, hot-reload)
 #   frontend  Vite (npm run dev, hot-reload)
@@ -157,37 +156,6 @@ services:
       PGRST_JWT_SECRET: ${JWT_SECRET}
       PGRST_DB_USE_LEGACY_GUCS: "false"
 
-  # ---------- Realtime (websocket : écoute des nouveaux messages) ----------
-  realtime:
-    image: supabase/realtime:v2.30.34
-    restart: unless-stopped
-    # Alias = tenant Realtime : le tenant est déduit du hostname de la requête, et SEED_SELF_HOST seed "realtime-dev".
-    networks:
-      default:
-        aliases:
-          - realtime-dev
-    depends_on:
-      db:
-        condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-    environment:
-      PORT: 4000
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: postgres
-      DB_USER: supabase_realtime_admin
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      DB_AFTER_CONNECT_QUERY: "SET search_path TO realtime"
-      DB_ENC_KEY: supabaserealtim3
-      API_JWT_SECRET: ${JWT_SECRET}
-      SECRET_KEY_BASE: ${JWT_SECRET}UnRealtimeSecretKeyBaseAtLeast64CharsLongForPhoenix
-      ERL_AFLAGS: -proto_dist inet_tcp
-      DNS_NODES: "''"
-      RLIMIT_NOFILE: "10000"
-      APP_NAME: realtime
-      SEED_SELF_HOST: "true"
-
   # ---------- Kong (passerelle = URL Supabase unique) ----------
   kong:
     image: kong:2.8.1
@@ -195,7 +163,6 @@ services:
     depends_on:
       - auth
       - rest
-      - realtime
     ports:
       - "8000:8000" # http://localhost:8000  <-- SUPABASE_URL
     environment:
@@ -235,9 +202,6 @@ services:
       ADMIN_SECRET: ${ADMIN_SECRET:-}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       EMAIL_FROM: ${EMAIL_FROM:-Famille Arbey <onboarding@resend.dev>}
-      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
-      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
-      VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:dev@famillearbey.local}
     volumes:
       - ./backend/src:/app/src:ro
       - ./backend/package.json:/app/package.json:ro

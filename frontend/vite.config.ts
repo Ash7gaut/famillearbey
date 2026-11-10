@@ -10,8 +10,8 @@ export default defineConfig({
       // avec les meta tags <link rel="manifest"> dans index.html — pas besoin
       // que le plugin en génère un second.
       manifest: false,
-      // injectManifest : notre propre service worker (src/sw.ts) gère les
-      // événements "push"/"notificationclick", en plus du précaching Workbox.
+      // injectManifest : notre propre service worker (src/sw.ts), qui se limite
+      // au précaching Workbox (plus de notifications push).
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw.ts',

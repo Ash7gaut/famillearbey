@@ -23,7 +23,7 @@ export function rateLimitPerMember(maxRequests: number, windowMs: number) {
 
     entry.count += 1;
     if (entry.count > maxRequests) {
-      return next(new AppError(429, 'Trop de messages envoyés, réessaie dans un instant', 'RATE_LIMITED'));
+      return next(new AppError(429, 'Trop de requêtes, réessaie dans un instant', 'RATE_LIMITED'));
     }
     next();
   };

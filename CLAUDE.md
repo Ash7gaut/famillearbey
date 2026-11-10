@@ -1,6 +1,6 @@
 # Famille Arbey
 
-Plateforme familiale privée (arbre généalogique, posts, albums, événements, souvenirs, Secret Santa, messagerie). React + Vite + TS + Tailwind + Zustand / Node + Express / Supabase.
+Plateforme familiale privée (arbre généalogique, posts, albums, événements, souvenirs, Secret Santa, groupes WhatsApp). React + Vite + TS + Tailwind + Zustand / Node + Express / Supabase.
 
 ## Workflow git
 
@@ -31,9 +31,9 @@ Quand l'utilisateur demande quelque chose, la session principale ne fait pas le 
 ## Conventions
 
 - Tests e2e Playwright dans `e2e/` : versionnés et commités, jamais réécrits de zéro (on étend l'existant). Sélecteurs via `data-testid`.
-- `data-testid` en kebab-case, forme `<zone>-<élément>` : `login-email-input`, `messaging-new-group-button`, `conversation-message-input`, `conversation-send-button`, `nav-messages-link`.
-- Éléments répétés : `<zone>-<élément>-<id métier>` (`conversation-item-${c.id}`, `message-${m.id}`, `member-option-${m.id}`) + un testid de conteneur de liste (`conversation-list`, `message-list`). Jamais d'index ni de texte affiché dans un testid.
-- États et modales aussi : spinner (`*-loading-spinner`), erreur (`*-error`), vide (`*-empty`), badge non-lu (`conversation-unread-badge-${id}`), modale (`*-modal` + boutons `*-close-button` / `*-submit-button`).
+- `data-testid` en kebab-case, forme `<zone>-<élément>` : `login-email-input`, `groups-add-button`, `group-form-name-input`, `group-form-submit-button`, `nav-groups-link`.
+- Éléments répétés : `<zone>-<élément>-<id métier>` (`group-card-${g.id}`, `group-join-button-${g.id}`, `member-option-${m.id}`) + un testid de conteneur de liste (`groups-list`). Jamais d'index ni de texte affiché dans un testid.
+- États et modales aussi : spinner (`*-loading-spinner`), erreur (`*-error`), vide (`*-empty`), badge (`group-pinned-badge-${id}`), modale (`*-modal` + boutons `*-close-button` / `*-submit-button`).
 - Composants UI réutilisables (`LoadingSpinner`, `BackLink`, `MemberAvatar`, `MemberSelect`, `RelationGroup`) acceptent une prop `data-testid` (valeur par défaut générique) ; `UserMenu` préfixe par variante (`user-menu-sidebar-*`, `user-menu-header-*`) car plusieurs instances coexistent dans le DOM.
 - Aucun runtime local : build, tests et lint via Docker (`docker-compose.dev.yml`).
 - Mettre à jour `README.md`, `ROADMAP.md`, `CHANGELOG.md` avec le code.

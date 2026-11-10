@@ -1,8 +1,8 @@
 {
   "name": "Famille Arbey",
   "short_name": "Arbey",
-  "description": "La plateforme privée de la famille Arbey : arbre généalogique, messagerie, albums photos, événements et souvenirs, rien qu'entre nous.",
-  "start_url": "/messagerie",
+  "description": "La plateforme privée de la famille Arbey : arbre généalogique, groupes WhatsApp, albums photos, événements et souvenirs, rien qu'entre nous.",
+  "start_url": "/groupes",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FDFBF7",
@@ -16,11 +16,11 @@
     { "src": "/pwa-maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "screenshots": [
-    { "src": "/screenshots/messages-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Messagerie familiale" },
+    { "src": "/screenshots/groupes-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Groupes WhatsApp de la famille" },
     { "src": "/screenshots/arbre-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Arbre généalogique" },
     { "src": "/screenshots/albums-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Albums photos" },
     { "src": "/screenshots/evenements-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Événements de famille" },
-    { "src": "/screenshots/messages-wide.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "Messagerie familiale" },
+    { "src": "/screenshots/groupes-wide.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "Groupes WhatsApp de la famille" },
     { "src": "/screenshots/arbre-wide.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "Arbre généalogique" }
   ]
 }
