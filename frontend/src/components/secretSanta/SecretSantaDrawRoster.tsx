@@ -17,7 +17,7 @@ const participationStatusLabel: Record<ParticipantStatus, string> = {
 const participationStatusBadge: Record<ParticipantStatus, string> = {
   accepted: 'bg-arbey-100 text-arbey-700',
   invited: 'bg-warm-100 text-warm-700',
-  declined: 'bg-red-50 text-red-600',
+  declined: 'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-300',
 };
 
 interface SecretSantaDrawRosterProps {

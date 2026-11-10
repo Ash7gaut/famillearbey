@@ -21,7 +21,7 @@ import { useAuthReady } from '../hooks/useAuthReady';
 const statusBadge: Record<string, string> = {
   invited: 'bg-warm-100 text-warm-700',
   accepted: 'bg-arbey-100 text-arbey-700',
-  declined: 'bg-red-50 text-red-600',
+  declined: 'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-300',
 };
 
 const statusLabel: Record<string, string> = {
@@ -315,7 +315,7 @@ export function SecretSantaDetailPage() {
               onChange={(e) => setGuestName(e.target.value)}
               data-testid="secret-santa-guest-name-input"
               placeholder="Prénom (ex. Léa)"
-              className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
+              className="input-field"
             />
             <input
               type="email"
@@ -323,7 +323,7 @@ export function SecretSantaDetailPage() {
               onChange={(e) => setGuestEmail(e.target.value)}
               data-testid="secret-santa-guest-email-input"
               placeholder="email@exemple.com"
-              className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
+              className="input-field"
             />
             <button
               type="button"
@@ -355,7 +355,7 @@ export function SecretSantaDetailPage() {
       )}
 
       {group.is_creator && (
-        <div className="card border-red-100" data-testid="secret-santa-settings-card">
+        <div className="card border-red-100 dark:border-red-500/30" data-testid="secret-santa-settings-card">
           <h2 className="font-display font-semibold text-arbey-900">Paramètres</h2>
           <p className="mt-1 text-xs text-arbey-500">
             {group.status === 'open'
@@ -367,7 +367,7 @@ export function SecretSantaDetailPage() {
             disabled={actionLoading}
             onClick={deleteGroup}
             data-testid="secret-santa-delete-button"
-            className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-100"
+            className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-100 dark:border-red-500/40 dark:bg-red-500/15 dark:text-red-300 dark:hover:bg-red-500/25"
           >
             Supprimer ce Secret Santa
           </button>
@@ -467,7 +467,7 @@ function ParticipantRow({
                 type="button"
                 onClick={onRemove}
                 data-testid={`participant-remove-button-${participant.id}`}
-                className="focus-ring inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#9A4A42] transition hover:bg-red-50 hover:text-red-700 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-red-300/60"
+                className="focus-ring inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#9A4A42] transition hover:bg-red-50 hover:text-red-700 dark:text-red-300 dark:hover:bg-red-500/15 dark:hover:text-red-200 focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-red-300/60"
                 title="Retirer ce participant"
               >
                 <UserMinus className="h-3.5 w-3.5" strokeWidth={2} />

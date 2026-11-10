@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## [Non publié] — fix/secret-santa-ui
+
+### Corrigé
+- Secret Santa : les champs de saisie (nouveau tirage : titre et budget ; invitation d'un invité externe) utilisent la classe `input-field` du thème (fond, texte, bordure, placeholder et focus cohérents en mode sombre ; le texte n'était plus lisible sur fond blanc).
+- Secret Santa : variantes mode sombre pour les éléments rouges (badge « Décliné », erreur du formulaire, bouton « Supprimer », bouton « Retirer », bordure de la carte Paramètres).
+
 ## [Non publié] — feat/phone-input-fr
 
 ### Ajouté

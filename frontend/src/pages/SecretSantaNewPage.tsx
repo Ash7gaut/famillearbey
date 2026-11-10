@@ -50,7 +50,7 @@ export function SecretSantaNewPage() {
             data-testid="secret-santa-new-title-input"
             placeholder="Ex. Noël 2026 - tribu Gautier"
             required
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
+            className="input-field"
           />
         </div>
         <div>
@@ -62,10 +62,10 @@ export function SecretSantaNewPage() {
             onChange={(e) => setBudget(e.target.value)}
             data-testid="secret-santa-new-budget-input"
             placeholder="Ex. 25 €"
-            className="w-full rounded-xl border border-arbey-200 px-4 py-2.5 text-sm"
+            className="input-field"
           />
         </div>
-        {error && <p className="text-sm text-red-600" data-testid="secret-santa-new-error">{error}</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400" data-testid="secret-santa-new-error">{error}</p>}
         <button type="submit" disabled={loading} className="btn-primary w-full" data-testid="secret-santa-new-submit-button">
           {loading ? 'Création…' : 'Créer le tirage'}
         </button>
