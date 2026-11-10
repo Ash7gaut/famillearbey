@@ -218,7 +218,7 @@ Variables d'environnement backend : `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VA
 
 ## PWA
 
-L'app est installable (`frontend/public/manifest.json`, service worker `src/sw.ts`). Sur mobile/tablette uniquement (détection tactile `pointer: coarse` / userAgent / iPadOS, jamais sur ordinateur), pour un utilisateur connecté qui n'utilise pas la PWA installée, la modale `InstallPromptModal` (montée dans `Layout`) propose l'installation à chaque chargement ; sa fermeture ne vaut que pour la session. iOS : instructions manuelles (pas d'API d'installation).
+L'app est installable (`frontend/public/manifest.json`, service worker `src/sw.ts`). Sur mobile/tablette uniquement (détection tactile `pointer: coarse` / userAgent / iPadOS, jamais sur ordinateur), pour un utilisateur connecté qui n'utilise pas la PWA installée, la modale `InstallPromptModal` (montée dans `Layout`) propose l'installation à chaque chargement ; sa fermeture ne vaut que pour la session. iOS : instructions manuelles en étapes numérotées avec illustrations SVG (Partager, puis « Sur l'écran d'accueil »), pas d'API d'installation. Android/Chrome/Edge : le manifest déclare `description` et `screenshots` (`frontend/public/screenshots/`, 4 captures `*-narrow.png` 390x844 et 2 `*-wide.png` 1280x800) pour l'interface d'installation enrichie ; ces PNG ne sont pas précachés par le service worker.
 
 ## Roadmap
 

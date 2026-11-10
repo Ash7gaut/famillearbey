@@ -1,5 +1,11 @@
 # Changelog
 
+## [Non publié] — feat/pwa-install-visuels
+
+### Ajouté
+- Manifest PWA : `description` enrichie et `screenshots` (`frontend/public/screenshots/` : `messages|arbre|albums|evenements-narrow.png` 390x844, `messages|arbre-wide.png` 1280x800) pour l'interface d'installation enrichie d'Android/Chrome/Edge. Non précachées (le précache du SW ne couvre que js/css/html).
+- Modale d'installation iOS : étapes numérotées avec illustrations SVG inline du bouton Partager puis de « Sur l'écran d'accueil » (`install-prompt-ios-step-share`, `install-prompt-ios-step-add`).
+
 ## [Non publié] — feat/modal-installation-pwa
 
 ### Ajouté

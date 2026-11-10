@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Share, SquarePlus, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useAuthReady } from '../../hooks/useAuthReady';
 import { useInstallPrompt } from '../../hooks/useInstallPrompt';
 
@@ -85,24 +85,46 @@ export function InstallPromptModal() {
               Installer
             </button>
           ) : (
-            <div className="space-y-4" data-testid="install-prompt-ios-instructions">
-              <div className="flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-arbey-100 text-arbey-700">
-                  <Share className="h-4 w-4" strokeWidth={1.75} />
+            <ol className="space-y-3" data-testid="install-prompt-ios-instructions">
+              <li className="flex items-center gap-3" data-testid="install-prompt-ios-step-share">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-arbey-100 text-xs font-semibold text-arbey-700">
+                  1
+                </span>
+                <span
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cream-300 bg-cream-100 text-arbey-700"
+                  aria-hidden
+                >
+                  {/* Bouton Partager d'iOS : carré ouvert en haut + flèche vers le haut */}
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M8.5 9H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1.5" />
+                    <path d="M12 15V3" />
+                    <path d="m8.5 6.5 3.5-3.5 3.5 3.5" />
+                  </svg>
                 </span>
                 <p className="text-sm text-ink-700">
                   Appuie sur le bouton <strong>Partager</strong> dans la barre de Safari
                 </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-arbey-100 text-arbey-700">
-                  <SquarePlus className="h-4 w-4" strokeWidth={1.75} />
+              </li>
+              <li className="flex items-center gap-3" data-testid="install-prompt-ios-step-add">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-arbey-100 text-xs font-semibold text-arbey-700">
+                  2
+                </span>
+                <span
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cream-300 bg-cream-100 text-arbey-700"
+                  aria-hidden
+                >
+                  {/* Entrée « Sur l'écran d'accueil » : carré arrondi avec un + */}
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="4" />
+                    <path d="M12 8v8" />
+                    <path d="M8 12h8" />
+                  </svg>
                 </span>
                 <p className="text-sm text-ink-700">
                   Choisis <strong>« Sur l'écran d'accueil »</strong>
                 </p>
-              </div>
-            </div>
+              </li>
+            </ol>
           )}
         </div>
       </div>

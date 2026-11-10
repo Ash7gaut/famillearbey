@@ -1,7 +1,7 @@
 {
   "name": "Famille Arbey",
   "short_name": "Arbey",
-  "description": "L'arbre généalogique et les souvenirs de la famille Arbey",
+  "description": "La plateforme privée de la famille Arbey : arbre généalogique, messagerie, albums photos, événements et souvenirs, rien qu'entre nous.",
   "start_url": "/messagerie",
   "scope": "/",
   "display": "standalone",
@@ -14,5 +14,13 @@
     { "src": "/pwa-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/pwa-maskable-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
     { "src": "/pwa-maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/messages-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Messagerie familiale" },
+    { "src": "/screenshots/arbre-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Arbre généalogique" },
+    { "src": "/screenshots/albums-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Albums photos" },
+    { "src": "/screenshots/evenements-narrow.png", "sizes": "390x844", "type": "image/png", "form_factor": "narrow", "label": "Événements de famille" },
+    { "src": "/screenshots/messages-wide.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "Messagerie familiale" },
+    { "src": "/screenshots/arbre-wide.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "Arbre généalogique" }
   ]
 }
