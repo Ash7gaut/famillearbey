@@ -6,6 +6,7 @@ import {
   Heart,
   Pencil,
   TreePine,
+  UserPlus,
   Users,
   X,
 } from 'lucide-react';
@@ -25,7 +26,7 @@ import {
   sanitizeMemberBio,
 } from '../components/profile/memberUtils';
 import { PhoneInput } from '../components/ui/PhoneInput';
-import { api } from '../services/api';
+import { API_URL, api } from '../services/api';
 import type { BirthDateDisplay, FamilyMember, MemberProfile } from '../types';
 
 function formatDate(date: string | null) {
@@ -48,6 +49,7 @@ export function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [addingContact, setAddingContact] = useState(false);
   const [bio, setBio] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [birthDateDisplay, setBirthDateDisplay] = useState<BirthDateDisplay>('full');
@@ -117,6 +119,21 @@ export function ProfilePage() {
       setFeedback((err as Error).message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  // Lien signé court : une navigation ne peut pas porter le header Authorization.
+  async function handleAddContact() {
+    if (!profileId) return;
+    setAddingContact(true);
+    setFeedback(null);
+    try {
+      const { url } = await api.post<{ url: string }>(`/members/${profileId}/vcard-link`);
+      window.location.href = `${API_URL}${url}`;
+    } catch (err) {
+      setFeedback((err as Error).message);
+    } finally {
+      setAddingContact(false);
     }
   }
 
@@ -297,6 +314,26 @@ export function ProfilePage() {
                 >
                   <Pencil className="h-4 w-4" strokeWidth={2} />
                   Modifier
+                </button>
+              )}
+
+              {!isOwnProfile && member.is_alive && (
+                <button
+                  type="button"
+                  onClick={handleAddContact}
+                  disabled={addingContact}
+                  data-testid="profile-add-contact-button"
+                  className="btn-secondary"
+                >
+                  {addingContact ? (
+                    <span
+                      data-testid="profile-add-contact-loading-spinner"
+                      className="h-4 w-4 animate-spin rounded-full border-2 border-cream-400 border-t-warm-600"
+                    />
+                  ) : (
+                    <UserPlus className="h-4 w-4" strokeWidth={2} />
+                  )}
+                  Ajouter aux contacts
                 </button>
               )}
             </div>

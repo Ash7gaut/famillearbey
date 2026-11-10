@@ -14,6 +14,10 @@ Plateforme privée pour centraliser les souvenirs, l'arbre généalogique et la 
 
 Vue unique, codée maison (React + SVG, aucune librairie de rendu d'arbre) : cartes photo, couples côte à côte, enfants centrés, connecteurs orthogonaux arrondis, pan/zoom (glisser, molette, pincement), recherche et choix de la racine (mamie par défaut). Données : `GET /members` + `GET /relationships`. Code dans `frontend/src/components/tree/` (`treeModel`, `treeLayout`, `TreeCanvas`, `TreeNodeCard`) et `frontend/src/pages/TreePage.tsx`.
 
+## Ajouter un membre à ses contacts
+
+Sur le profil d'un autre membre vivant, le bouton « Ajouter aux contacts » télécharge/ouvre une vCard 3.0 (nom, téléphone, email du compte ou d'invitation, anniversaire, photo, catégorie « Famille Arbey », lien du profil). iOS propose « Créer un contact » / « Ajouter à un contact existant », Android l'importe dans Google Contacts, desktop télécharge le `.vcf`. Le navigateur ne pouvant pas envoyer le header `Authorization` lors d'une navigation, le front demande d'abord un lien signé HMAC-SHA256 valable 2 minutes (clé dérivée de la clé service-role, aucune variable d'environnement supplémentaire).
+
 ## Structure
 
 ```
@@ -188,6 +192,8 @@ App disponible sur `http://localhost:5173`
 |---------|---------------------------------|--------------------------|
 | GET     | `/api/v1/health`                | Santé de l'API           |
 | GET     | `/api/v1/members`               | Liste des membres        |
+| POST    | `/api/v1/members/:id/vcard-link`| Lien signé (2 min) vers la vCard d'un membre (connecté) -> `{ data: { url } }`, `url` relatif à `/api/v1` |
+| GET     | `/api/v1/members/:id/vcard?exp=&sig=` | vCard 3.0 (`text/vcard`) du membre, publique mais protégée par la signature HMAC (403 si invalide/expirée, 404 si membre inconnu) |
 | GET     | `/api/v1/relationships/tree`    | Arbre généalogique       |
 | GET     | `/api/v1/albums`                | Liste des albums         |
 | POST    | `/api/v1/albums`                | Créer un album           |

@@ -18,6 +18,9 @@ const upload = multer({
 
 const router = Router();
 
+// Publique (navigation du navigateur, pas de header Authorization) : protégée par lien signé.
+router.get('/:id/vcard', asyncHandler(familyMemberController.getVCard));
+
 router.use(asyncMiddleware(requireAuth));
 
 router.get('/', asyncHandler(familyMemberController.getAll));
@@ -27,6 +30,7 @@ router.post(
   upload.single('file'),
   asyncHandler(familyMemberController.uploadMyPhoto),
 );
+router.post('/:id/vcard-link', asyncHandler(familyMemberController.createVCardLink));
 router.get('/:id/profile', asyncHandler(familyMemberController.getProfile));
 router.get('/:id', asyncHandler(familyMemberController.getById));
 

@@ -4,7 +4,13 @@ import { AppError } from '../middleware/errorHandler.js';
 import type { FamilyMember, MemberProfile, Relationship, UpdateOwnProfileInput } from '../types/index.js';
 import { sanitizeMember, sanitizeMemberBio, sanitizeMembers } from '../utils/memberBio.js';
 
+import { env } from '../config/env.js';
+import { buildVCard, type VCardExtras } from '../utils/vcard.js';
+import { signVCardLink, VCARD_LINK_TTL_MS } from '../utils/signedLink.js';
+
 const PROFILE_PHOTO_BUCKET = 'albums';
+const VCARD_PHOTO_TIMEOUT_MS = 3000;
+const VCARD_PHOTO_MAX_BYTES = 1024 * 1024;
 
 /** Nom de famille toujours stocké en MAJUSCULES (locale FR). */
 function upperLastName(value: string): string {
@@ -112,6 +118,24 @@ export const familyMemberService = {
   async delete(id: string): Promise<void> {
     const { error } = await supabase.from('family_members').delete().eq('id', id);
     if (error) throw new AppError(400, error.message, 'DB_ERROR');
+  },
+
+  /** Lien signé (2 min) vers la vCard, relatif à la base de l'API (`/api/v1`). */
+  async createVCardLink(id: string): Promise<{ url: string }> {
+    await this.getById(id);
+    const exp = Date.now() + VCARD_LINK_TTL_MS;
+    return { url: `/members/${id}/vcard?exp=${exp}&sig=${signVCardLink(id, exp)}` };
+  },
+
+  async getVCard(id: string): Promise<{ content: string; fileName: string }> {
+    const member = await this.getById(id);
+    const [email, photo] = await Promise.all([getMemberEmail(member), fetchPhoto(member.photo_url)]);
+    const content = buildVCard(member, {
+      email,
+      photo,
+      profileUrl: `${env.appUrl}/profil/${member.id}`,
+    });
+    return { content, fileName: `${member.first_name} ${member.last_name}.vcf` };
   },
 
   async getProfile(id: string): Promise<MemberProfile> {
@@ -247,6 +271,34 @@ function getRelatedMembers(
   }
 
   return result.sort((a, b) => a.first_name.localeCompare(b.first_name, 'fr'));
+}
+
+/** Email réel du compte (auth), à défaut l'email d'invitation. */
+async function getMemberEmail(member: FamilyMember): Promise<string | null> {
+  if (member.auth_user_id) {
+    const { data } = await supabase.auth.admin.getUserById(member.auth_user_id);
+    if (data?.user?.email) return data.user.email;
+  }
+  return member.invite_email ?? null;
+}
+
+/** Photo encodée en base64 pour la vCard ; null si erreur, timeout, non-image ou > 1 Mo. */
+async function fetchPhoto(url: string | null): Promise<VCardExtras['photo']> {
+  if (!url || !/^https?:\/\//i.test(url)) return null;
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(VCARD_PHOTO_TIMEOUT_MS) });
+    if (!res.ok) return null;
+    const contentType = res.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
+    const type = contentType === 'image/jpeg' ? 'JPEG' : contentType === 'image/png' ? 'PNG' : null;
+    if (!type) return null;
+    const declared = Number(res.headers.get('content-length') ?? 0);
+    if (declared > VCARD_PHOTO_MAX_BYTES) return null;
+    const buffer = Buffer.from(await res.arrayBuffer());
+    if (buffer.length > VCARD_PHOTO_MAX_BYTES) return null;
+    return { base64: buffer.toString('base64'), type };
+  } catch {
+    return null;
+  }
 }
 
 function extractStoragePath(publicUrl: string): string | null {

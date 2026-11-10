@@ -1,4 +1,11 @@
-﻿# Changelog
+# Changelog
+
+## [Non publié] — feat/profile-vcard
+
+### Ajouté
+- Bouton « Ajouter aux contacts » (`profile-add-contact-button`) sur le profil d'un autre membre vivant : ouvre une vCard 3.0 (N/FN, TEL, EMAIL, BDAY, PHOTO, CATEGORIES, NOTE) dans l'appli Contacts du téléphone ou la télécharge sur desktop.
+- Backend : `POST /members/:id/vcard-link` (authentifié, renvoie une URL signée HMAC-SHA256 valable 2 min) et `GET /members/:id/vcard?exp=&sig=` (publique, 403 si signature invalide ou expirée, 404 si membre inconnu). Utilitaires `utils/vcard.ts` (échappement, pliage 75 octets, CRLF) et `utils/signedLink.ts`.
+- Email : celui du compte (auth) à défaut `invite_email` ; photo récupérée côté serveur (timeout 3 s, ignorée si non JPEG/PNG ou > 1 Mo) ; anniversaire sans année si `birth_date_display = 'day_month'`.
 
 ## [Non publié] — fix/secret-santa-ui
 

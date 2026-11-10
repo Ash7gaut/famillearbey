@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
+export const API_URL =import.meta.env.VITE_API_URL ?? '/api/v1';
 
 let getAccessToken: (() => string | null) | null = null;
 
