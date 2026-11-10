@@ -112,6 +112,7 @@ export function MembersAdminPage() {
               </p>
               <p className="truncate text-xs text-ink-500" data-testid={`member-row-details-${m.id}`}>
                 {m.birth_date ? `Né(e) le ${formatDate(m.birth_date)}` : 'Date de naissance inconnue'}
+                {m.phone && ` · ${m.phone}`}
                 {!m.is_alive && ' · Décédé(e)'}
                 {m.auth_user_id && ' · Compte lié'}
                 {m.is_admin && ' · Admin'}

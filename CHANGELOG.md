@@ -1,10 +1,14 @@
-# Changelog
+﻿# Changelog
 
 ## [Non publié] — feat/pwa-install-visuels
 
 ### Ajouté
 - Manifest PWA : `description` enrichie et `screenshots` (`frontend/public/screenshots/` : `messages|arbre|albums|evenements-narrow.png` 390x844, `messages|arbre-wide.png` 1280x800) pour l'interface d'installation enrichie d'Android/Chrome/Edge. Non précachées (le précache du SW ne couvre que js/css/html).
 - Modale d'installation iOS : étapes numérotées avec illustrations SVG inline du bouton Partager puis de « Sur l'écran d'accueil » (`install-prompt-ios-step-share`, `install-prompt-ios-step-add`).
+## [Non publié] — feat/member-phone
+
+### Ajouté
+- Numéro de téléphone du membre (`family_members.phone`, migration 014) : saisie sur son propre profil et dans le formulaire admin, affichage sur le profil (lien `tel:`), la fiche membre de l'arbre et la liste admin. Validation légère côté backend (6 à 15 chiffres, `+ . - ( )` et espaces admis), vide => `null`. Mêmes permissions que `birth_date` (profil : soi-même ; admin : tous).
 
 ## [Non publié] — feat/modal-installation-pwa
 

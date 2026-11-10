@@ -12,6 +12,7 @@
 - [x] Visuels d'installation PWA (captures du manifest pour Android/Chrome/Edge, étapes illustrées iOS)
 - [x] Refonte de l'arbre généalogique (vue unique maison, sans BALKAN ni family-chart)
 - [x] Retrait de la page Famille (l'arbre et les profils couvrent le besoin)
+- [x] Numéro de téléphone du membre (profil, fiche membre, admin)
 
 ## En cours (`feature/chat`)
 

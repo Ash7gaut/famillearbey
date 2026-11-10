@@ -26,6 +26,7 @@ export interface UpdateOwnProfileInput {
   bio?: string | null;
   birth_date?: string | null;
   birth_date_display?: BirthDateDisplay;
+  phone?: string | null;
 }
 
 export interface FamilyMember {
@@ -41,6 +42,7 @@ export interface FamilyMember {
   photo_url: string | null;
   birth_date: string | null;
   birth_date_display?: BirthDateDisplay;
+  phone?: string | null;
   death_date: string | null;
   bio: string | null;
   is_alive: boolean;

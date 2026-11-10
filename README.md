@@ -74,6 +74,7 @@ erDiagram
         bool is_admin
         bool is_alive
         date birth_date
+        text phone "nullable, migration 014"
         date death_date
     }
 

@@ -42,6 +42,11 @@ export function MemberModal({ member, onClose }: MemberModalProps) {
                 Né(e) le {formatDate(member.birth_date)}
               </p>
             )}
+            {member.phone && (
+              <p className="text-sm text-arbey-500" data-testid="member-modal-phone">
+                Tél. {member.phone}
+              </p>
+            )}
           </div>
         </div>
 

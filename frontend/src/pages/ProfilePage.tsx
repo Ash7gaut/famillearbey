@@ -48,6 +48,7 @@ export function ProfilePage() {
   const [bio, setBio] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [birthDateDisplay, setBirthDateDisplay] = useState<BirthDateDisplay>('full');
+  const [phone, setPhone] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const [photoLightboxOpen, setPhotoLightboxOpen] = useState(false);
@@ -67,6 +68,7 @@ export function ProfilePage() {
       setBio(sanitizeMemberBio(data.member.bio) ?? '');
       setBirthDate(data.member.birth_date ?? '');
       setBirthDateDisplay(data.member.birth_date_display ?? 'full');
+      setPhone(data.member.phone ?? '');
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -102,6 +104,7 @@ export function ProfilePage() {
         bio: bio.trim() || null,
         birth_date: birthDate || null,
         birth_date_display: birthDateDisplay,
+        phone: phone.trim() || null,
       });
       setMember(updated);
       setProfile((prev) => (prev ? { ...prev, member: updated } : prev));
@@ -160,6 +163,7 @@ export function ProfilePage() {
     setBio(sanitizeMemberBio(profile.member.bio) ?? '');
     setBirthDate(profile.member.birth_date ?? '');
     setBirthDateDisplay(profile.member.birth_date_display ?? 'full');
+    setPhone(profile.member.phone ?? '');
     setEditing(false);
   }
 
@@ -304,6 +308,14 @@ export function ProfilePage() {
                   )}
                 </p>
               )}
+              {member.phone && (
+                <p data-testid="profile-phone">
+                  Tél.{' '}
+                  <a href={`tel:${member.phone.replace(/[^\d+]/g, '')}`} className="font-medium text-ink-700 hover:underline">
+                    {member.phone}
+                  </a>
+                </p>
+              )}
               {!member.is_alive && member.death_date && (
                 <p data-testid="profile-death-date">
                   Décédé(e) le{' '}
@@ -362,6 +374,20 @@ export function ProfilePage() {
                     type="date"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
+                    className="input-field max-w-xs"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="profile-phone-field" className="mb-1.5 block text-sm font-medium text-ink-700">
+                    Numéro de téléphone
+                  </label>
+                  <input
+                    id="profile-phone-field"
+                    data-testid="profile-phone-input"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="06 12 34 56 78"
                     className="input-field max-w-xs"
                   />
                 </div>

@@ -11,6 +11,21 @@ function upperLastName(value: string): string {
   return value.trim().toLocaleUpperCase('fr-FR');
 }
 
+/**
+ * Numéro de téléphone : vide => null ; sinon format léger (chiffres, espaces, + . - ( )),
+ * 6 à 15 chiffres. `undefined` = champ non fourni (inchangé).
+ */
+function normalizePhone(value: string | null | undefined): string | null | undefined {
+  if (value === undefined) return undefined;
+  const phone = value?.trim();
+  if (!phone) return null;
+  const digits = phone.replace(/\D/g, '');
+  if (!/^\+?[0-9 .()-]{6,25}$/.test(phone) || digits.length < 6 || digits.length > 15) {
+    throw new AppError(400, 'Numéro de téléphone invalide', 'VALIDATION_ERROR');
+  }
+  return phone;
+}
+
 export const familyMemberService = {
   async getAll(): Promise<FamilyMember[]> {
     const { data, error } = await supabase
@@ -42,6 +57,7 @@ export const familyMemberService = {
         gender: input.gender ?? 'male',
         photo_url: input.photo_url,
         birth_date: input.birth_date,
+        phone: normalizePhone(input.phone),
         death_date: input.death_date,
         bio: sanitizeMemberBio(input.bio),
         is_alive: input.is_alive ?? true,
@@ -63,6 +79,7 @@ export const familyMemberService = {
         tribu_id: input.tribu_id,
         photo_url: input.photo_url,
         birth_date: input.birth_date,
+        phone: normalizePhone(input.phone),
         death_date: input.death_date,
         bio: sanitizeMemberBio(input.bio),
         is_alive: input.is_alive,
@@ -106,6 +123,10 @@ export const familyMemberService = {
 
     if (input.birth_date_display !== undefined) {
       payload.birth_date_display = input.birth_date_display;
+    }
+
+    if (input.phone !== undefined) {
+      payload.phone = normalizePhone(input.phone);
     }
 
     if (Object.keys(payload).length === 0) {

@@ -17,6 +17,7 @@ interface FormState {
   gender: Gender;
   tribu_id: string;
   birth_date: string;
+  phone: string;
   death_date: string;
   bio: string;
 }
@@ -28,6 +29,7 @@ function toForm(member: FamilyMember | null): FormState {
     gender: member?.gender ?? 'male',
     tribu_id: member?.tribu_id ?? '',
     birth_date: member?.birth_date ?? '',
+    phone: member?.phone ?? '',
     death_date: member?.death_date ?? '',
     bio: member?.bio ?? '',
   };
@@ -64,6 +66,7 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
       gender: form.gender,
       tribu_id: form.tribu_id || null,
       birth_date: form.birth_date || null,
+      phone: form.phone.trim() || null,
       death_date: form.death_date || null,
       // Déduit : une date de décès renseignée ⇒ la personne n'est plus en vie.
       is_alive: !form.death_date,
@@ -195,6 +198,18 @@ export function MemberFormModal({ member, allMembers, onClose, onSaved }: Member
               />
             </label>
           </div>
+
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-ink-600">Téléphone</span>
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(e) => update('phone', e.target.value)}
+              data-testid="member-form-phone-input"
+              placeholder="06 12 34 56 78"
+              className="input-field"
+            />
+          </label>
 
           {/* Statut déduit de la date de décès — pas de saisie manuelle. */}
           <p className="text-xs text-ink-500">
